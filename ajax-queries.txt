@@ -1,0 +1,95 @@
+copy and past of js console commands to test server
+
+
+GET ALL GIGS
+----------------
+
+jQuery.get( '/api/gigs', function( data, textStatus, jqXHR ) {
+    console.log( 'Get response:' );
+    console.dir( data );
+    console.log( textStatus );
+    console.dir( jqXHR );
+});
+
+
+GET A GIG WTIH id
+--------------------
+
+jQuery.get( '/api/gigs/51a405e7088b125d08000002', function( data, textStatus, jqXHR ) {
+    console.log( 'Get response:' );
+    console.dir( data );
+    console.log( textStatus );
+    console.dir( jqXHR );
+});
+
+CREATE A GIG 
+---------------
+
+jQuery.post( '/api/gigs/', {
+    'main_event': 'Perfect Mexican Circle',
+    'event_date': new Date( 2008, 3, 12 ).getTime(),
+    'opening_time': '8:00pm',
+    'venue': 'The Wool Exchange',
+    'price': 30,
+    'capacity': 5,
+    'supports': 'Taco & the Burritos',
+    'age_group': '18+',
+    'description': 'mexican folk for all, Jesus.',
+    'tag_names':[
+        { 'tag': 'Mexican' },
+        { 'tag': 'Folk' }
+    ],
+   'image_url': 'http://d11x7re0mdurt0.cloudfront.net/img/placekitten_500x300.jpg'
+}, function( data, textStatus, jqXHR ) {
+    console.log( 'Post response:' );
+    console.dir( data );
+    console.log( textStatus );
+    console.dir( jqXHR );
+});
+
+
+
+
+UPDATE A GIG WITH id 
+-----------------------
+
+jQuery.ajax({ 
+     url: '/api/gigs/51a405e7088b125d08000002', 
+     type: 'PUT',    
+     data: {
+    'main_event': 'JOSE JOSE JOHN',
+    'event_date': new Date( 2008, 3, 12 ).getTime(),
+    'opening_time': '8:00pm',
+    'venue': 'The Wool Exchange',
+    'price': 30,
+    'supports': 'Taco & the Burritos',
+    'age_group': '18+',
+    'description': 'mexican folk for all, Jesus.',
+    'tag_names':[
+        { 'tag': 'Mexican' },
+        { 'tag': 'Folk' }
+    ],
+    'image_url': 'http://d11x7re0mdurt0.cloudfront.net/img/placekitten_500x300.jpg'
+}, success: function( data, textStatus, jqXHR ) {
+    console.log( 'Post response:' );
+    console.dir( data );
+    console.log( textStatus );
+    console.dir( jqXHR );
+}
+});
+
+
+
+DELETE A GIG WITH id
+----------------------
+
+jQuery.ajax({
+    url: '/api/gigs/4f95a5251baa9b8a1b000001',
+    type: 'DELETE',
+    success: function( data, textStatus, jqXHR ) {
+        console.log( 'Post response:' );
+        console.dir( data );
+        console.log( textStatus );
+        console.dir( jqXHR );
+    }
+});

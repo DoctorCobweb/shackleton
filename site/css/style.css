@@ -1,0 +1,266 @@
+@import url(bootstrap.min.css);
+/* @import url(css/bootstrap-responsive.css); */
+
+
+/* .thumbnails a:hover{border-color: red;} */
+
+
+.footer .container .sections .section {
+  width:100px;
+  padding-right:10px;
+  float:left;
+}
+
+
+.footer li {
+  list-style-type: none;
+}
+
+
+.user_feedback {
+  background-color: #ECA336;
+  margin: 10px;
+  padding: 10px;
+}
+
+#enter_new_cc_details {
+  display: none;
+}
+
+
+#change_cc_details {
+  display: none;
+}
+
+
+body {
+    background-color: #eee;
+
+}
+
+#account {
+  display: none;
+}
+
+#import_passbook_pass {
+   display: none; 
+}
+
+
+div.footer {
+  background-color: #999E5F;
+}
+
+
+.checkoutDetails {
+  margin: 10px
+}
+
+
+.checkoutDetails ul {
+  list-style-type: none;
+}
+
+.creditCardDetails {
+  margin: 10px
+}
+
+.creditCardDetails ul {
+  list-style-type: none;
+}
+
+.numberOfTicketsDetails {
+  margin: 10px
+}
+
+.numberOfTicketsDetails ul {
+  list-style-type: none;
+}
+
+.loginWithPendingOrderDetails {
+  margin: 10px
+}
+
+.loginWithPendingOrderDetails ul {
+  list-style-type: none;
+}
+
+.registerWithPendingOrderDetails {
+  margin: 10px
+}
+
+.registerWithPendingOrderDetails ul {
+  list-style-type: none;
+}
+
+.ticket_select {
+  background-color: #efff33;
+  margin: 10px;
+  padding: 10px;
+}
+
+.proceed {
+  background-color: #efff33;
+  margin: 10px;
+  padding: 10px;
+}
+
+#reserve-form {
+  background-color: #ee5c42;
+}
+
+
+#logout_header {
+  display: none;
+}
+
+.banner_view {
+  background-color: #efff33;
+
+}
+
+.userDetails ul {
+  list-style-type: none;
+}
+
+.btn-warning {
+  background-image: linear-gradient(to bottom, #F87531, #f89406);
+}
+
+.textLink  {
+  color:#586949;
+}
+
+.gigListItemContainer {
+  outline: 5px solid #000;
+  background-color: #C57C4B;
+  list-style-type: none;
+}
+
+
+ul {
+  margin: 0 0 10px 0;
+  padding: 0px; 
+}
+
+.gigListItemContainer ul {
+  list-style-type: none;
+}
+
+#featureContent {
+  /*background-color: #ee5c42; */
+  background-color: #a8a8a8;
+}
+
+.gigDetails {
+  margin: 10px;
+}
+.gigDetails ul {
+  list-style-type: none;
+}
+
+.main.container-fluid {
+  /*background-color: #79973f; */
+  background-color: #586949;
+}
+
+a.plain:link {
+    color: #333;
+    /* color: #586949; */
+    text-decoration: none;
+}
+
+a.plain:active {
+    color: #333;
+    text-decoration: none;
+}
+
+a.plain:visited {
+    color: #333;
+    text-decoration: none;
+}
+
+a.plain:hover {
+    color: #333;
+    text-decoration: none;
+}
+
+.thumbnail {
+    /*min-width: 260px; */
+}
+
+.thumbnails li {
+    margin-left: 0px !important;
+    margin-right: 20px !important;
+}
+
+
+/*
+.gigDetails {
+    outline: 1px solid #aaa;
+    width: 350px;
+    height: 130px;
+    background-color: #fff;
+    float: left; 
+    margin: 5px;
+}
+*/
+
+/*
+.gigDetails img {
+    float: left; 
+    margin: 10px;
+}
+
+.gigDetails ul {
+    list-style-type: none;
+    margin-bottom: 0;
+}
+
+*/
+
+/*
+.Container button {
+    float: right;
+    margin: 10px;
+}
+
+#addBook label {
+    width: 100px;
+    margin-right: 10px;
+    text-align: right;
+    line-height: 25px;
+}
+
+#addBook label, #addBook input {
+    display: block;
+    margin-bottom: 10px;
+    float: left;
+}
+
+#addBook label[for="title"], #addBook label[for="releaseDate"] {
+    clear: both;
+}
+
+#addBook button {
+    display: block;
+    margin: 5px 20px 10px 10px;
+    float: right;
+    clear: both;
+}
+
+#addBook div {
+    width: 550px;
+}
+
+#addBook div:after {
+    content: "";
+    display: block;
+    height: 0;
+    visibility: hidden;
+    clear: both;
+    font-size: 0;
+    line-height: 0;
+}
+*/
+
