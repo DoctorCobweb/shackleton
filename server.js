@@ -19,30 +19,42 @@ var application_root = __dirname,
     express_validator = require('express-validator');
     //pass = require('./server-routes/pass');
 
+
+/*
+//SSL CERTIFICATE and PRIVATE KEY
+//RapidSSL private key and cert needed for making a https server
+var options = {
+  key: fs.readFileSync('server.key'),
+  cert: fs.readFileSync('server.crt')
+};
+*/
+
+
+
+
 //The http server will listen to an appropriate port, or default to
 //port 5000.
 var port = process.env.PORT || 5000;
 console.log('process.env.PORT: ' + process.env.PORT);
 
-/*
+
+
+
 if (process.env.REDISTOGO_URL) {
   var rtg = require("url").parse(process.env.REDISTOGO_URL);
-  console.log('rtg: ' + rtg);
-  console.log('rtg.port: ' + rtg.port);
-  console.log('rtg.hostname: ' + rtg.hostname);
+  console.log('REDISTOGO: rtg: ' + rtg);
+  console.log('REDISTOGO: rtg.port: ' + rtg.port);
+  console.log('REDISTOGO: rtg.hostname: ' + rtg.hostname);
 
-  var redis = require("redis").createClient(rtg.port, rtg.hostname);
-  redis.auth(rtg.auth.split(":")[1]); 
-  console.log('rtg.auth: ' + rtg.auth.split(":")[1]);
+  var redis_client = require("redis").createClient(rtg.port, rtg.hostname);
+  redis_client.auth(rtg.auth.split(":")[1]); 
+  console.log('REDISTOGO: rtg.auth: ' + rtg.auth.split(":")[1]);
 
-  var redis_store = new RedisStore({client: redis});  
- 
+  var redis_store = new RedisStore({client: redis_client});  
 
 } else {
-  
   var redis_store = new RedisStore();
 }
-*/
 
 
 
@@ -52,6 +64,9 @@ var mongo_uri =
   process.env.MONGOLAB_URI ||
   process.env.MONGOHQ_URL  ||
   'mongodb://localhost/shackleton_database';
+
+
+
 
 //create the ONE connection to the shackleton_database.
 //one connection, many collections representing each area of the app
@@ -65,10 +80,14 @@ var shackleton_conn = mongoose.connect(mongo_uri, function (err, res) {
 });
 
 
+
+
 //put the schemas here so we can send them around to different route handler groups
 var TagNames = new mongoose.Schema({
   tag: String
 });
+
+
 
 var Gig = new mongoose.Schema({
   main_event:   String,
@@ -84,8 +103,12 @@ var Gig = new mongoose.Schema({
   capacity:    Number
 });
 
+
+
 //simple but incomplete email regexp used for User schema validation of emailAddress
 var emailRegexp = /.+\@.+\..+/;
+
+
 
 var User = new mongoose.Schema({
   first_name:                  {type: String, required: true},
@@ -94,6 +117,8 @@ var User = new mongoose.Schema({
   phone_number:                {type: String, required: true},
   braintree_customer_id:       {type: String, required: true}  
 });
+
+
 
 var Password = new mongoose.Schema({
   email_address: {
@@ -104,6 +129,8 @@ var Password = new mongoose.Schema({
   salt:             String,
   hash:             String
 });
+
+
 
 var Order = new mongoose.Schema({
   
@@ -120,26 +147,10 @@ var Order = new mongoose.Schema({
 
 
 
+
 //create the express application. express() returns a Function designed to 
 //be passed to nodes http/https servers as a callback to handle requests. 
 var app = express();
-
-
-
-//
-//RapidSSL private key and cert needed for making a https server
-var options = {
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.crt')
-};
-
-/*
-//RSA private key and SELF-SIGNED cert needed for making a https server
-var options = {
-  key: fs.readFileSync('server_key.pem'),
-  cert: fs.readFileSync('server_cert.pem')
-};
-*/
 
 
 
@@ -151,12 +162,12 @@ app.configure(function () {
   app.use(express.methodOverride());
   app.use(express.query());
   app.use(express.cookieParser('my secret string'));
-//  app.use(express.session({ 
-//    //store: new RedisStore,
-//    store: redis_store,
-//    secret: 'andre session secret', 
-//    cookie: {maxAge: 24 * 60 * 60 * 1000}
-//  }));
+  app.use(express.session({ 
+    //store: new RedisStore,
+    store: redis_store,
+    secret: 'andre session secret', 
+    cookie: {maxAge: 24 * 60 * 60 * 1000}
+  }));
   app.use(app.router);
   app.use(express.static(path.join(application_root, 'site')));
   app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
@@ -219,12 +230,16 @@ app.post('/test/', function (req, res) {
 //note: app is a our Express application, a Function, and is
 //passed into node's https.createServer() as a callback handler for 
 //requests. cool.
-https.createServer(options, app).listen(port);
+//https.createServer(options, app).listen(port);
+
+
+
+
+
+
 
 //old http server creation
-/*
 //start server
 app.listen(port, function () {
 console.log('Express server listening on port %d in %s mode', port, app.settings.env);
 });
-*/
