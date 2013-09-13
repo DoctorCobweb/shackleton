@@ -20,14 +20,6 @@ var application_root = __dirname,
     //pass = require('./server-routes/pass');
 
 
-/*
-//SSL CERTIFICATE and PRIVATE KEY
-//RapidSSL private key and cert needed for making a https server
-var options = {
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.crt')
-};
-*/
 
 
 
@@ -220,26 +212,36 @@ app.post('/test/', function (req, res) {
 //--------end EXPERIMENTAL SECTION --------------------
 
 
+if (process.env.NODE_ENV === 'production') {
+  //Heroku: start production server. ssl endpoint is used for https so use standard
+  //http server
 
-//CREATE HTTPS SERVER:
-//this creates a https server listening on port 5000 and
-//uses a self generated certificate resulting in browsers
-//warning that the https://localhost:5000 is insecure.
-//fix this by getting a certificate signed by a real CA!
-//
-//note: app is a our Express application, a Function, and is
-//passed into node's https.createServer() as a callback handler for 
-//requests. cool.
-//https.createServer(options, app).listen(port);
+  app.listen(port, function () {
+   console.log('HTTP Express server listening on port %d in %s mode', 
+     port, app.settings.env);
+  });
 
+} else {
+  //enable https server when in development mode i.e. on localhost.
 
+  //SSL CERTIFICATE and PRIVATE KEY
+  //RapidSSL private key and cert needed for making a https server
+  var options = {
+    key: fs.readFileSync('server.key'),
+    cert: fs.readFileSync('server.crt')
+  };
 
-
-
-
-
-//old http server creation
-//start server
-app.listen(port, function () {
-console.log('Express server listening on port %d in %s mode', port, app.settings.env);
-});
+  //CREATE HTTPS SERVER:
+  //this creates a https server listening on port 5000 and
+  //uses a self generated certificate resulting in browsers
+  //warning that the https://localhost:5000 is insecure.
+  //fix this by getting a certificate signed by a real CA!
+  //
+  //note: app is a our Express application, a Function, and is
+  //passed into node's https.createServer() as a callback handler for 
+  //requests. cool.
+  https.createServer(options, app).listen(port, function () {
+    console.log('HTTPS Express server listening on port %d in %s mode', 
+      port, app.settings.env);
+  });
+}
