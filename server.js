@@ -171,6 +171,9 @@ app.configure(function () {
 // = function (mongoose, shackleton_conn, app, ... ) {...} practice.
 
 
+app.get('*', function (req, res) {
+  res.redirect('https://tiklet.me' + req.url);
+});
 
 
 
@@ -195,19 +198,6 @@ app.get('/api/electronic_tickets/google_wallet', function (req, res) {
 
 
 //--------start EXPERIMENTAL SECTION --------------------
-
-app.post('/test/', function (req, res) {
-  console.log('POST /test/');
-  req.checkBody('postparam', 'Invalid postparam').notEmpty().isInt();
-  var errors = req.validationErrors();
-  if (errors) {
-    res.send(errors);
-    return;
-  }
-  return res.json({postparam: req.param('postparam')});
-
-});
-
 
 //--------end EXPERIMENTAL SECTION --------------------
 
