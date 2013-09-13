@@ -177,6 +177,7 @@ app.get('*', function (req, res, next){
 
   //if(req.headers['x-forwarded-proto']!='https') {
   if(req.protocol !== 'https') {
+    console.log('REQUEST PROTOCOL: req.protocol: ' + req.protocol);
     res.redirect('https://tiklet.me' + req.url);
   }
   else {
