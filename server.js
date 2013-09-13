@@ -171,8 +171,17 @@ app.configure(function () {
 // = function (mongoose, shackleton_conn, app, ... ) {...} practice.
 
 
-app.get('*', function (req, res) {
-  res.redirect('https://tiklet.me' + req.url);
+
+/* At the top, with other redirect methods before other routes */
+app.get('*', function (req, res, next){
+
+  if(req.headers['x-forwarded-proto']!='https') {
+    res.redirect('https://tiklet.me' + req.url);
+  }
+  else {
+    next() /* Continue to other routes if we're not redirecting */
+  }
+
 });
 
 
