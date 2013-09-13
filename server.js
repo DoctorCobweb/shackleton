@@ -175,9 +175,7 @@ app.configure(function () {
 /* At the top, with other redirect methods before other routes */
 app.get('*', function (req, res, next){
 
-  //if(req.headers['x-forwarded-proto']!='https') {
-  if(req.protocol !== 'https') {
-    console.log('REQUEST PROTOCOL: req.protocol: ' + req.protocol);
+  if(req.headers['x-forwarded-proto']!='https') {
     res.redirect('https://tiklet.me' + req.url);
   }
   else {
