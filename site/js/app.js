@@ -6,7 +6,8 @@ require.config({
   //baseUrl: "app",
 
   paths: {
-    'jquery':             'lib/jquery-1.9.1',
+    //'jquery':             'lib/jquery-1.9.1',
+    'jquery':             'lib/jquery-1.10.2.min',
     'underscore':         'lib/underscore',
     'backbone':           'lib/backbone',
     'bootstrap':          'lib/bootstrap.min',

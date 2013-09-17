@@ -175,10 +175,12 @@ app.configure(function () {
 /* At the top, with other redirect methods before other routes */
 app.get('*', function (req, res, next){
 
-  if(req.headers['x-forwarded-proto']!='https') {
+  if(req.headers['x-forwarded-proto']!='https' && process.env.NODE_ENV === 'production') {
+    console.log('in GET * , in x-forwarded-proto and NODE_ENV is production');
     res.redirect('https://tiklet.me' + req.url);
   }
   else {
+    console.log('in GET * , calling next() middleware...');
     next() /* Continue to other routes if we're not redirecting */
   }
 

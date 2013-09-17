@@ -54,21 +54,59 @@ define([
  
 
       routes: {
-        '':         'index',
-        'about':    'about',
-        'login':    'login',
-        'contact':  'contact',
-        'gigs':     'gigGuide',
-        'gigs/:id': 'gigDetails',
-        'users/session/:id': 'session',
-        'logout': 'logout',
-        'users/session/goodbye': 'goodbye',
-        'delete-user-account/:id': 'deleteUserAccount',
-        'gigs/:id/new-order': 'ticketOrderEngine',
-        'account': 'account'
+        '':                          'index',
+        'about':                     'about',
+        'login':                     'login',
+        'contact':                   'contact',
+        'gigs':                      'gigGuide',
+        'gigs/:id':                  'gigDetails',
+        'users/session/:id':         'session',
+        'logout':                    'logout',
+        'users/session/goodbye':     'goodbye',
+        'delete-user-account/:id':   'deleteUserAccount',
+        'gigs/:id/new-order':        'ticketOrderEngine',
+        'account':                   'account',
+        'products':                  'products',
+        'privacy':                   'privacy',
+        'returns_policy':            'returns_policy',
+        'ticket_types':              'ticket_types',
+        'newsletter_subscription':   'newsletter_subscription',
+        'faq':                       'faq',
+        'search' :                   'search'
+
+
       },
 
+
+     products: function () {
+       console.log('in products handler');
+     },     
+
+     privacy: function () {
+       console.log('in privacy handler');
+     },     
      
+     returns_policy: function () {
+       console.log('in returns_policy handler');
+     },     
+
+     ticket_types: function () {
+       console.log('in ticket_types handler');
+     },     
+
+     newsletter_subscription: function () {
+       console.log('in newsletter_subscription handler');
+     },     
+
+     faq: function () {
+       console.log('in faq handler');
+     },     
+
+     search: function () {
+       console.log('in search handler');
+     },     
+
+
       check_authentication_set_links: function () {
         console.log('in check_authentication_set_links handler');
 
