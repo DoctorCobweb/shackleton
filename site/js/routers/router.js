@@ -30,13 +30,25 @@ define([
     'views/number-of-tickets-view',
     'collections/ordersCollection',
     'views/checkout-view',
-    'views/account-view'
+    'views/account-view',
+    'views/register-view',
+    'views/privacy-policy-view',
+    'views/returns-policy-view',
+    'views/ticket-types-view',
+    'views/newsletter-view',
+    'views/faq-view',
+    'views/search-view'
+
   ], 
   function (Backbone, GigsView, AboutView, ContactView, LoginView,
     HomeLandingView, GigDetailView, GigCollection, GigGuideLandingView,
     UserModel, UserDetailsView, LoggedOutView,  
     OrderModel, NumberOfTicketsView,
-    OrdersCollection, CheckoutView, AccountView) {
+    OrdersCollection, CheckoutView, 
+    AccountView, RegisterView,
+    PrivacyPolicyView, ReturnsPolicyView,
+    TicketTypesView, NewsletterView,
+    FaqView, SearchView) {
 
     var AppRouter = Backbone.Router.extend({
     
@@ -58,52 +70,86 @@ define([
         'about':                     'about',
         'login':                     'login',
         'contact':                   'contact',
-        'gigs':                      'gigGuide',
-        'gigs/:id':                  'gigDetails',
+        'gigs':                      'gig_guide',
+        'gigs/:id':                  'gig_details',
         'users/session/:id':         'session',
         'logout':                    'logout',
         'users/session/goodbye':     'goodbye',
-        'delete-user-account/:id':   'deleteUserAccount',
-        'gigs/:id/new-order':        'ticketOrderEngine',
+        'delete-user-account/:id':   'delete_user_account',
         'account':                   'account',
-        'products':                  'products',
-        'privacy':                   'privacy',
+        'privacy_policy':            'privacy_policy',
         'returns_policy':            'returns_policy',
         'ticket_types':              'ticket_types',
-        'newsletter_subscription':   'newsletter_subscription',
+        'newsletter':                'newsletter',
         'faq':                       'faq',
-        'search' :                   'search'
+        'search' :                   'search',
+        'register':                  'register'
 
 
       },
 
+     register: function () {
+       console.log('in register() of router.js');
 
-     products: function () {
-       console.log('in products handler');
-     },     
+       this.check_authentication_set_links();
 
-     privacy: function () {
-       console.log('in privacy handler');
+       if (!this.theRegisterView) {
+        this.theRegisterView = new RegisterView();
+       }
+       this.show_view('#featureContent', this.theRegisterView);
+     },
+
+
+
+     privacy_policy: function () {
+       console.log('in privacy_policy handler');
+
+       if (!this.thePrivacyPolicyView) {
+        this.thePrivacyPolicyView = new PrivacyPolicyView();
+       }
+       this.show_view('#featureContent', this.thePrivacyPolicyView);
      },     
      
      returns_policy: function () {
        console.log('in returns_policy handler');
+       if (!this.theReturnsPolicyView) {
+        this.theReturnsPolicyView = new ReturnsPolicyView();
+       }
+       this.show_view('#featureContent', this.theReturnsPolicyView);
      },     
 
      ticket_types: function () {
        console.log('in ticket_types handler');
+
+       if (!this.theTicketTypesView) {
+        this.theTicketTypesView = new TicketTypesView();
+       }
+       this.show_view('#featureContent', this.theTicketTypesView);
      },     
 
-     newsletter_subscription: function () {
-       console.log('in newsletter_subscription handler');
+     newsletter: function () {
+       console.log('in newsletter handler');
+
+       if (!this.theNewsletterView) {
+        this.theNewsletterView = new NewsletterView();
+       }
+       this.show_view('#featureContent', this.theNewsletterView);
      },     
 
      faq: function () {
        console.log('in faq handler');
+       if (!this.theFaqView) {
+        this.theFaqView = new FaqView();
+       }
+       this.show_view('#featureContent', this.theFaqView);
      },     
 
      search: function () {
        console.log('in search handler');
+       if (!this.theSearchView) {
+        this.theSearchView = new SearchView();
+       }
+       this.show_view('#featureContent', this.theSearchView);
      },     
 
 
@@ -123,7 +169,7 @@ define([
               console.dir(jqXHR);
 
               //toggle login -> to -> logout in header view 
-              self.switchLogButton('#logout_header', '#login_header');
+              self.switch_log_button('#logout_header', '#login_header');
               self.display_account_tab(true);
             }
           }
@@ -136,7 +182,7 @@ define([
         console.log('in account handler');
         this.check_authentication_set_links();
         var account_view = new AccountView();
-        this.showView('#featureContent', account_view);
+        this.show_view('#featureContent', account_view);
 
       },
 
@@ -150,7 +196,7 @@ define([
         if (!this.theHomeLandingView) {
          this.theHomeLandingView = new HomeLandingView();
         }
-        this.showView('#featureContent', this.theHomeLandingView);
+        this.show_view('#featureContent', this.theHomeLandingView);
       },
 
 
@@ -165,7 +211,7 @@ define([
         if (!this.theAboutView) {
           this.theAboutView = new AboutView();
         }
-        this.showView('#featureContent', this.theAboutView);
+        this.show_view('#featureContent', this.theAboutView);
       },
 
 
@@ -176,7 +222,7 @@ define([
         this.check_authentication_set_links();
 
         var theLoginView = new LoginView();
-        this.showView('#featureContent', theLoginView);
+        this.show_view('#featureContent', theLoginView);
       },
 
 
@@ -189,12 +235,12 @@ define([
         if (!this.theContactView) {
           this.theContactView = new ContactView();
         }
-        this.showView('#featureContent', this.theContactView);
+        this.show_view('#featureContent', this.theContactView);
       },
 
 
 
-      gigGuide: function () {
+      gig_guide: function () {
         console.log('in gigGuide() of router.js');
 
         this.check_authentication_set_links();
@@ -219,7 +265,7 @@ define([
           success: function (collection, response) {
             console.log('self.theGigList.length = ' + self.theGigList.length);
             self.theGigsView = new GigsView({model: self.theGigList}); 
-            self.showView('#featureContent', self.theGigsView); 
+            self.show_view('#featureContent', self.theGigsView); 
             //self.showView('#featureList', self.theGigsView); 
             if (self.requestedId) {
               self.navigate('//gigs/' + self.requestedId);
@@ -235,7 +281,7 @@ define([
 
 
 
-      gigDetails: function (id) {
+      gig_details: function (id) {
         console.log('in getDetails() of router.js, with id = ' + id);
 
         this.check_authentication_set_links();
@@ -269,7 +315,7 @@ define([
           this.selectedGigPrice = this.gig.get('price');
 
           //console.log('this.gig = ' + JSON.stringify(this.gig));
-          this.showView("#featureContent", new GigDetailView({model: this.gig}));
+          this.show_view("#featureContent", new GigDetailView({model: this.gig}));
         } else {
           //must set an instance variable to hold the id of the gig currently
           //navigated to.
@@ -310,10 +356,10 @@ define([
               //replace: true means update the url without creating an entry in
               //browser's history. yes/no???
               self.navigate('#/hello/' + model.get("first_name"), {replace:true});
-              self.showView('#featureContent', self.userDetailsView);
+              self.show_view('#featureContent', self.userDetailsView);
 
               //toggle login -> to -> logout in header view 
-              self.switchLogButton('#logout_header','#login_header');              
+              self.switch_log_button('#logout_header','#login_header');              
               self.display_account_tab(true);
             },
             error: function (model, response, options) {
@@ -350,7 +396,7 @@ define([
            }
         });
         //toggle logout -> to -> login in header view 
-        this.switchLogButton('#login_header', '#logout_header');
+        this.switch_log_button('#login_header', '#logout_header');
         this.display_account_tab(false);
       },
 
@@ -361,12 +407,12 @@ define([
            this.loggedOutView = new LoggedOutView();
          } 
          this.navigate('#/goodbye/' + first_name, {replace: true});
-         this.showView('#featureContent', this.loggedOutView);
+         this.show_view('#featureContent', this.loggedOutView);
       },
  
 
 
-      deleteUserAccount: function (id) {
+      delete_user_account: function (id) {
         console.log("and this.userModel.get('id'): " +  this.userModel.get('_id'));
 
         var self = this;
@@ -420,7 +466,7 @@ define([
         });
       },
 
-      switchLogButton: function (elementToShow, elementToHide) {
+      switch_log_button: function (elementToShow, elementToHide) {
         $(elementToHide).css('display', 'none');
         $(elementToShow).css('display', 'block');
       },
@@ -433,7 +479,7 @@ define([
         } 
       },
 
-      showView: function (selector, view) {
+      show_view: function (selector, view) {
         console.log('in showView()');
         console.log('in showView(), this.currentView: ');
         console.log(this.currentView);
