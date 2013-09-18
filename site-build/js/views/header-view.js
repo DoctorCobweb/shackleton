@@ -1,0 +1,1 @@
+define(["backbone","text!tpl/HeaderView.html"],function(e,t){var n=e.View.extend({el:"#container-fluid",template:_.template(t),initialize:function(){this.render()},render:function(){return this.$el.html(this.template()),this}});return n});

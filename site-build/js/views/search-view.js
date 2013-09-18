@@ -1,0 +1,1 @@
+define(["backbone","text!tpl/SearchView.html"],function(e,t){var n=e.View.extend({tagName:"div",className:"search_details",template:_.template(t),events:{},initialize:function(){console.log("in initialize() of search-view.js")},render:function(){return console.log("in search-view.js and render()"),this.$el.html(this.template()),this}});return n});
