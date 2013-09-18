@@ -161,7 +161,7 @@ app.configure(function () {
     cookie: {maxAge: 24 * 60 * 60 * 1000}
   }));
   app.use(app.router);
-  app.use(express.static(path.join(application_root, 'site')));
+  app.use(express.static(path.join(application_root, 'site-build')));
   app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
 
