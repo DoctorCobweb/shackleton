@@ -61,6 +61,7 @@ var welcome_email = function (first_name, user_email_address) {
   });
 
 
+};
 
 var welcome_email_with_body = function (first_name, user_email_address, body) {
     console.log('EMAIL: in welcome_email function');
