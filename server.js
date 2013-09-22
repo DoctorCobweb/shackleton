@@ -16,10 +16,8 @@ var application_root = __dirname,
     mongoose = require('mongoose'),
     RedisStore = require('connect-redis')(express),
     //redis = require('redis'),
-    express_validator = require('express-validator');
-    //pass = require('./server-routes/pass');
-
-
+    express_validator = require('express-validator'),
+    //pass = require('./server-routes/pass'),
 
 
 
@@ -186,7 +184,12 @@ app.get('*', function (req, res, next){
 
 });
 
+app.post('/api/admin_emails', function (req, res) {
+  console.log('in POST /api/admin_emails and body posted is:');
+  console.log(req.body);
 
+
+});
 
 //gig guide routes are in a different file, 'gig-guide-routes.js'
 require('./server-routes/gig-guide-routes')(mongoose, shackleton_conn, app, Gig);
