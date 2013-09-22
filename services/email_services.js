@@ -96,6 +96,7 @@ var welcome_email_with_body = function (first_name, user_email_address, body) {
 
 exports.test_send = test_send;
 exports.send_welcome_email = welcome_email;
+exports.send_welcome_email_with_body = welcome_email_with_body;
 
 
 
