@@ -73,7 +73,7 @@ var welcome_email_with_body = function (first_name, user_email_address, body) {
           "from_name":"Tiklet Ticketing",
           "to":[{"email":user_email_address}],
           "subject": "Welcome to Tiklet.me ticketing services",
-          "text": body 
+          "text": body.mandrill_events 
       }
     };
 
