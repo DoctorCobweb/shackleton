@@ -17,7 +17,7 @@ var application_root = __dirname,
     RedisStore = require('connect-redis')(express),
     //redis = require('redis'),
     //pass = require('./server-routes/pass'),
-    email_services = require('./services/email.services'),
+    email_services = require('./services/email_services'),
     express_validator = require('express-validator');
 
 
@@ -189,7 +189,7 @@ app.post('/api/admin_emails', function (req, res) {
   console.log('in POST /api/admin_emails and body posted is:');
   console.log(req.body);
 
-  email_services.welcome_email_with_body('doctor cobwebl', 'spinninghalf@gmail.com', req.body);
+  email_services.welcome_email_with_body('doctor cobwebl', 'spinninghalf', req.body);
   
   res.send(req.body);
 
