@@ -62,6 +62,29 @@ var welcome_email = function (first_name, user_email_address) {
 
 
 
+var welcome_email_with_body = function (first_name, user_email_address, body) {
+    console.log('EMAIL: in welcome_email function');
+
+
+    var params = {
+      "message": {
+          "from_email":"admin@tiklet.me",
+          "from_name":"Tiklet Ticketing",
+          "to":[{"email":user_email_address}],
+          "subject": "Welcome to Tiklet.me ticketing services",
+          "text": body 
+      }
+    };
+
+
+  m.messages.send(params, function (result) {
+    console.log('EMAIL: result: ');
+    console.log(result);
+   }, 
+   function (err) {
+    console.log('EMAIL: error: ');
+    console.log(err);
+  });
 
 
 
