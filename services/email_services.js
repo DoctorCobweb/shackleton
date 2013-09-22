@@ -6,51 +6,45 @@
 var Mandrill = require('mandrill-api').Mandrill;
 var m = new Mandrill(process.env.MANDRILL_APIKEY);
 
-var test_send = function () {
-    console.log('EMAIL: in test_send function');
-
-    var params = {
-      "message": {
-          "from_email":"admin@tiklet.me",
-          "from_name":"dre",
-          "to":[{"email":"spinninghalf@gmail.com"}],
-          "subject": "Mandrill from module",
-          "text": "I'm learning the Mandrill API and making a custom module"
-      }
-    };
-
-
-  m.messages.send(params, function (result) {
-    console.log('EMAIL: result: ');
-    console.log(result);
-   }, 
-   function (err) {
-    console.log('EMAIL: error: ');
-    console.log(err);
-  });
-};
-
 
 
 var welcome_email = function (first_name, user_email_address) {
     console.log('EMAIL: in welcome_email function');
-
-    var email_body = 'Welcome ' + first_name + ',\n' + 
-                     'Thankyou for signing up to our ticketing service.\n' +
-                     'Tiklet';
-
-
+    var email_body = '__INSERT IMAGE__\n\n' + 
+                     'Welcome to Tiklet!\n' +
+                     'Tiklet makes buying tickets to gigs easy, secure and fast.' +
+                     'Now your\'re all set to instantly search and securely buy ' +
+                     'tickets to any of our shows.\n' +
+                     'Login to your account using your email address, ' + 
+                     user_email_address + ', and password, to start purchasing tickets' +
+                     ' and check any account details.\n' + 
+                     'Please contact us with questions or feedback at ' +
+                     'admin@tiklet.me. We can\'t wait to hear from you!' +
+                     'Happy gigging,' +
+                     'Your friends @Tiklet';
     var params = {
       "message": {
           "from_email":"admin@tiklet.me",
-          "from_name":"Tiklet Ticketing",
+          "from_name":"Tiklet.me",
           "to":[{"email":user_email_address}],
-          "subject": "Welcome to Tiklet.me ticketing services",
-          "text": email_body 
+          "subject": "Welcome to Tiklet.me, " + first_name + "!",
+          //"text": email_body,
+          'html': "<img src=\"https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/112by112placeholder.jpg\" alt=\"Tiklet\" />" + 
+
+                  "<div>Welcome to Tiklet!</div>" + 
+                  "<div>Tiklet makes buying tickets to gigs easy, secure and fast. " + 
+                  "Now you\'re all set to instantly search and purchase tickets to " + 
+                  "any of our shows.</div>" +
+                  "<div>Login to your account using your email address, " + 
+                  user_email_address +
+                  ", and password, to start purchasing tickets and " + 
+                  "check any account details.</div>" +
+                  "<div>Please contact us with any questions or feedback at " + 
+                  "admin@tiklet.me. We can\t wait to hear from you!</div>" +
+                  "<div>Happy gigging, </div>" +
+                  "<div>Your friends @Tiklet</div>"
       }
     };
-
-
   m.messages.send(params, function (result) {
     console.log('EMAIL: result: ');
     console.log(result);
@@ -59,14 +53,13 @@ var welcome_email = function (first_name, user_email_address) {
     console.log('EMAIL: error: ');
     console.log(err);
   });
-
-
 };
+
+
+
 
 var welcome_email_with_body = function (first_name, user_email_address, body) {
     console.log('EMAIL: in welcome_email function');
-
-
     var params = {
       "message": {
           "from_email":"admin@tiklet.me",
@@ -76,8 +69,6 @@ var welcome_email_with_body = function (first_name, user_email_address, body) {
           "text": body.mandrill_events 
       }
     };
-
-
   m.messages.send(params, function (result) {
     console.log('EMAIL: result: ');
     console.log(result);
@@ -86,16 +77,11 @@ var welcome_email_with_body = function (first_name, user_email_address, body) {
     console.log('EMAIL: error: ');
     console.log(err);
   });
-
-
-
-
 };
 
 
 
 
-exports.test_send = test_send;
 exports.send_welcome_email = welcome_email;
 exports.send_welcome_email_with_body = welcome_email_with_body;
 

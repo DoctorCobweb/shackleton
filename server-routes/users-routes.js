@@ -10,6 +10,8 @@ var braintree = require('braintree');
 var format = require('util').format;
 var bcrypt = require('bcrypt');
 var email_services = require('../services/email_services');
+var Pdfkit = require('pdfkit');
+var fs = require('fs');
 
 //custom middleware used for route middleware
 var logged_in_required = require('./middleware/logged_in_required');
@@ -289,10 +291,20 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
        req.session.user_last_name = user.last_name;
        req.session.user_email_address = user.email_address;
 
-       //send confirmation email to new user
-       //email_services.test_send();
-
+       //send welcome email to new user
        email_services.send_welcome_email(user.first_name, user.email_address);
+
+    
+       //DEMO: create a pdf document using pdfkit module
+       var doc = new Pdfkit();
+       doc.info['Author'] = 'Tiklet.me';
+       doc.info['Title'] = 'Tikle.me ticket';
+       doc.text('Hello world!', 100, 100);
+       doc.fontSize(15);
+       doc.font('Times-Roman');
+       doc.image('site/img/random.jpg'); //relative to server.js location!
+       doc.write('./first_go.pdf');
+
 
        return res.send({'registration_success': true});
      });

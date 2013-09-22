@@ -185,9 +185,12 @@ app.get('*', function (req, res, next){
 
 });
 
+
+//this route gets called when a user emails admin@tiklet.me
+//mandrill POSTS the email to this url & then we handle what to do with it
 app.post('/api/admin_emails', function (req, res) {
   console.log('in POST /api/admin_emails and body posted is:');
-  console.log(req.body);
+  //console.log(req.body);
 
   email_services.send_welcome_email_with_body('doctor cobwebl', 
     'andre@spinninghalf.com.au', req.body);
