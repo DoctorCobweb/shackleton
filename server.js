@@ -16,8 +16,8 @@ var application_root = __dirname,
     mongoose = require('mongoose'),
     RedisStore = require('connect-redis')(express),
     //redis = require('redis'),
-    express_validator = require('express-validator'),
     //pass = require('./server-routes/pass'),
+    express_validator = require('express-validator');
 
 
 
