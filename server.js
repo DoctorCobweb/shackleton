@@ -189,7 +189,8 @@ app.post('/api/admin_emails', function (req, res) {
   console.log('in POST /api/admin_emails and body posted is:');
   console.log(req.body);
 
-  email_services.send_welcome_email_with_body('doctor cobwebl', 'spinninghalf', req.body);
+  email_services.send_welcome_email_with_body('doctor cobwebl', 
+    'andre@spinninghalf.com.au', req.body);
   
   res.send(req.body);
 
