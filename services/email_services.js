@@ -5,42 +5,33 @@
 
 var Mandrill = require('mandrill-api').Mandrill;
 var m = new Mandrill(process.env.MANDRILL_APIKEY);
+var fs = require('fs');
 
 
 
-var welcome_email = function (first_name, user_email_address) {
-    console.log('EMAIL: in welcome_email function');
-    var email_body = '__INSERT IMAGE__\n\n' + 
-                     'Welcome to Tiklet!\n' +
-                     'Tiklet makes buying tickets to gigs easy, secure and fast.' +
-                     'Now your\'re all set to instantly search and securely buy ' +
-                     'tickets to any of our shows.\n' +
-                     'Login to your account using your email address, ' + 
-                     user_email_address + ', and password, to start purchasing tickets' +
-                     ' and check any account details.\n' + 
-                     'Please contact us with questions or feedback at ' +
-                     'admin@tiklet.me. We can\'t wait to hear from you!' +
-                     'Happy gigging,' +
-                     'Your friends @Tiklet';
+
+var send_welcome_email = function (first_name, user_email_address) {
+    console.log('EMAIL: in send_welcome_email function');
+
     var params = {
       "message": {
           "from_email":"admin@tiklet.me",
-          "from_name":"Tiklet.me",
+          "from_name":"Tiklet.me Tiketing",
           "to":[{"email":user_email_address}],
           "subject": "Welcome to Tiklet.me, " + first_name + "!",
           //"text": email_body,
-          'html': "<img src=\"https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/112by112placeholder.jpg\" alt=\"Tiklet\" />" + 
-
+          'html': "<img src=\"https://s3-ap-southeast-2.amazonaws.com/biz." + 
+                  "spintix.bucket1/img/112by112placeholder.jpg\" alt=\"Tiklet\" />" + 
                   "<div>Welcome to Tiklet!</div>" + 
                   "<div>Tiklet makes buying tickets to gigs easy, secure and fast. " + 
-                  "Now you\'re all set to instantly search and purchase tickets to " + 
+                  "Now you\'re all set to instantly search and purchase tikets to " + 
                   "any of our shows.</div>" +
                   "<div>Login to your account using your email address, " + 
                   user_email_address +
-                  ", and password, to start purchasing tickets and " + 
+                  ", and password, to start purchasing tikets and " + 
                   "check any account details.</div>" +
                   "<div>Please contact us with any questions or feedback at " + 
-                  "admin@tiklet.me. We can\t wait to hear from you!</div>" +
+                  "admin@tiklet.me. We can\'t wait to hear from you!</div>" +
                   "<div>Happy gigging, </div>" +
                   "<div>Your friends @Tiklet</div>"
       }
@@ -58,14 +49,65 @@ var welcome_email = function (first_name, user_email_address) {
 
 
 
-var welcome_email_with_body = function (first_name, user_email_address, body) {
-    console.log('EMAIL: in welcome_email function');
+
+var send_ticket_purchase_email = function (first_name, user_email_address, attachment) {
+    console.log('EMAIL: in send_ticket_purchase_email function');
+
+    var b = new Buffer(attachment, 'binary');
+    //console.log('BUFFER ENCODING OF pdf:');
+    //console.log(b);
+    var b_string = b.toString('base64');
+    //console.log('BUDDER toString: ');
+    //console.log(b_string);
+
+
     var params = {
       "message": {
           "from_email":"admin@tiklet.me",
-          "from_name":"Tiklet Ticketing",
+          "from_name":"Tiklet.me Tiketing",
           "to":[{"email":user_email_address}],
-          "subject": "Welcome to Tiklet.me ticketing services",
+          "subject": "Your tiket from Tiklet.me",
+          'html': "<img src=\"https://s3-ap-southeast-2.amazonaws.com/biz." + 
+                  "spintix.bucket1/img/112by112placeholder.jpg\" alt=\"Tiklet\" />" + 
+                  "<div>Thankyou for purchasing your tikets.</div>" + 
+                  "<div>Please find attached the actual tiket for the event.</div>" + 
+
+                  "<div>Please contact us with any questions or feedback at " + 
+                  "admin@tiklet.me. We can\'t wait to hear from you!</div>" +
+                  "<div>See you there, </div>" +
+                  "<div>Your friends @Tiklet</div>",
+          "attachments": [{
+            "type": "application/pdf",
+            "name": "tiket.pdf",
+            "content": b_string 
+          }]
+      }
+    };
+
+  m.messages.send(params, function (result) {
+    console.log('EMAIL: result: ');
+    console.log(result);
+   }, 
+   function (err) {
+    console.log('EMAIL: error: ');
+    console.log(err);
+  });
+};
+
+
+
+
+//used when someone emails admin@tiklet.me
+//this forwards the email onto user_email_address, which i think is
+//andre@spinninghalf.com.au
+var send_email_onto_another_address = function (first_name, user_email_address, body) {
+    console.log('EMAIL: in send_email_onto_another_address function');
+    var params = {
+      "message": {
+          "from_email":"admin@tiklet.me",
+          "from_name":"Tiklet.me Tiketing",
+          "to":[{"email":user_email_address}],
+          "subject": "EMAIL FROM tiklet.me USER who emailed admin@tiklet.me",
           "text": body.mandrill_events 
       }
     };
@@ -81,9 +123,9 @@ var welcome_email_with_body = function (first_name, user_email_address, body) {
 
 
 
-
-exports.send_welcome_email = welcome_email;
-exports.send_welcome_email_with_body = welcome_email_with_body;
+exports.send_welcome_email = send_welcome_email;
+exports.send_ticket_purchase_email = send_ticket_purchase_email;
+exports.send_email_onto_another_address = send_email_onto_another_address;
 
 
 

@@ -279,6 +279,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
    function create_a_new_user() {
      console.log('=> register_a_new_user => create_a_new_user');
      console.log(input_form_data);
+
      var user = new UserModel(input_form_data); 
 
      return user.save(function (err) {
@@ -291,19 +292,9 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
        req.session.user_last_name = user.last_name;
        req.session.user_email_address = user.email_address;
 
-       //send welcome email to new user
-       email_services.send_welcome_email(user.first_name, user.email_address);
-
-    
-       //DEMO: create a pdf document using pdfkit module
-       var doc = new Pdfkit();
-       doc.info['Author'] = 'Tiklet.me';
-       doc.info['Title'] = 'Tikle.me ticket';
-       doc.text('Hello world!', 100, 100);
-       doc.fontSize(15);
-       doc.font('Times-Roman');
-       doc.image('site/img/random.jpg'); //relative to server.js location!
-       doc.write('./first_go.pdf');
+       email_services.send_welcome_email(
+         user.first_name, 
+         user.email_address);
 
 
        return res.send({'registration_success': true});

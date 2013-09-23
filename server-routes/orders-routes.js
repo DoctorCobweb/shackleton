@@ -7,6 +7,8 @@
 var braintree = require('braintree');
 var logged_in_required = require('./middleware/logged_in_required');
 var restrict_user_to_self = require('./middleware/restrict_user_to_self');
+var email_services = require('../services/email_services');
+var PDFKit = require('pdfkit');
 
 
 var gateway = braintree.connect({
@@ -207,7 +209,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     var the_order;
 
 
-    function find_the_order() {
+    function find_the_order_and_gig() {
       console.log('=> update_the_order => find_the_order');
 
       OrderModel.findOne({'_id': req.params.id}, function (err, order) {
@@ -220,8 +222,18 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         the_order = order;
         console.log('the_order: ' + the_order);
 
-
         find_the_user();
+
+        //also find the gig document pertaining to this order.
+        //need it for later when we make the pdf tiket
+        GigModel.findById(order.gig_id, function (err, gig) {
+          if (err) {
+            return callback(err);
+          }
+          the_gig = gig;
+        });
+
+
       });
     }
  
@@ -454,6 +466,70 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
           return callback(err);
         }
         console.log('order updates saved');
+
+//************************************************** 
+
+        //SUCCESSFUL ORDER PURCHASE. 
+        //send the the user an email containing the ticket in pdf format
+ 
+
+        //DEMO: create a pdf document using pdfkit module
+        var doc = new PDFKit();
+
+        doc.info['Author'] = 'Tiklet.me';
+        doc.info['Title'] = 'your Tikle.me tiket';
+        doc.fontSize(12)
+           .font('Courier-Bold')
+           .lineWidth(25)
+ 
+           .strokeColor('black')
+           .moveTo(100, 100)
+           .lineTo(50,150)
+           .lineTo(100, 200)
+           .stroke()
+ 
+           .strokeColor('orange')
+           .moveTo(150, 100)
+           .lineTo(150, 200)
+           .moveTo(200, 100)
+           .lineTo(200, 200)
+           .stroke()
+ 
+           .strokeColor('black')
+           .moveTo(250, 100)
+           .lineTo(300, 150)
+           .lineTo(250, 200)
+           .stroke()
+
+           //.image('site/img/random.jpg', 100, 100 ) //relative to server.js location!
+
+           .moveDown(15)
+           .text('hello ' + the_user.first_name + ',')
+           .text('this is your tiket to the show.')
+           .text('please keep it safe.')
+           .moveDown()
+           .moveDown()
+           .text('__DETAILS__')
+           .text('EVENT: ' + the_gig.main_event)
+           .text('DATE: ' + the_gig.event_date)
+           .text('OPENING TIME: ' + the_gig.opening_time)
+           .text('VENUE: ' + the_gig.venue)
+           .text('NUMBER OF TIKETS: ' + the_order.number_of_tickets)
+           .output(function (result) {
+             console.log('typeof(result): ' + typeof(result));
+             //console.log(result);
+ 
+             email_services.send_ticket_purchase_email(
+               the_user.first_name,
+               the_user.email_address,
+               result);
+           });
+ 
+
+
+
+
+
       });
     }
 
@@ -469,7 +545,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
 
     //START the sequence of function calls
-    find_the_order();
+    find_the_order_and_gig();
   }
 
 
