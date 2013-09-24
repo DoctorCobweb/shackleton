@@ -13,6 +13,7 @@
       , "redis": "0.7.3"
       , "mandrill-api": ">=1.0.2"
       , "pdfkit": "0.2.0"
+      , "newrelic": "0.11.0"
     }
   , "engines": {
         "node": "0.8.x"
