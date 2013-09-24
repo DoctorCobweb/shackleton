@@ -26,7 +26,12 @@ define([
         ticket_price:          0,
         transaction_amount:    0,
         transaction_id:        'backbone_default',
-        transaction_status:    'backbone_default'
+        transaction_status:    'backbone_default',
+        main_event:            'backbone_default',
+        event_date:            new Date(),
+        venue:                 'backbone_default',
+        opening_time:          'backbone_default',
+        age_group:             'backbone_default'
       },
 
  

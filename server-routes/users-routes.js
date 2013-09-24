@@ -986,32 +986,6 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
 //__________________REFACTOR FINISH___________________________
 
-   /*
-   //LOGIN WITH PENDING ORDER API --------------------------
-
-
-
-  //this is used in the login handler route to find a user based on their email address
-  function findTheUserAndSetSessionWithPendingOrder (req, res) {
-    return UserModel.findOne({emailAddress: req.body.emailAddress}, function (err, user) {
-      if (!err) {
-        console.log('SUCCESS: in findTheUserAndSetSessionWithPendingOrder(). found a user.');
-      
-        //set some session data using the user data obtained
-        req.session.user_id = user._id; 
-        req.session.user_emailAddress = user.emailAddress; 
-        req.session.user_firstName = user.firstName;
- 
-
-        return res.send({'authenticated': true, 'user_id': user._id});
-      } else {
-        console.log('ERROR: in findTheUserAndSetSessionWithPendingOrder(). err: ' + err);
-
-        return res.send(err);
-      }
-    });
-  }
-  */
 
 
   //TODO: refactor all the nested functions. do you need all thses return keywords?

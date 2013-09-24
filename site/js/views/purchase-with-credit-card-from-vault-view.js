@@ -51,7 +51,7 @@ define([
       console.log('braintree object:');
       console.dir(this.braintree);
  
-      //start the reserve tickets process
+      //*** START THE RESERVE TICKETS PROCESS ***
       this.start_reserve_tickets_countdown();
 
 
@@ -233,6 +233,9 @@ define([
 
         //stop the reserve_tickets counter which will stop order process if reached
         clearInterval(this.interval_id);  
+
+        //should you also DELETE the particular cookie for the reserved tickers??
+
         var checkout_view = new CheckoutView({model: model});
         this.show_view('#featureContent', checkout_view);
 
@@ -288,7 +291,7 @@ define([
     },
 
 
-
+    /*
     //this process ends up changing the users braintree_customer_id along with the 
     //new cc details.
     //compare this to the changing of cc details in the user account page, where the 
@@ -332,6 +335,7 @@ define([
         },
       });
     },
+    */
 
 
 

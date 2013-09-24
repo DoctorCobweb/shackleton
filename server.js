@@ -138,7 +138,13 @@ var Order = new mongoose.Schema({
   transaction_amount:    {type: Number,  default: 0},
   transaction_id:        {type: String,  default: 'default_transaction_id'},
   transaction_status:    {type: String,  default: 'default_transaction_status'},
-  braintree_customer_id: {type: String,  default: 'default_braintree_customer_id'}
+  braintree_customer_id: {type: String,  default: 'default_braintree_customer_id'},
+
+  main_event:            {type: String, default: 'default_main_event'},
+  event_date:            {type: Date,   default: new Date('25 12 3000, 20:00')},
+  opening_time:          {type: String, default: '8:00 pm'},
+  venue:                 {type: String, default: 'default_venue'},
+  age_group:             {type: String, default: 'default_age_group'}
 });
 
 
@@ -176,7 +182,8 @@ app.configure(function () {
 
 
 
-/* At the top, with other redirect methods before other routes */
+// At the top, with other redirect methods before other routes 
+// this redirects urls to the https version of the site
 app.get('*', function (req, res, next){
 
   if(req.headers['x-forwarded-proto']!='https' && process.env.NODE_ENV === 'production') {

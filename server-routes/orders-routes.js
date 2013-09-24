@@ -9,16 +9,54 @@ var logged_in_required = require('./middleware/logged_in_required');
 var restrict_user_to_self = require('./middleware/restrict_user_to_self');
 var email_services = require('../services/email_services');
 var PDFKit = require('pdfkit');
+var fs = require('fs');
+
+var gateway;
 
 
-var gateway = braintree.connect({
-  environment: braintree.Environment.Sandbox,
-  merchantId: "4wggvwzj9rjfjsm6",
-  publicKey: "n6cxpx3q85yj4pqh",
-  privateKey: "d82482f85851a6f80bd02ef438a3d38f"
+// OLD way of accessing the private key. 
+// if you use foreman to start the app u can put the key in .env then reference it via
+// process.env.BRAINTREE_PRIVATE_KEY
+
+/*
+//read in the braintree private key and fill out the rest of the details needed to
+//connect to their gateway. 
+fs.readFile('./braintree_private.key', function (err, data) {
+  if (err) throw err;
+  
+  console.log('braintree_private.key contains: ' + data);
+  console.log('typeof(data): ' + typeof(data));
+
+  braintree_private_key = data.toString();
+
+  console.log('typeof(braintree_private_key): ' + typeof(braintree_private_key));
+ 
+  //strip off the trailin \n character
+  braintree_private_key = braintree_private_key
+                            .substring(0, braintree_private_key.length - 1);
+
+  console.log('braintree_private_key after substring op: ' + braintree_private_key);
+
+  var bt_details = {};
+  bt_details.environment = braintree.Environment.Sandbox;
+  bt_details.merchantId = "4wggvwzj9rjfjsm6";
+  bt_details.publicKey =  "n6cxpx3q85yj4pqh";
+  bt_details.privateKey = braintree_private_key;
+  
+  console.log(bt_details);
+
+  gateway = braintree.connect(bt_details);
+
 });
+*/
 
 
+gateway = braintree.connect({
+  environment: braintree.Environment.Sandbox, 
+  merchantId:  "4wggvwzj9rjfjsm6",
+  publicKey:   "n6cxpx3q85yj4pqh",
+  privateKey:  process.env.BRAINTREE_PRIVATE_KEY
+});
 
 module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
@@ -37,7 +75,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     res.cookie(
       'reserve_tickets', 
       req.body.number_of_tickets.toString(10),
-      {maxAge: 60 * 1000, signed: true}
+      {maxAge: 15 * 60 * 1000, signed: true} //reserve tix for 15mins
       //{maxAge: 3 * 60 * 1000, httpOnly: true, signed: true}
     );
 
@@ -151,6 +189,13 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         user_authenticated: true,
         user_id: the_user._id,
         gig_id: the_gig._id,
+
+        main_event: the_gig.main_event,
+        event_date: the_gig.event_date,
+        opening_time: the_gig.opening_time,
+        venue: the_gig.venue,
+        age_group: the_gig.age_group,
+
         ticket_price: the_gig.price,
         number_of_tickets: req.body.number_of_tickets,
         transaction_amount: the_total_amount,
@@ -187,6 +232,9 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
   }
 
 
+
+
+  //UPDATE THE ORDER
   app.put('/api/orders/:id', function (req, res) {
     console.log('in PUT /api/orders/:id handler');
     console.log('id param in url: ' + req.params.id);
@@ -510,10 +558,11 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
            .moveDown()
            .moveDown()
            .text('__DETAILS__')
-           .text('EVENT: ' + the_gig.main_event)
-           .text('DATE: ' + the_gig.event_date)
-           .text('OPENING TIME: ' + the_gig.opening_time)
-           .text('VENUE: ' + the_gig.venue)
+           .text('EVENT: ' + the_order.main_event)
+           .text('DATE: ' + the_order.event_date)
+           .text('OPENING TIME: ' + the_order.opening_time)
+           .text('VENUE: ' + the_order.venue)
+           .text('AGE GROUP: ' + the_order.age_group)
            .text('NUMBER OF TIKETS: ' + the_order.number_of_tickets)
            .output(function (result) {
              console.log('typeof(result): ' + typeof(result));
@@ -549,6 +598,10 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
   }
 
 
+
+
+  //called when reserved tickets have timed out => add back the reserved tix to general
+  //pool
   app.post('/api/orders/ticket_reserve_timeout', function (req, res) {
     console.log('ATTEMPTING TO DELETE THE RESERVED TICKETS & ORDER...');
     console.log('in POST api/orders/ticket_reserve_timeout');
@@ -632,6 +685,8 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
   }
 
 
+
+  //GET THE ORDERS FOR A USER
   app.get('/api/orders/', 
     logged_in_required, 
     function (req, res) {
