@@ -105,7 +105,11 @@ var emailRegexp = /.+\@.+\..+/;
 var User = new mongoose.Schema({
   first_name:                  {type: String, required: true},
   last_name:                   {type: String, required: true},
-  email_address:               {type: String, required: true, match: emailRegexp},
+  email_address:               {type: String, required: true, 
+                                match: emailRegexp,
+                                index: true,
+                                unique: true
+                               },
   phone_number:                {type: String, required: true},
   braintree_customer_id:       {type: String, required: true}  
 });
