@@ -5,4 +5,4 @@
 *.crt
 node_modules/
 .env
-
+mongohq_connection_url.txt
