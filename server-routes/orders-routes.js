@@ -10,6 +10,7 @@ var restrict_user_to_self = require('./middleware/restrict_user_to_self');
 var email_services = require('../services/email_services');
 var PDFKit = require('pdfkit');
 var fs = require('fs');
+var QRCode = require('qrcode');
 
 var gateway;
 
@@ -519,7 +520,53 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
         //SUCCESSFUL ORDER PURCHASE. 
         //send the the user an email containing the ticket in pdf format
- 
+
+
+        console.log('typeof(the_order._id): ' + typeof(the_order._id));
+        //try to change _id to a string
+        _id_string = the_order._id.toString();
+        console.log('typeof(_id_string): ' + typeof(_id_string));
+        console.log('_id_string: ' + _id_string); 
+        console.log('typeof(number_of_tickets): ' + typeof(the_order.number_of_tickets));
+       
+
+
+        // the '/////' used in the string is for parsing the fields when the qrcode is
+        //scanned 
+        var info_in_qrcode = the_order._id.toString() +
+                             '/////' +
+                             the_user.first_name +
+                             '/////' +
+                             the_user.last_name +
+                             '/////' +
+                             the_gig.main_event +
+                             '/////' +
+                             the_order.number_of_tickets.toString(10) +
+                             '/////' +
+                             the_order.transaction_status;
+
+        console.log('info_in_qrcode: ' + info_in_qrcode);
+
+     
+        QRCode.toDataURL('i am a pony!',function(err,url){
+            console.log('in QRCODE.toURL call, url: ');
+            console.log(typeof(url));
+       
+            //strip away the 'data:image/png;base64,' part from url
+            var comma_index = url.indexOf(',');
+            console.log(comma_index); //21
+       
+            url = url.substring(22);
+       
+       
+            var b = new Buffer(url, 'base64');
+            fs.writeFile('first_qr_code.png', b);
+
+       });
+
+
+
+
 
         //DEMO: create a pdf document using pdfkit module
         var doc = new PDFKit();
