@@ -548,7 +548,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         console.log('info_in_qrcode: ' + info_in_qrcode);
 
      
-        QRCode.toDataURL('i am a pony!',function(err,url){
+        QRCode.toDataURL(info_in_qrcode,function(err,url){
             console.log('in QRCODE.toURL call, url: ');
             console.log(typeof(url));
        
@@ -560,7 +560,69 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
        
        
             var b = new Buffer(url, 'base64');
-            fs.writeFile('first_qr_code.png', b);
+            fs.writeFileSync('first_qr_code.png', b);
+
+
+
+            //DEMO: create a pdf document using pdfkit module
+            var doc = new PDFKit();
+    
+            doc.info['Author'] = 'Tiklet.me';
+            doc.info['Title'] = 'your Tikle.me tiket';
+            doc.fontSize(12)
+               .font('Courier-Bold')
+               .lineWidth(25)
+     
+               .strokeColor('black')
+               .moveTo(150, 100)
+               .lineTo(100,150)
+               .lineTo(150, 200)
+               .stroke()
+     
+               .strokeColor('orange')
+               .moveTo(200, 100)
+               .lineTo(200, 200)
+               .moveTo(250, 100)
+               .lineTo(250, 200)
+               .stroke()
+     
+               .strokeColor('black')
+               .moveTo(300, 100)
+               .lineTo(350, 150)
+               .lineTo(300, 200)
+               .stroke()
+    
+    
+               .moveDown(15)
+               .text('hello ' + the_user.first_name + ',')
+               .text('this is your tiket to the show.')
+               .text('please keep it safe.')
+               .moveDown()
+               .moveDown()
+               .text('__DETAILS__')
+               .text('EVENT: ' + the_order.main_event)
+               .text('DATE: ' + the_order.event_date)
+               .text('OPENING TIME: ' + the_order.opening_time)
+               .text('VENUE: ' + the_order.venue)
+               .text('AGE GROUP: ' + the_order.age_group)
+               .text('NUMBER OF TIKETS: ' + the_order.number_of_tickets)
+
+
+               .image('./first_qr_code.png', 50, 500 ) //relative to server.js location!
+
+               .output(function (result) {
+                 console.log('typeof(result): ' + typeof(result));
+                 //console.log(result);
+     
+                 email_services.send_ticket_purchase_email(
+                   the_user.first_name,
+                   the_user.email_address,
+                   result);
+               });
+    
+
+
+
 
        });
 
@@ -568,58 +630,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
 
 
-        //DEMO: create a pdf document using pdfkit module
-        var doc = new PDFKit();
-
-        doc.info['Author'] = 'Tiklet.me';
-        doc.info['Title'] = 'your Tikle.me tiket';
-        doc.fontSize(12)
-           .font('Courier-Bold')
-           .lineWidth(25)
- 
-           .strokeColor('black')
-           .moveTo(100, 100)
-           .lineTo(50,150)
-           .lineTo(100, 200)
-           .stroke()
- 
-           .strokeColor('orange')
-           .moveTo(150, 100)
-           .lineTo(150, 200)
-           .moveTo(200, 100)
-           .lineTo(200, 200)
-           .stroke()
- 
-           .strokeColor('black')
-           .moveTo(250, 100)
-           .lineTo(300, 150)
-           .lineTo(250, 200)
-           .stroke()
-
-           //.image('site/img/random.jpg', 100, 100 ) //relative to server.js location!
-
-           .moveDown(15)
-           .text('hello ' + the_user.first_name + ',')
-           .text('this is your tiket to the show.')
-           .text('please keep it safe.')
-           .moveDown()
-           .moveDown()
-           .text('__DETAILS__')
-           .text('EVENT: ' + the_order.main_event)
-           .text('DATE: ' + the_order.event_date)
-           .text('OPENING TIME: ' + the_order.opening_time)
-           .text('VENUE: ' + the_order.venue)
-           .text('AGE GROUP: ' + the_order.age_group)
-           .text('NUMBER OF TIKETS: ' + the_order.number_of_tickets)
-           .output(function (result) {
-             console.log('typeof(result): ' + typeof(result));
-             //console.log(result);
- 
-             email_services.send_ticket_purchase_email(
-               the_user.first_name,
-               the_user.email_address,
-               result);
-           });
  
 
 
