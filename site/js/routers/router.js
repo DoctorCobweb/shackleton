@@ -62,6 +62,14 @@ define([
         });
         */
 
+
+        //add in dropdown toggle functionality for the overflow button which appears 
+        //only on small devices.
+
+        //$.('#gigs_li')
+
+
+
       },
  
 
@@ -184,7 +192,9 @@ define([
         var account_view = new AccountView();
         this.show_view('#featureContent', account_view);
 
+
       },
+
 
      
 
@@ -200,10 +210,51 @@ define([
       },
 
 
+      ask_bootstrap_btn_navbar_css: function () {
+        console.log('in ask_bootstrap_btn_navbar_css handler');
+
+        var display_attr = $('a.btn-navbar').css('display');
+        console.log('a.btn-navbar has css attribute display:');
+        console.log(display_attr);
+       
+        if (display_attr === 'block'){
+          console.log('btn-navbar is displayed on page');
+        } 
+
+        if (display_attr === 'none') {
+          console.log('btn-navbar is NOT displayed on page');
+        }
+
+
+      },
+
+      ask_bootstrap_nav_collapse: function () {
+        console.log('in ask_bootstrap_nav_collapse handler');
+
+        var display_attr = $('div.nav-collapse').css('height');
+        console.log('div.nav-collapse has css attribute height:');
+        console.log(display_attr);
+       
+        //link div thing is NOT showing
+        if (display_attr === '0px') {
+          console.log('div.nav-collapse has height:0px on page');
+        }
+
+        //link div thing is showing
+        if (display_attr !== '0px') {
+          console.log('div.nav-collapse has height: ' + display_attr + ' on page');
+        }
+
+      },
 
 
       about: function () {
         console.log('in about() of router.js');
+
+        //find out what the page looks like
+        this.ask_bootstrap_btn_navbar_css();
+        this.ask_bootstrap_nav_collapse();
+
 
         this.check_authentication_set_links();
 

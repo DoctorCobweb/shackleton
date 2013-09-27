@@ -558,6 +558,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
        
             url = url.substring(22);
        
+            //console.log('the base64 encoded value in QRCODE: ' + url);
        
             var b = new Buffer(url, 'base64');
             fs.writeFileSync('first_qr_code.png', b);
@@ -602,11 +603,18 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
                .text('__DETAILS__')
                .text('EVENT: ' + the_order.main_event)
                .text('DATE: ' + the_order.event_date)
-               .text('OPENING TIME: ' + the_order.opening_time)
+               .text('OPENING_TIME: ' + the_order.opening_time)
                .text('VENUE: ' + the_order.venue)
-               .text('AGE GROUP: ' + the_order.age_group)
-               .text('NUMBER OF TIKETS: ' + the_order.number_of_tickets)
-
+               .text('AGE_GROUP: ' + the_order.age_group)
+               .text('FIRST_NAME: ' + the_user.first_name)
+               .text('LAST_NAME: ' + the_user.last_name)
+               .text('NUMBER_OF_TIKETS: ' + the_order.number_of_tickets)
+               .moveDown()
+               .moveDown()
+               .text('__DEBUGGING__')
+               .text('ORDER_ID: ' + the_order._id.toString())
+               .text('TRANSACTION_STATUS: ' + the_order.transaction_status)
+  
 
                .image('./first_qr_code.png', 50, 500 ) //relative to server.js location!
 

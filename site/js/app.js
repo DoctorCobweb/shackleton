@@ -6,27 +6,27 @@
 /*
 require.config({
 
-  //baseUrl: "js/lib",
+  baseUrl: "js/lib",
 
   paths: {
-    //'jquery':             'lib/jquery-1.9.1',
-    'jquery':             'lib/jquery-1.10.2.min',
-    'underscore':         'lib/underscore',
-    'backbone':           'lib/backbone',
-    'bootstrap':          'lib/bootstrap.min',
-    'text':               'lib/text',
-    'jquery-dateFormat':  'lib/jquery-dateFormat-1.0',
-    'bootstrap-collapse': 'lib/bootstrap-collapse',
-    'braintree':          'lib/braintree'
+    //'jquery':             'jquery-1.9.1',
+    'jquery':             'jquery-1.10.2.min',
+    'underscore':         'underscore',
+    'backbone':           'backbone',
+    'bootstrap':          'bootstrap.min',
+    'text':               'text',
+    'jquery-dateFormat':  'jquery-dateFormat-1.0',
+    'bootstrap-collapse': 'bootstrap-collapse',
+    'braintree':          'braintree'
   },
  
-  //paths: {
-    //'views':       '../views',
-    //'models':      '../models',
-    //'collections': '../collections',
-    //'routers':     '../routers',
-    //'tpl':         '../tpl',
-  //},
+  paths: {
+    'views':       '../views',
+    'models':      '../models',
+    'collections': '../collections',
+    'routers':     '../routers',
+    'tpl':         '../tpl',
+  },
 
   shim: {
     'underscore': {
@@ -42,6 +42,9 @@ require.config({
   }
 });
 */
+
+
+
 
 require([
     'backbone',

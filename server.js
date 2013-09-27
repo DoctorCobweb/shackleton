@@ -172,6 +172,7 @@ app.configure(function () {
   }));
   app.use(app.router);
   app.use(express.static(path.join(application_root, 'site-build')));
+  //app.use(express.static(path.join(application_root, 'site')));
   app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
 

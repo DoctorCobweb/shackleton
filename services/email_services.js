@@ -16,7 +16,7 @@ var send_welcome_email = function (first_name, user_email_address) {
     var params = {
       "message": {
           "from_email":"admin@tiklet.me",
-          "from_name":"Tiklet.me Tiketing",
+          "from_name":"Tiklet.me",
           "to":[{"email":user_email_address}],
           "subject": "Welcome to Tiklet.me, " + first_name + "!",
           //"text": email_body,
@@ -64,7 +64,7 @@ var send_ticket_purchase_email = function (first_name, user_email_address, attac
     var params = {
       "message": {
           "from_email":"admin@tiklet.me",
-          "from_name":"Tiklet.me Tiketing",
+          "from_name":"Tiklet.me",
           "to":[{"email":user_email_address}],
           "subject": "Your tiket from Tiklet.me",
           'html': "<img src=\"https://s3-ap-southeast-2.amazonaws.com/biz." + 
@@ -105,7 +105,7 @@ var send_email_onto_another_address = function (first_name, user_email_address, 
     var params = {
       "message": {
           "from_email":"admin@tiklet.me",
-          "from_name":"Tiklet.me Tiketing",
+          "from_name":"Tiklet.me",
           "to":[{"email":user_email_address}],
           "subject": "EMAIL FROM tiklet.me USER who emailed admin@tiklet.me",
           "text": body.mandrill_events 
@@ -137,9 +137,6 @@ exports.send_email_onto_another_address = send_email_onto_another_address;
 // EXPERIMENTAL START--------------------------------------------
 /*
 
-//var Mandrill = require('mandrill').Mandrill;
-//var m = new Mandrill('5HglHXoENH6oVY7TFSPbZw');
-var m = new Mandrill(process.env.MANDRILL_APIKEY);
 m.users.info({}, function(info) {
     console.log('MANDRILL:');
     console.log(info);
