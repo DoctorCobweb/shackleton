@@ -1,5 +1,8 @@
 //site/js/app.js
 
+
+//moved require config stuff off into its own file: require_config.js
+//in app.build.js the mainConfigFile will path to this file now.
 /*
 require.config({
 
@@ -16,28 +19,36 @@ require.config({
     'bootstrap-collapse': 'lib/bootstrap-collapse',
     'braintree':          'lib/braintree'
   },
-  
+ 
+  //paths: {
+    //'views':       '../views',
+    //'models':      '../models',
+    //'collections': '../collections',
+    //'routers':     '../routers',
+    //'tpl':         '../tpl',
+  //},
+
   shim: {
     'underscore': {
       exports: '_'
     },
     'backbone': {
-      deps: ['underscore', 'jquery'],
+      deps: ['underscore', 'jquery-1.10.2.min'],
       exports: 'Backbone'
     },
-    'bootstrap': ['jquery'],
-    'jquery-dateFormat': ['jquery'],
-    'bootstrap-collapse': ['jquery']
+    'bootstrap.min': ['jquery-1.10.2.min'],
+    'jquery-dateFormat-1.0': ['jquery-1.10.2.min'],
+    'bootstrap-collapse': ['jquery-1.10.2.min']
   }
 });
-
+*/
 
 require([
     'backbone',
     'views/banner-view',
     'views/header-view',
     'routers/router',
-    'jquery-dateFormat',
+    'jquery-dateFormat-1.0',
     'bootstrap-collapse'
 ], function (Backbone, BannerView, HeaderView, Router) {
      $(function () {
@@ -66,27 +77,31 @@ require([
      });
    }
 );
-*/
 
 
 
+
+
+
+
+
+//OLD: setup of require config and require function for app module. does NOT work.
+/*
 require.config({
 
   baseUrl: "js/lib",
 
-  /*
   paths: {
     //'jquery':             'lib/jquery-1.9.1',
-    'jquery':             './jquery-1.10.2.min',
-    'underscore':         './underscore',
-    'backbone':           './backbone',
-    'bootstrap':          'bootstrap.min',
-    'text':               'text',
-    'jquery-dateFormat':  'jquery-dateFormat-1.0',
-    'bootstrap-collapse': 'bootstrap-collapse',
-    'braintree':          'braintree'
+    //'jquery':             './jquery-1.10.2.min',
+    //'underscore':         './underscore',
+    //'backbone':           './backbone',
+    //'bootstrap':          'bootstrap.min',
+    //'text':               'text',
+    //'jquery-dateFormat':  'jquery-dateFormat-1.0',
+    //'bootstrap-collapse': 'bootstrap-collapse',
+    //'braintree':          'braintree'
   },
-  */
  
   paths: {
     'views':       '../views',
@@ -145,4 +160,6 @@ require([
      });
    }
 );
+
+*/
 

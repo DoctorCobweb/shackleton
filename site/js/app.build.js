@@ -2,7 +2,8 @@
   appDir: '../',
   baseUrl: 'js',
   dir: '../../site-build',
-  //mainConfigFile: 'app.js',
+  //mainConfigFile: './app.js',
+  mainConfigFile: './require_config.js', //moved require config into its own file
   paths: {
     'underscore': 'lib/underscore',
     'jquery-1.10.2.min': 'lib/jquery-1.10.2.min',
@@ -12,13 +13,9 @@
     'jquery-dateFormat-1.0': 'lib/jquery-dateFormat-1.0',
     'bootstrap-collapse' : 'lib/bootstrap-collapse'
   },
-
-
-  //i think this is not needed...? optimization is successful withOUT it. still dont 
-  //know r.js well enough to give a definitive, grok like answer.
   modules: [
     {
-      name: 'app'
+      name: 'app' //optimize the 'app' module, path is /site-build/js/app.js
     }
   ]
 })

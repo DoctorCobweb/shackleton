@@ -22,6 +22,8 @@ css/style.css
 
 js/app.js
 ----------------
+js/lib/underscore.js
+js/lib/jquery-1.10.2.min.js
 js/lib/backbone.js
 js/lib/text.js
 text!tpl/BannerView.html
