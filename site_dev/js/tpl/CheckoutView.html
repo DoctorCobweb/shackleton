@@ -1,0 +1,33 @@
+<html>
+  <h2>CheckoutView</h2>
+
+  <!-- SHOULD ONLY SHOW THIS LINK TO PASS TO IPHONE/SAFARI/MOBILE USERS-->
+  <a href="/api/etix/pkpass/<%= gig_id %>" id="import_passbook_pass"><div>iPhone/Safari/Mobile: Import ticket to Passbook App</div></a>
+
+
+<!--
+    <p>SHOULD ONLY SHOW THIS LINK TO PASS TO ANDROID/CHROME/MOBILE USERS</p>
+    <a href="/api/electronic_tickets/google_wallet"><div id="import_android_wallet">Android/Chrome/Mobile:Import ticket to Google Wallet App (i have not implemented this yet)</div></a>
+-->
+
+  <h4>this.model values:</h4>
+
+  <ul>
+    <li><b>_id: </b><%= _id %></li>
+    <li><b>gig_id: </b><%= gig_id %></li>
+    <li><b>main_event: </b><%= main_event %></li>
+    <li><b>event_date: </b><%= event_date %></li>
+    <li><b>venue: </b><%= venue %></li>
+    <li><b>opening_time: </b><%= opening_time %></li>
+    <li><b>age_group: </b><%= age_group %></li>
+    <li><b>user_id: </b><%= user_id %></li>
+    <li><b>user_authenticated: </b><%= user_authenticated %></li>
+    <li><b>braintree_customer_id: </b><%= braintree_customer_id %></li>
+    <li><b>number_of_tickets: </b><%= number_of_tickets %>
+    <li><b>ticket_price: </b><%= ticket_price %></li>
+    <li><b>transaction_amount: </b><%= transaction_amount %></li>
+    <li><b>transaction_id: </b><%= transaction_id %></li>
+    <li><b>transaction_status: </b><%= transaction_status %></li>
+  </ul>
+
+</html>

@@ -1,1 +1,0 @@
-define(["backbone","models/order-model"],function(e,t){var n=e.Collection.extend({model:t,url:"/api/orders/"});return n});

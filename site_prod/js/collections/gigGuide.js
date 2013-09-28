@@ -1,0 +1,1 @@
+define(["backbone","models/gig-model"],function(e,t){var n=e.Collection.extend({model:t,url:"/api/gigs"});return n});
