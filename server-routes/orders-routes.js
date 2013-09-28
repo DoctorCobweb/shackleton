@@ -360,16 +360,12 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
           the_user.braintree_customer_id = result.customer.id;
           the_order.braintree_customer_id = result.customer.id;
 
-          save_the_order_changes();
-          save_the_user_changes();
-
         } else {
           //braintree send back result.success = false
           return callback(result);
         }
       });
 
-      //submit_for_settlement({'method': 'submitted_cc_details'}); 
     }
 
     function user_is_returning_purchaser() {
