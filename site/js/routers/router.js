@@ -188,6 +188,9 @@ define([
 
       account: function () {
         console.log('in account handler');
+        //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
+        this.is_bootstrap_btn_navbar_visible();
+
         this.check_authentication_set_links();
         var account_view = new AccountView();
         this.show_view('#featureContent', account_view);
@@ -200,6 +203,8 @@ define([
 
       index: function () {
         console.log('in index() of router.js');
+        //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
+        this.is_bootstrap_btn_navbar_visible();
 
         this.check_authentication_set_links();
 
@@ -210,50 +215,13 @@ define([
       },
 
 
-      ask_bootstrap_btn_navbar_css: function () {
-        console.log('in ask_bootstrap_btn_navbar_css handler');
-
-        var display_attr = $('a.btn-navbar').css('display');
-        console.log('a.btn-navbar has css attribute display:');
-        console.log(display_attr);
-       
-        if (display_attr === 'block'){
-          console.log('btn-navbar is displayed on page');
-        } 
-
-        if (display_attr === 'none') {
-          console.log('btn-navbar is NOT displayed on page');
-        }
-
-
-      },
-
-      ask_bootstrap_nav_collapse: function () {
-        console.log('in ask_bootstrap_nav_collapse handler');
-
-        var display_attr = $('div.nav-collapse').css('height');
-        console.log('div.nav-collapse has css attribute height:');
-        console.log(display_attr);
-       
-        //link div thing is NOT showing
-        if (display_attr === '0px') {
-          console.log('div.nav-collapse has height:0px on page');
-        }
-
-        //link div thing is showing
-        if (display_attr !== '0px') {
-          console.log('div.nav-collapse has height: ' + display_attr + ' on page');
-        }
-
-      },
 
 
       about: function () {
         console.log('in about() of router.js');
 
-        //find out what the page looks like
-        this.ask_bootstrap_btn_navbar_css();
-        this.ask_bootstrap_nav_collapse();
+        //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
+        this.is_bootstrap_btn_navbar_visible();
 
 
         this.check_authentication_set_links();
@@ -269,6 +237,8 @@ define([
 
       login: function () {
         console.log('in login() of router.js');
+        //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
+        this.is_bootstrap_btn_navbar_visible();
 
         this.check_authentication_set_links();
 
@@ -280,6 +250,8 @@ define([
 
       contact: function () {
         console.log('in contact() of router.js');
+        //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
+        this.is_bootstrap_btn_navbar_visible();
 
         this.check_authentication_set_links();
 
@@ -293,6 +265,8 @@ define([
 
       gig_guide: function () {
         console.log('in gigGuide() of router.js');
+        //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
+        this.is_bootstrap_btn_navbar_visible();
 
         this.check_authentication_set_links();
 
@@ -424,6 +398,9 @@ define([
 
       logout: function () {
         console.log('in logout() route.');
+        //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
+        this.is_bootstrap_btn_navbar_visible();
+
         if (this.order) {
           console.log('reset this.order to null, since you logged out.');
 
@@ -516,6 +493,67 @@ define([
            }
         });
       },
+
+
+      //quick hack: query DOM to see if the nav-collapse div and the btn-navbar
+      //elements are visible. if they are then we are viewing the app from a small screen
+      //so setup the links in the navbar to _close_ the nav-collapse when clicked.
+      //had to do this because by default the collapsed navbar _wont_ collapse after 
+      //user clicks a link.
+      is_bootstrap_btn_navbar_visible: function () {
+        console.log('in is_bootstrap_btn_navbar_visible handler');
+
+        var display_attr = $('a.btn-navbar').css('display');
+        console.log('a.btn-navbar has css attribute display:');
+        console.log(display_attr);
+       
+        if (display_attr === 'block'){
+          console.log('btn-navbar is displayed on page');
+          
+          this.is_bootstrap_nav_collapse_visible();
+        } 
+
+        if (display_attr === 'none') {
+          console.log('btn-navbar is NOT displayed on page');
+        }
+
+
+      },
+
+      is_bootstrap_nav_collapse_visible: function () {
+        console.log('in is_bootstrap_nav_collapse_visible handler');
+
+        var display_attr = $('div.nav-collapse').css('height');
+        console.log('div.nav-collapse has css attribute height:');
+        console.log(display_attr);
+       
+        //link div thing is NOT showing
+        if (display_attr === '0px') {
+          console.log('div.nav-collapse has height:0px on page');
+        }
+
+        //link div thing is showing
+        if (display_attr !== '0px') {
+          console.log('div.nav-collapse has height: ' + display_attr + ' on page');
+          console.log('does the nav-collapse have \'in\' class: ' + 
+            $('div.nav-collapse').hasClass('in'));
+          
+          //hide the collapsed navigation links by 
+          //a) changing the css height to 0px
+          //b) deleting the 'in' word in class attribute 
+          $('div.nav-collapse').css('height', '0px')
+
+
+          $('div.nav-collapse').removeClass('in')
+
+          //and also you must remove the 'collapsed' class for the <a> btn-navbar
+          $('a.btn-navbar').addClass('collapsed');
+          
+        }
+
+      },
+
+
 
       switch_log_button: function (elementToShow, elementToHide) {
         $(elementToHide).css('display', 'none');
