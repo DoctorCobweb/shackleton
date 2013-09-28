@@ -1,0 +1,59 @@
+<html>
+  <h2>Purchase with Credit Card from Vault View</h2>
+
+
+ <h3>Order Model details</h3>
+   <ul>
+     <li><b>_id: </b><%= _id %></li>
+     <li><b>gig_id: </b><%= gig_id %></li>
+     <li><b>main_event: </b><%= main_event %></li>
+     <li><b>event_date: </b><%= event_date %></li>
+     <li><b>venue: </b><%= venue %></li>
+     <li><b>opening_time: </b><%= opening_time %></li>
+     <li><b>age_group: </b><%= age_group %></li>
+     <li><b>user_id: </b><%= user_id %></li>
+     <li><b>user_authenticated: </b><%= user_authenticated %></li>
+     <li><b>braintree_customer_id: </b><%= braintree_customer_id %></li>
+     <li><b>number_of_tickets: </b><%= number_of_tickets %>
+     <li><b>ticket_price: </b><%= ticket_price %></li>
+     <li><b>transaction_amount: </b><%= transaction_amount %></li>
+     <li><b>transaction_id: </b><%= transaction_id %></li>
+     <li><b>transaction_status: </b><%= transaction_status %></li>
+   </ul>
+
+  <h4 >Time elapsed: <div id="ticker"></div></h4>
+
+  <h4>Total Amount $:  <%= ticket_price %> * <%= number_of_tickets %> = <div id="summary_total_amount"></div></h4>
+
+
+  <h3>Bill credit card: </h3>
+  <h5>Number: </h5><div id="cc_masked_number"></div>
+  <h5>Expiration: </h5><div id="cc_expiration_date"></div>
+
+
+
+  <div class="proceed" id="edit_cc_details">change default cc? </div>
+
+
+
+  <div id="enter_cc_details">
+    <p>
+    <label>Card Number</label>
+    <input type="text" size="20" autocomplete="off" id="cc_number" data-encrypted-name="cc_number" />
+     </p>
+     <p>
+     <label>CVV</label>
+     <input type="text" size="4" autocomplete="off" id="cc_cvv" data-encrypted-name="cc_cvv" />
+     </p>
+     <p>
+     <label>Expiration (MM/YYYY)</label>
+     <input type="text" size="2" name="cc_month" id="cc_month"/> / <input type="text" size="4" name="cc_year" id="cc_year"/>
+     </p>
+
+    <div id="submit_1" class="proceed">SUBMIT</div>
+  </div>
+
+
+  <div id="submit" class="proceed">SUBMIT</div>
+
+</html>

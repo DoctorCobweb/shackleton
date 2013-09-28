@@ -1,1 +1,0 @@
-define(["backbone","text!tpl/ReturnsPolicyView.html"],function(e,t){var n=e.View.extend({tagName:"div",className:"returns_policy_details",template:_.template(t),events:{},initialize:function(){console.log("in initialize() of returns-policy-view.js")},render:function(){return console.log("in returns-policy-view.js and render()"),this.$el.html(this.template()),this}});return n});

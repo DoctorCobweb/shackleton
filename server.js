@@ -171,8 +171,13 @@ app.configure(function () {
     cookie: {maxAge: 24 * 60 * 60 * 1000}
   }));
   app.use(app.router);
-  app.use(express.static(path.join(application_root, 'site-build')));
-  //app.use(express.static(path.join(application_root, 'site')));
+
+  //uncomment this to use production, optimized, code from r.js process
+  //app.use(express.static(path.join(application_root, 'site-prod')));
+
+  //this sets the app to serve development code which is _not_ optimized 
+  app.use(express.static(path.join(application_root, 'site-dev')));
+
   app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
 
