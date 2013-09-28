@@ -10,6 +10,9 @@
 
 //moved require config stuff off into its own file: require_config.js
 //in app.build.js the mainConfigFile will path to this file now.
+
+
+/*
 require.config({
 
   baseUrl: "js/lib",
@@ -47,7 +50,7 @@ require.config({
     'bootstrap-collapse': ['jquery-1.10.2.min']
   }
 });
-
+*/
 
 
 require([

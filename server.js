@@ -173,10 +173,10 @@ app.configure(function () {
   app.use(app.router);
 
   //uncomment this to use production, optimized, code from r.js process
-  //app.use(express.static(path.join(application_root, 'site-prod')));
+  app.use(express.static(path.join(application_root, 'site-prod')));
 
   //this sets the app to serve development code which is _not_ optimized 
-  app.use(express.static(path.join(application_root, 'site-dev')));
+  //app.use(express.static(path.join(application_root, 'site-dev')));
 
   app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
