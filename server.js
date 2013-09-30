@@ -144,7 +144,10 @@ var Order = new mongoose.Schema({
   event_date:            {type: Date,   default: new Date('25 12 3000, 20:00')},
   opening_time:          {type: String, default: '8:00 pm'},
   venue:                 {type: String, default: 'default_venue'},
-  age_group:             {type: String, default: 'default_age_group'}
+  age_group:             {type: String, default: 'default_age_group'},
+
+  first_name:            {type: String, required: true},
+  last_name:             {type: String, required: true},
 });
 
 

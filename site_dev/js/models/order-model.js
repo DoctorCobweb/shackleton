@@ -31,7 +31,9 @@ define([
         event_date:            new Date(),
         venue:                 'backbone_default',
         opening_time:          'backbone_default',
-        age_group:             'backbone_default'
+        age_group:             'backbone_default',
+        first_name:            'backbone_default',
+        last_name:             'backbone_default'
       },
 
  

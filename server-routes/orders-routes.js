@@ -66,6 +66,9 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
   var GigModel = shackleton_conn.model('Gig', Gig);
   var UserModel = shackleton_conn.model('User', User);
  
+  
+
+  //######  ROUTE HANDLER ######################################################
 
   app.post('/api/orders/', function (req, res) {
 
@@ -196,6 +199,8 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         opening_time: the_gig.opening_time,
         venue: the_gig.venue,
         age_group: the_gig.age_group,
+        first_name: the_user.first_name,
+        last_name: the_user.last_name,
 
         ticket_price: the_gig.price,
         number_of_tickets: req.body.number_of_tickets,
@@ -234,6 +239,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
 
 
+  //######  ROUTE HANDLER ######################################################
 
   //UPDATE THE ORDER
   app.put('/api/orders/:id', function (req, res) {
@@ -512,7 +518,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         }
         console.log('order updates saved');
 
-//************************************************** 
 
         //SUCCESSFUL ORDER PURCHASE. 
         //send the the user an email containing the ticket in pdf format
@@ -531,11 +536,11 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         //scanned 
         var info_in_qrcode = the_order._id.toString() +
                              '/////' +
-                             the_user.first_name +
+                             the_order.first_name +
                              '/////' +
-                             the_user.last_name +
+                             the_order.last_name +
                              '/////' +
-                             the_gig.main_event +
+                             the_order.main_event +
                              '/////' +
                              the_order.number_of_tickets.toString(10) +
                              '/////' +
@@ -602,8 +607,8 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
                .text('OPENING_TIME: ' + the_order.opening_time)
                .text('VENUE: ' + the_order.venue)
                .text('AGE_GROUP: ' + the_order.age_group)
-               .text('FIRST_NAME: ' + the_user.first_name)
-               .text('LAST_NAME: ' + the_user.last_name)
+               .text('FIRST_NAME: ' + the_order.first_name)
+               .text('LAST_NAME: ' + the_order.last_name)
                .text('NUMBER_OF_TIKETS: ' + the_order.number_of_tickets)
                .moveDown()
                .moveDown()
@@ -623,23 +628,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
                    the_user.email_address,
                    result);
                });
-    
-
-
-
-
        });
-
-
-
-
-
- 
-
-
-
-
-
       });
     }
 
@@ -660,6 +649,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
 
 
+  //######  ROUTE HANDLER ######################################################
 
   //called when reserved tickets have timed out => add back the reserved tix to general
   //pool
@@ -747,6 +737,9 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
 
 
+
+  //######  ROUTE HANDLER ######################################################
+
   //GET THE ORDERS FOR A USER
   app.get('/api/orders/', 
     logged_in_required, 
@@ -770,9 +763,4 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
 
 
-
-
-
-
 }; //end module.exports
-

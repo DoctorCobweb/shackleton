@@ -51,6 +51,9 @@ require.config({
 });
 */
 
+
+
+
 require([
     'backbone',
     'views/banner-view',
