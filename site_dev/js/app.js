@@ -52,7 +52,7 @@ require.config({
 */
 
 
-
+//start app
 
 require([
     'backbone',
