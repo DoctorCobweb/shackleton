@@ -253,6 +253,7 @@ define([
     edit_cc_details: function () {
 
       this.$('#submit').css('display', 'none');
+      this.$('#edit_cc_details').css('display', 'none');
       this.$('#enter_cc_details').css('display', 'block'); 
 
 

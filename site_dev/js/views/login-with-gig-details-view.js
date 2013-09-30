@@ -35,6 +35,8 @@ define([
          */
         console.dir(this.model);
 
+        this.ENTER_KEY = 13;
+
       },
 
       render: function () {
@@ -57,6 +59,12 @@ define([
 
       password_keypress: function (e) {
         console.log('in password_keypress');
+
+        if (e.which === this.ENTER_KEY) {
+          this.close_input_field(this.$password, 'password');
+          this.login();
+        }
+
         return;
       },
 

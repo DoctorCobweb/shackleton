@@ -41,6 +41,7 @@ define([
 
 
         this.current_view = this;
+        this.ENTER_KEY = 13;
 
       },
 
@@ -81,6 +82,14 @@ define([
  
       password_keypress: function (event) {
         console.log('in password_keypress');
+
+        if (event.which === this.ENTER_KEY) {
+          console.log('in password_keypress and ENTER_KEY was pressed');
+
+          this.close_input_field(this.$password, 'password');
+          this.register();
+        }
+
         return;
       },
 

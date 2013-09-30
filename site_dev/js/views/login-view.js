@@ -27,6 +27,8 @@ define([
 
       initialize: function () {
         console.log('in initialize() of login-view.js');
+        this.ENTER_KEY = 13;
+
       },
 
       render: function () {
@@ -57,6 +59,12 @@ define([
 
       password_update: function (e) {
         console.log('password_update');
+       
+        if (e.which === this.ENTER_KEY) {
+          this.close_input_field(this.$password, 'password');
+          this.login();
+        }
+
       },
 
       email_address_blur: function (e) {

@@ -33,6 +33,8 @@ define([
         console.log('in initialize() of register-view.js');
         this.current_view = this;
 
+        this.ENTER_KEY = 13;
+
       },
 
       render: function () {
@@ -72,6 +74,15 @@ define([
  
       password_keypress: function (event) {
         console.log('in password_keypress');
+
+        if (event.which === this.ENTER_KEY) {
+          console.log('in password_keypress and ENTER_KEY was pressed');
+        
+          //add the contents of password input to data to be sent to register
+          //then call the register api route
+          this.close_input_field(this.$password, 'password');
+          this.register();
+        }
         return;
       },
 

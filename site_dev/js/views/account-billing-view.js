@@ -41,6 +41,7 @@ define([
         console.dir(this.braintree);
 
         this.field_to_set = {};
+        //this.ENTER_KEY = 13;
 
       },
 
@@ -96,6 +97,12 @@ define([
   
       cc_year_update: function (e) {
         console.log('cc_year');
+  
+        //if (e.which === this.ENTER_KEY) {
+          //this.close_input_field(this.$cc_year, 'cc_year');
+          //this.submit();
+        //}
+
         return;
       },
   
@@ -156,13 +163,8 @@ define([
       change_cc: function () {
         console.log('change_cc handler');
 
-
-        /*
-        this.$cc_number.val('');
-        this.$cc_cvv.val('');
-        this.$cc_month.val('');
-        this.$cc_year.val('');  
-        */
+        //hide the change cc details button 
+        this.$('#change_cc').css('display', 'none');
 
         //show the change_cc view by making display:block
         //the view comes with a submit button, which should make the ajax call below
