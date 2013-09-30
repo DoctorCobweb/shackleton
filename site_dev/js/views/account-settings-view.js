@@ -40,9 +40,12 @@ define([
 
       render: function () {
         console.log('in account-settings-view.js and render()');
+        console.log(this.model);
 
+        this.$el.html(this.template(this.model));
         //this.$el.html(this.template(this.model.toJSON()));
-        this.$el.html(this.template());
+        //this.$el.html(this.template());
+
     
         //cache the input elems using jQuery
         this.$first_name = this.$('#first_name');

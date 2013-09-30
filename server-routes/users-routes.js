@@ -148,7 +148,8 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
 
 
-  //get a single authenticated user
+  //get a single authenticated user, via backbone fetching a user model 
+  //passing in the _id to find the user
   app.get('/api/users/:id', logged_in_required, function (req, res) {
     console.log('in GET /api/users/:id handler. id param: ' + req.params.id);
     //BUG??
@@ -162,6 +163,25 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
       }
     }); 
   });
+
+
+  //!!!!!!A QUICK HACK!!!!
+  //get a single authenticated user. a hackey way
+  app.get('/api/users/settings/a_single_user', logged_in_required, function (req, res) {
+    console.log('in GET /api/users/settings/a_single_user handler.');
+
+    return UserModel.findOne({_id: req.session.user_id}, function (err, user) {
+      if (!err) {
+        console.log('SUCCESS: in /api/users/settings/a_single_user, found a user.');
+        return res.send(user);
+      } else {
+        console.log('ERROR: in /api/users/settings/a_single_user , findOne error.');
+        return res.send({'error': 'could_not_find_user'});
+      }
+    }); 
+  });
+
+
 
   //destroy the session i.e. log the user out of their account. 
   //THIS MUST BE BEFORE app.delete('/api/users/:id', ... ) handler. 

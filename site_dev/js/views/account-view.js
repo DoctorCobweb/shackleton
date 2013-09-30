@@ -112,12 +112,38 @@ define([
       },
 
 
-  
+      //TODO: make settings use a User backbone model and then call model#update to
+      //to the updating. should simplify the front end code.
+      //need to make a new route potentially to handle the user updating stuff.
+      //atm this is a complete hack using a practically duplicated api serving a user
+      //document.
       settings: function () {
         console.log('in settingshandler');
+        var self = this;
 
-        var account_settings_view = new AccountSettingsView();
-        this.show_view('#account_main', account_settings_view);
+        $.ajax({
+          'url': '/api/users/settings/a_single_user',
+          'type' : 'GET',
+           success: function (data, textStatus, jqXHR) {
+            console.log('SUCCESS: got user info');
+            console.dir(data);
+            console.log(textStatus);
+            console.dir(jqXHR);
+
+            var account_settings_view = new AccountSettingsView({model: data});
+            self.show_view('#account_main', account_settings_view);
+           
+           },
+           error: function (jqXHR, textStatus, errorThrown) {
+            console.log('ERROR: could not get user info');
+            console.dir(jqXHR);
+            console.log(textStatus);
+            console.dir(errorThrown);
+
+           },
+
+        });
+
 
       },
 
