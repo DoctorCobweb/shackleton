@@ -37,6 +37,29 @@ var gateway = braintree.connect({
 
 
 
+//____________________________ROUTES (in this order in the file)____________________
+//
+//
+//
+//___METHOD____ROUTE_____________________________________MIDDLEWARE_________________
+//
+//   GET       '/api/users'                              logged_in_required
+//   GET       '/api/users/session'
+//   GET       '/api/users/account/billing_info'         logged_in_required
+//   GET       '/api/users/:id'                          logged_in_required
+//   GET       '/api/users/settings/user'                logged_in_required
+//   DELETE    '/api/users/logout'                       logged_in_required
+//   POST      '/api/users/register'                     not_logged_in_required
+//   POST      '/api/users/login'                        not_logged_in_required
+//   POST      '/api/users/change_user_details'
+//   POST      '/api/users/change_password/'             logged_in_required
+//   POST      '/api/users/change_cc_details/'
+//   PUT       '/api/users/reset_the_customer_id/:id' 
+//   POST      '/api/users/login_with_pending_order/'    not_logged_in_required 
+//   POST      '/api/users/register_with_pending_order'  not_logged_in_required 
+//   DELETE    '/api/users/:id' 
+//   PUT       '/api/users/:id'                          logged_in_required
+
 
 
 
@@ -165,6 +188,18 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
   });
 
 
+
+  //get a single authenticated user. return the user id 
+  app.get('/api/users/settings/user', logged_in_required, function (req, res) {
+    console.log('in GET /api/users/settings/user handler.');
+
+    return res.send(req.session.user_id);
+
+  });
+
+
+
+  /*
   //!!!!!!A QUICK HACK!!!!
   //get a single authenticated user. a hackey way
   app.get('/api/users/settings/a_single_user', logged_in_required, function (req, res) {
@@ -180,7 +215,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
       }
     }); 
   });
-
+  */
 
 
   //destroy the session i.e. log the user out of their account. 
@@ -1202,24 +1237,22 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
   });
 
 
-  //----------start: NEW FEATURE TESTING SECTION-------------------
 
+  //called when user updates their attributes in the account settings view
+  app.put('/api/users/:id', logged_in_required, function (req, res) {
+    console.log('in PUT /api/users/:id handler');
+    console.log(req.body);
 
-  app.post('/api/users/test/', function (req, res) {
-    console.log('POST /api/users/test/');
-    req.checkBody('postparam', 'Invalid postparam').notEmpty().isInt();
-    var errors = req.validationErrors();
-    if (errors) {
-      res.send(errors);
-      return;
-    }
-    return res.json({postparam: req.param('postparam')});
-  
+    return res.send(req.body);
   });
 
 
 
- 
+
+
+
+  //----------start: NEW FEATURE TESTING SECTION-------------------
+
   //----------finish: NEW FEATURE TESTING SECTION-------------------
 
 }; //end module.exports

@@ -8,12 +8,13 @@ define([
     'views/account-billing-view',
     'views/account-settings-view',
     'collections/ordersCollection',
-    'views/account-billing-default-view'
+    'views/account-billing-default-view',
+    'models/user-model'
   ],
   function (Backbone, AccountViewHTML, 
             AccountOrdersView, AccountBillingView,
             AccountSettingsView, OrdersCollection,
-            AccountBillingDefaultView) 
+            AccountBillingDefaultView, User) 
   {
     var AccountView  = Backbone.View.extend({
       tagName: 'div',
@@ -121,21 +122,50 @@ define([
         console.log('in settingshandler');
         var self = this;
 
+
+
         $.ajax({
-          'url': '/api/users/settings/a_single_user',
+          //'url': '/api/users/settings/a_single_user',
+          'url': '/api/users/settings/user',
           'type' : 'GET',
            success: function (data, textStatus, jqXHR) {
-            console.log('SUCCESS: got user info');
+            console.log('SUCCESS: got user _id');
             console.dir(data);
             console.log(textStatus);
             console.dir(jqXHR);
 
-            var account_settings_view = new AccountSettingsView({model: data});
-            self.show_view('#account_main', account_settings_view);
+
+            if (!self.user){
+              self.user = new User({_id: data});
+            }
+
+            self.user.fetch({
+              success: function (model_data, response, options) {
+                console.log('SUCCESS: got user info');
+                console.dir(model_data);
+                console.log(response);
+                console.dir(options);
+
+                var account_settings_view = new AccountSettingsView({model: model_data});
+                self.show_view('#account_main', account_settings_view);
+
+              },
+              error: function (model, response, options) {
+                console.log('ERROR: could not get user info');
+                console.dir(model);
+                console.log(response);
+                console.dir(options);
+
+    
+              },
+
+            });
+
+
            
            },
            error: function (jqXHR, textStatus, errorThrown) {
-            console.log('ERROR: could not get user info');
+            console.log('ERROR: could not get user _id');
             console.dir(jqXHR);
             console.log(textStatus);
             console.dir(errorThrown);
