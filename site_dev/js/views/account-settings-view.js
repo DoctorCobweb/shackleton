@@ -90,13 +90,18 @@ define([
       },
 
 
-      new_password_1: function () {
+      new_password_1: function (e) {
         console.log('new_password_1');
       },     
 
 
-      new_password_2: function () {
-        console.log('new_password_1');
+      new_password_2: function (e) {
+        console.log('new_password_2');
+        if (e.which === this.ENTER_KEY) {
+          this.$new_password_2.blur();
+          this.submit_new_password();
+
+        }
       },     
 
 

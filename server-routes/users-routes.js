@@ -199,23 +199,6 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
 
 
-  /*
-  //!!!!!!A QUICK HACK!!!!
-  //get a single authenticated user. a hackey way
-  app.get('/api/users/settings/a_single_user', logged_in_required, function (req, res) {
-    console.log('in GET /api/users/settings/a_single_user handler.');
-
-    return UserModel.findOne({_id: req.session.user_id}, function (err, user) {
-      if (!err) {
-        console.log('SUCCESS: in /api/users/settings/a_single_user, found a user.');
-        return res.send(user);
-      } else {
-        console.log('ERROR: in /api/users/settings/a_single_user , findOne error.');
-        return res.send({'error': 'could_not_find_user'});
-      }
-    }); 
-  });
-  */
 
 
   //destroy the session i.e. log the user out of their account. 
@@ -463,7 +446,12 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     find_the_user();
   }
 
-
+  /*
+  //dont think this is USED ANYMORE!
+  //it was called from the user account settings view when they submit changes to
+  //their settings.
+  //a new approach of creating a user backbone model clientside, then saving it,
+  //now calls PUT /api/users/:id
   app.post('/api/users/change_user_details', function (req, res) {
     console.log('hello from POST /api/users/change_user_details');
     console.log('req.body:');
@@ -672,7 +660,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     //START: start the function calls
     check_input();
   }
-
+  */
 
 
 
@@ -680,8 +668,8 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
   app.post('/api/users/change_password/', logged_in_required, function (req, res) {
     console.log('in /api/users/change_password');
-    console.log(req.body.new_password_1);
-    console.log(req.body.new_password_2);
+    console.log('req.body.new_password_1' + req.body.new_password_1);
+    console.log('req.body.new_password_2' + req.body.new_password_2);
 
 
 
@@ -1237,13 +1225,57 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
   });
 
 
-
   //called when user updates their attributes in the account settings view
   app.put('/api/users/:id', logged_in_required, function (req, res) {
     console.log('in PUT /api/users/:id handler');
     console.log(req.body);
 
-    return res.send(req.body);
+
+    req.checkBody('first_name', 'Empty first name').notEmpty();
+    req.checkBody('last_name', 'Empty last name').notEmpty();
+    req.checkBody('phone_number','Empty phone number').notEmpty();
+    req.checkBody('email_address', 'Empty email address').notEmpty();
+    req.checkBody('email_address', 'Not a valid email address').isEmail();
+    
+    req.sanitize('first_name').xss();
+    req.sanitize('last_name').xss();
+    req.sanitize('phone_number').xss();
+    req.sanitize('email_address').xss();
+
+
+    var errors = req.validationErrors();
+
+    if (errors) {
+      return res.send({'errors': errors});
+    }
+
+    //n.b. this is req.params i.e. plural, and is an object
+    //console.log('req.params');
+    //console.log(req.params);
+
+
+    //n.b this is req.param i.e. singular and is a function
+    //req.param is a function which you can call, supply the variable name & then get
+    //the value out. even variables sent in in the body. i.e.:
+    //console.log('req.param(\'first_name\')');
+    //console.log(req.param('first_name'));
+
+    UserModel.findById(req.session.user_id, function (err, user) {
+      if (err) throw(err);
+      if (!user) return res.send({'error':'user_is_null'});
+ 
+      user.first_name = req.param('first_name'); 
+      user.last_name = req.param('last_name'); 
+      user.phone_number= req.param('phone_number'); 
+      user.email_address = req.param('email_address'); 
+
+      return user.save(function(err, saved_user) {
+        if (err) throw(err);
+        if (!saved_user) return res.send({'error':'user_is_null'});
+        
+        return res.send(saved_user);
+      });
+    }); 
   });
 
 
