@@ -2,8 +2,8 @@
 // display the settings the user has.
 
 
-//all user attribute input apart from the resetting the password have the ENTER key bound
-//to submit the changes to the backend.
+//all user attribute inputs apart from the first field for resetting the password 
+//have the ENTER key bound to submit the changes to the backend.
 
 
 define([

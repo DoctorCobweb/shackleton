@@ -4,16 +4,69 @@
 
 /* .thumbnails a:hover{border-color: red;} */
 
+/*
+.navbar-inner {
+  background-image: none;
+  background-repeat: no-repeat;
+  filter: none;
+}
+*/
 
-.footer .container .sections .section {
-  width:100px;
-  padding-right:10px;
-  float:left;
+/*
+#banner {
+  margin-top:60px;
+
+}
+
+#main_banner {
+  padding-top:30px;
+}
+*/
+
+
+
+
+/*
+.submit {
+  background-color:#2BBB53;
+  color:#FFFFFF;
+
+}
+*/
+
+
+.navbar-default .navbar-brand {
+  color:#EE9433;
 }
 
 
-.footer li {
-  list-style-type: none;
+h3 {
+  color:#EE9433;
+
+}
+
+#main_title {
+  color:#333;
+
+}
+
+
+.banner_view {
+  text-align:center;
+}
+
+.footer_heading {
+  font-weight: bold;
+
+}
+
+
+.footer .container .sections .section {
+  width:100px;
+  float:left;
+  padding-right:10px;
+  padding-left:10px;
+  padding-top:10px;
 }
 
 
@@ -32,10 +85,8 @@
   display: none;
 }
 
-
 body {
-    background-color: #eee;
-
+  color:#EE9433;
 }
 
 #account {
@@ -48,7 +99,9 @@ body {
 
 
 div.footer {
-  background-color: #999E5F;
+  background-color: #272916;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 
@@ -57,41 +110,25 @@ div.footer {
 }
 
 
-.checkoutDetails ul {
-  list-style-type: none;
-}
-
 .creditCardDetails {
   margin: 10px
 }
 
-.creditCardDetails ul {
-  list-style-type: none;
-}
 
 .numberOfTicketsDetails {
   margin: 10px
 }
 
-.numberOfTicketsDetails ul {
-  list-style-type: none;
-}
 
 .loginWithPendingOrderDetails {
   margin: 10px
 }
 
-.loginWithPendingOrderDetails ul {
-  list-style-type: none;
-}
 
 .registerWithPendingOrderDetails {
   margin: 10px
 }
 
-.registerWithPendingOrderDetails ul {
-  list-style-type: none;
-}
 
 .ticket_select {
   background-color: #efff33;
@@ -100,9 +137,13 @@ div.footer {
 }
 
 .proceed {
-  background-color: #efff33;
+  /*background-color: #42414B; greyish purple. mellow */
   margin: 10px;
   padding: 10px;
+
+
+  background-color:#2BBB53;
+  color:#FFFFFF;
 }
 
 #reserve-form {
@@ -119,9 +160,6 @@ div.footer {
 
 }
 
-.userDetails ul {
-  list-style-type: none;
-}
 
 .btn-warning {
   background-image: linear-gradient(to bottom, #F87531, #f89406);
@@ -131,9 +169,9 @@ div.footer {
   color:#586949;
 }
 
-.gigListItemContainer {
+.gig_list_item {
   outline: 5px solid #000;
-  background-color: #FF7A00;
+  background-color: #42414B;
   list-style-type: none;
 }
 
@@ -141,28 +179,28 @@ div.footer {
 ul {
   margin: 0 0 10px 0;
   padding: 0px; 
-}
-
-.gigListItemContainer ul {
   list-style-type: none;
 }
 
+
 #featureContent {
   /*background-color: #ee5c42; */
-  background-color: #a8a8a8;
+  background-color: #000;
 }
 
 .gigDetails {
   margin: 10px;
 }
-.gigDetails ul {
-  list-style-type: none;
-}
 
-.main.container-fluid {
+.main .container-fluid {
   /*background-color: #79973f; */
   background-color: #586949;
 }
+
+a {
+  color: #CC4100;
+}
+
 
 a.plain:link {
     color: #333;
@@ -193,74 +231,3 @@ a.plain:hover {
     margin-left: 0px !important;
     margin-right: 20px !important;
 }
-
-
-/*
-.gigDetails {
-    outline: 1px solid #aaa;
-    width: 350px;
-    height: 130px;
-    background-color: #fff;
-    float: left; 
-    margin: 5px;
-}
-*/
-
-/*
-.gigDetails img {
-    float: left; 
-    margin: 10px;
-}
-
-.gigDetails ul {
-    list-style-type: none;
-    margin-bottom: 0;
-}
-
-*/
-
-/*
-.Container button {
-    float: right;
-    margin: 10px;
-}
-
-#addBook label {
-    width: 100px;
-    margin-right: 10px;
-    text-align: right;
-    line-height: 25px;
-}
-
-#addBook label, #addBook input {
-    display: block;
-    margin-bottom: 10px;
-    float: left;
-}
-
-#addBook label[for="title"], #addBook label[for="releaseDate"] {
-    clear: both;
-}
-
-#addBook button {
-    display: block;
-    margin: 5px 20px 10px 10px;
-    float: right;
-    clear: both;
-}
-
-#addBook div {
-    width: 550px;
-}
-
-#addBook div:after {
-    content: "";
-    display: block;
-    height: 0;
-    visibility: hidden;
-    clear: both;
-    font-size: 0;
-    line-height: 0;
-}
-*/
-

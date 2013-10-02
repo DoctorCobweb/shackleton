@@ -1,0 +1,79 @@
+<html>
+
+  <nav class="navbar navbar-default" role="navigation">
+    <!-- brand and toggle get grouped together for better mobile display-->  
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="my-app-navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#/">Tiklet</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="navbar-collapse my-app-navbar collapse" style="height:1px;">
+      <ul class="nav navbar-nav navbar-right">
+        <li id="gigs_li"><a href="#/gigs">GIGS</a></li>
+        <li id="about_li"><a href="#/about">ABOUT</a></li>
+        <li id="contact_li"><a href="#/contact">CONTACT</a></li>
+        <li id="account_li"><a href="#/account" id="account">ACCOUNT</a></li>
+        <li id="login_li"><a href="#/login" id="login_header">LOGIN</a></li> 
+        <li id="logout_li"><a href="#/logout" id="logout_header">LOGOUT</a></li> 
+      </ul>
+      <!-- /.navbar collapse-->
+    </div>
+
+
+  <nav/>
+
+
+
+
+
+
+
+
+  <!--
+  <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="navbar-inner">
+
+      <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </a>
+
+
+      <a class="brand active" href="#/">Tiklet</a>
+      <div class="collapse nav-collapse">
+        <ul class="nav navbar-nav">
+          <li id="gigs_li"><a href="#/gigs">GIGS</a></li>
+	  <li id="about_li"><a href="#/about">ABOUT</a></li>
+          <li id="contact_li"><a href="#/contact">CONTACT</a></li>
+          <li id="account_li"><a href="#/account" id="account">ACCOUNT</a></li>
+          <li id="login_li"><a href="#/login" id="login_header">LOGIN</a></li> 
+          <li id="logout_li"><a href="#/logout" id="logout_header">LOGOUT</a></li> 
+        </ul>
+      </div>
+
+      <div class="nav-collapse collapse">
+        <ul class="nav pull-right navbar-nav">
+          <li id="gigs_li"><a href="#/gigs">GIGS</a></li>
+	  <li id="about_li"><a href="#/about">ABOUT</a></li>
+          <li id="contact_li"><a href="#/contact">CONTACT</a></li>
+          <li id="account_li"><a href="#/account" id="account">ACCOUNT</a></li>
+          <li id="login_li"><a href="#/login" id="login_header">LOGIN</a></li> 
+          <li id="logout_li"><a href="#/logout" id="logout_header">LOGOUT</a></li> 
+        </ul>
+      </div>
+
+
+
+    </div>
+  </div>
+
+  -->
+
+</html>

@@ -11,9 +11,11 @@ define([
   function (Backbone, GigListItemViewHTML, Gig) {
   
     var GigListItemView = Backbone.View.extend({
-      tagName: 'li',
+      //tagName: 'li',
+      tagName: 'div',
 
-      className: 'gigListItemContainer',
+      //className: 'gigListItemContainer',
+      className: 'gig_list_item',
 
       template: _.template(GigListItemViewHTML),
       

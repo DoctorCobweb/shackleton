@@ -15,11 +15,10 @@ define([
   function (Backbone, GigListItemView, GigGuide, GigGuideLandingView) {
 
     GigsView = Backbone.View.extend({
-      tagName: 'ul',
+      //tagName: 'ul',
+      tagName: 'div',
 
-      //el: '#featureList',
-     
-      //className: 'thumbnails',
+      className: 'gigs_container',
    
       events: {},
 

@@ -501,6 +501,7 @@ define([
       //had to do this because by default the collapsed navbar _wont_ collapse after 
       //user clicks a link.
       is_bootstrap_btn_navbar_visible: function () {
+        /*
         console.log('in is_bootstrap_btn_navbar_visible handler');
 
         var display_attr = $('a.btn-navbar').css('display');
@@ -516,6 +517,7 @@ define([
         if (display_attr === 'none') {
           console.log('btn-navbar is NOT displayed on page');
         }
+        */
 
 
       },
