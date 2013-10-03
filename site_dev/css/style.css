@@ -2,6 +2,26 @@
 /* @import url(css/bootstrap-responsive.css); */
 
 
+.login_w_gig_email_address {
+  margin-left: 10px;
+}
+
+
+.login_w_gig_password {
+  margin-left: 41px;
+}
+
+.login_email_address {
+  margin-left: 10px;
+}
+
+.login_password {
+  margin-left: 41px;
+}
+
+
+
+
 .settings_first_name {
   margin-left: 72px;
 }
