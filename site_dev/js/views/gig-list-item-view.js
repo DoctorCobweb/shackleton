@@ -19,11 +19,41 @@ define([
 
       template: _.template(GigListItemViewHTML),
       
-      events: {'click': 'clickedGig'},
+      events: {'click': 'clickedGig',
+               'mouseover #gig_list_item_a_el': 'mouse_over',
+               'mouseleave #gig_list_item_a_el': 'mouse_leave',
+      },
+
+      mouse_leave: function () {
+        //console.log('mouse_leave handler()');
+
+        //cache the jquery result
+        if (!this.$the_gig) {
+          this.$the_gig = $('.gig_' + this.options.count);
+        }
+        this.$the_gig.css('background-color', '#42414B');
+
+      },
+ 
+      mouse_over: function () {
+        //console.log('mouse_over handler()');
+        //console.log($('.gig_' + this.options.count).css('background-color'));
+
+        //cache the jquery result
+        if (!this.$the_gig) {
+          this.$the_gig = $('.gig_' + this.options.count);
+        }
+        this.$the_gig.css('background-color', '#2BBB53');
+
+
+      },
 
       initialize: function () {
         this.model.on("change", this.render, this);
         this.model.on("destroy", this.close, this);
+
+        console.log('this.options.count: ');
+        console.log('this.options.count: ' + this.options.count);
 
       },
 
@@ -31,6 +61,10 @@ define([
         console.log('in GigListItemView render()');
            
         this.$el.html(this.template(this.model.toJSON()));
+        this.$el.addClass('gig_' + this.options.count);
+
+        //cache some elements so we are not always walkin da DOM.
+        //this.$the_gig = $('.gig_' + this.options.count); //this is undefined !!!
     
         return this;
       },
@@ -38,6 +72,11 @@ define([
       //when a gig is clicked, create a Gig then display it in the main area
       //with id="gig-guide-details"
       clickedGig: function (e) {
+
+        if (!this.$the_gig) {
+          this.$the_gig = $('.gig_' + this.options.count);
+        }
+        this.$the_gig.css('background-color', '#000');
 
         console.log('a gig list item, clicked NAME : ' + this.model.get('mainEvent')); 
         //console.log('a gig list item, clicked ID: ' + this.model.get('_id')); 

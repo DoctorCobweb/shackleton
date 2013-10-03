@@ -2,38 +2,34 @@
 /* @import url(css/bootstrap-responsive.css); */
 
 
-/* .thumbnails a:hover{border-color: red;} */
-
-/*
-.navbar-inner {
-  background-image: none;
-  background-repeat: no-repeat;
-  filter: none;
-}
-*/
-
-/*
-#banner {
-  margin-top:60px;
-
+.settings_first_name {
+  margin-left: 72px;
 }
 
-#main_banner {
-  padding-top:30px;
+
+.settings_last_name {
+  margin-left: 75px;
 }
-*/
 
-
-
-
-/*
-.submit {
-  background-color:#2BBB53;
-  color:#FFFFFF;
-
+.settings_email_address {
+  margin-left: 52px;
 }
-*/
 
+.settings_phone_number {
+  margin-left: 47px;
+}
+
+.settings_new_password_1 {
+  margin-left: 51px;
+}
+
+.settings_new_password_2 {
+  margin-left: 5px;
+}
+
+.navbar-nav li {
+  color:#000;
+}
 
 .navbar-default .navbar-brand {
   color:#EE9433;
@@ -53,6 +49,9 @@ h3 {
 
 .banner_view {
   text-align:center;
+  /* background-color: #efff33; */
+  background-color: #2BBB53;
+  margin-bottom:10px;
 }
 
 .footer_heading {
@@ -155,10 +154,6 @@ div.footer {
   display: none;
 }
 
-.banner_view {
-  background-color: #efff33;
-
-}
 
 
 .btn-warning {
@@ -182,6 +177,15 @@ ul {
   list-style-type: none;
 }
 
+/*
+li {
+  color: #ffffff;
+}
+*/
+
+li > b {
+  color: ##EE9433;
+}
 
 #featureContent {
   /*background-color: #ee5c42; */
@@ -198,13 +202,49 @@ ul {
 }
 
 a {
-  color: #CC4100;
+  color: #CC4100; 
+  padding-left:2px;
+  padding-right:2px;
 }
 
+/*
+a:hover {
+    color: #333;
+    text-decoration: none;
+}
+*/
 
+a:link  {
+  background-color: #ffffff;
+  text-decoration-underline:none;
+  text-decoration-color: #CC4100;
+  /* text-decoration:line-through; */
+
+}
+
+a:visited  {
+  background-color: #ffffff;
+  /* text-decoration-underline:none; */
+
+}
+a:hover {
+  background-color: #2BBB53;
+  /* text-decoration-underline:none; */
+  /*text-decoration-color: #ffffff; */
+  color: #ffffff;
+  text-decoration:none;
+
+}
+
+a:active {
+  background-color: #2BBB53;
+  /* text-decoration-underline:none; */
+
+}
+
+/*
 a.plain:link {
     color: #333;
-    /* color: #586949; */
     text-decoration: none;
 }
 
@@ -223,11 +263,8 @@ a.plain:hover {
     text-decoration: none;
 }
 
-.thumbnail {
-    /*min-width: 260px; */
-}
-
 .thumbnails li {
     margin-left: 0px !important;
     margin-right: 20px !important;
 }
+*/

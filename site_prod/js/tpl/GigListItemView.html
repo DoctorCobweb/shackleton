@@ -1,10 +1,22 @@
 <html>
-
-  <div class="row-fluid"><a href="/#/gigs/<%= _id %>">
-    <div class="span3"><img src="<%= image_url%>" width="100px" height="100px"></div>
-    <div class="span6"><h5>Main Event: <%= main_event %></h5><h5>Supports: <%= supports %></h5><h5>Venue: <%= venue %></h5><h5>Date: <%= event_date%></h5><h5>Price: <%= price %></h5></div>
-    <div class="span3">GET TICKETS</div>
- 
-  </a></div>
+  <div class="row-fluid">
+    <a id="gig_list_item_a_el" href="/#/gigs/<%= _id %>">
+      <div class="span3">
+        <img src="<%= image_url%>" width="100px" height="100px">
+      </div>
+      <div class="span6">
+        <ul>
+          <li><b>Main Event: </b><%= main_event %></li>
+          <li><b>Supports: </b><%= supports %></li>
+          <li><b>Venue: </b><%= venue %></li>
+          <li><b>Date: </b><%= event_date%></li>
+          <li><b>Price: </b><%= price %></li>
+        </ul>
+      </div>
+      <div class="span3">
+        <h5>GET TICKETS</h5>
+      </div>
+    </a>
+  </div>
 </html>
 

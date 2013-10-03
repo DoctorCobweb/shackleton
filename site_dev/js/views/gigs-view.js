@@ -25,6 +25,8 @@ define([
       initialize: function () {
         console.log('in intialize in views/gigs-view.js');
 
+        this.count = 1;
+
         /*
         //create the default landing view for the guide guide
         var theGigGuideLandingView = new GigGuideLandingView();
@@ -80,8 +82,13 @@ define([
       renderGigListItem: function (item) {
         //console.log('in renderGigListItem() of gigs-view.js');
 
+        var self = this;
         // instantiate a new gig
-        var gigListItemView = new GigListItemView({model: item});
+        var gigListItemView = new GigListItemView({model: item, count:self.count});
+        
+        this.count++; 
+        console.log(this.count);
+        
     
         // call its render function, append its element to GigsView element, el
         this.$el.append(gigListItemView.render().el);

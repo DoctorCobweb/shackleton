@@ -501,12 +501,11 @@ define([
       //had to do this because by default the collapsed navbar _wont_ collapse after 
       //user clicks a link.
       is_bootstrap_btn_navbar_visible: function () {
-        /*
         console.log('in is_bootstrap_btn_navbar_visible handler');
 
-        var display_attr = $('a.btn-navbar').css('display');
-        console.log('a.btn-navbar has css attribute display:');
-        console.log(display_attr);
+        //var display_attr = $('a.btn-navbar').css('display');
+        var display_attr = $('button.navbar-toggle').css('display');
+        console.log('button.navbar-toggle has css attribute display: ' + display_attr);
        
         if (display_attr === 'block'){
           console.log('btn-navbar is displayed on page');
@@ -517,7 +516,6 @@ define([
         if (display_attr === 'none') {
           console.log('btn-navbar is NOT displayed on page');
         }
-        */
 
 
       },
@@ -525,31 +523,30 @@ define([
       is_bootstrap_nav_collapse_visible: function () {
         console.log('in is_bootstrap_nav_collapse_visible handler');
 
-        var display_attr = $('div.nav-collapse').css('height');
-        console.log('div.nav-collapse has css attribute height:');
-        console.log(display_attr);
+        var display_attr = $('div.navbar-collapse.in').css('display');
+
+        console.log('div.navbar-collapse.in has css attribute display: ' 
+          + display_attr);
        
         //link div thing is NOT showing
-        if (display_attr === '0px') {
-          console.log('div.nav-collapse has height:0px on page');
+        if (display_attr === 'none') {
+          console.log('div.navbar-collapse.in has display:none on page');
         }
 
         //link div thing is showing
-        if (display_attr !== '0px') {
-          console.log('div.nav-collapse has height: ' + display_attr + ' on page');
-          console.log('does the nav-collapse have \'in\' class: ' + 
-            $('div.nav-collapse').hasClass('in'));
+        if (display_attr === 'block') {
+          console.log('div.navbar-collapse.in has block: ' + display_attr);
+          //console.log('does the .navbar-collapse have \'in\' class: ' + 
+          //  $('div.navbar-collapse').hasClass('in'));
           
           //hide the collapsed navigation links by 
-          //a) changing the css height to 0px
-          //b) deleting the 'in' word in class attribute 
-          $('div.nav-collapse').css('height', '0px')
+          //1) deleting the 'in' word in class attribute 
+          //2) adding back the collapsed class to <button>
 
+          $('div.navbar-collapse.in').removeClass('in')
 
-          $('div.nav-collapse').removeClass('in')
-
-          //and also you must remove the 'collapsed' class for the <a> btn-navbar
-          $('a.btn-navbar').addClass('collapsed');
+          //and also you must remove the 'collapsed' class for the <button> btn-navbar
+          $('button.navbar-toggle').addClass('collapsed');
           
         }
 

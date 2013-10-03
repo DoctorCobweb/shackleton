@@ -179,7 +179,7 @@ app.configure(function () {
   app.use(express.static(path.join(application_root, 'site_prod')));
 
   //this sets the app to serve development code which is _not_ optimized 
-  //app.use(express.static(path.join(application_root, 'site_dev')));
+  app.use(express.static(path.join(application_root, 'site_dev')));
 
   app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
