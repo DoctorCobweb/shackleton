@@ -1,66 +1,72 @@
 <html>
-  <h2>Edit settings</h2>
 
-
-  <div id="current_user_details">
-    <ul>
-      <li>first_name: <%= first_name %></li>
-      <li>last_name: <%= last_name %></li>
-      <li>email_address: <%= email_address %></li>
-      <li>phone_number: <%= phone_number %></li>
-      <li>braintree_customer_id: <%= braintree_customer_id %></li>
-    </ul>
-  </div>
-
-
-
-  <h5>Change your user details</h5>
-
+  <!-- <h5>Change your user details</h5> -->
+  <div class="row col-md-6">
   <div id="change_user_details">
+    <!-- <div class="row col-md-6"> -->
     <form role="form">
 
-      <div class="form-group col-md-3">
+      <div class="form-group">
+        <label for="first_name">First Name</label>
         <input type="text" id="first_name" class="form-control" placeholder="<%= first_name %>"/>
       </div>
 
-      <div class="form-group col-md-3">
+      <div class="form-group">
+        <label for="last_name">Last Name</label>
         <input type="text" id="last_name" class="form-control" placeholder="<%= last_name %>"/>
       </div>
 
-      <div class="form-group col-md-3">
+      <div class="form-group">
+        <label for="email_address">Email Address</label>
         <input type="text" id="email_address" class="form-control" placeholder="<%= email_address %>"/>
       </div>
 
-      <div class="form-group col-md-3">
+      <div class="form-group">
+        <label for="phone_number">Phone Number</label>
         <input type="text" id="phone_number" class="form-control" placeholder="<%= phone_number %>"/>
       </div>
   
-      <div class="form-group col-md-3">
+      <div class="form-group">
         <button type="button" id="submit_new_user_details" class="btn btn-success form-control">SUBMIT NEW USER DETAILS</button>
       </div>
 
     </form>
+    <!-- </div> -->
 
+    <!--
+    <div class="row col-md-6">
+    </div>
+    -->
+  </div> <!-- change_user_details -->
   </div>
-  <!-- <div id="submit_new_user_details" class="proceed">SUBMIT NEW USER DETAILS</div> -->
 
+  <!-- <h5>Change your password</h5>  -->
 
-  <h5>Change your password</h5> 
+  <div class="row col-md-6">
   <div id="change_password">
+    <!-- <div class="row col-md-6"> -->
     <form role="form">
 
-      <div class="form-group col-md-3">
+      <div class="form-group">
+        <label for="new_password_1">New Password</label>
         <input type="password" id="new_password_1" class="form-control"/>
       </div>
 
-      <div class="form-group col-md-3">
+      <div class="form-group">
+        <label for="new_password_2">Retype New Password</label>
         <input type="password" id="new_password_2" class="form-control"/>
       </div>
 
-      <div class="form-group col-md-3">
+      <div class="form-group">
         <button type="button" class="btn btn-success form-control" id="submit_new_password">SUBMIT NEW PASSWORD</button>
       </div>
     </form>
+    <!-- </div> -->
+    <!--
+    <div class="row col-md-6">
+    </div>
+    -->
+  </div> <!-- change_password -->
   </div>
 
   <!-- <div id="submit_new_password" class="proceed">SUBMIT NEW PASSWORD</div> -->

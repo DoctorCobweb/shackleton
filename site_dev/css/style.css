@@ -1,10 +1,63 @@
 @import url(bootstrap.min.css);
 /* @import url(css/bootstrap-responsive.css); */
 
-.btn-success:hover {
-  background-color:#2BBB53;
+
+
+.gigDetails img {
+  float:left;
+  margin:20px;
 }
 
+
+.gigDetails div {
+  float:left;
+  margin:10px;
+}
+
+.gigDetails .proceed {
+  float:left;
+  margin:20px;
+}
+
+#gig_list_item_pic {
+  float:left;
+}
+
+#gig_list_item_details {
+  float:left;
+}
+
+
+#gig_list_item_get_tickets{
+  float:left;
+}
+
+.gig_list_item {
+  background-color: #42414B;
+  min-height:150px;
+  padding:10px;
+  margin:10px;
+}
+
+/*
+.gig_list_item {
+  outline: 5px solid #000;
+  background-color: #42414B;
+  list-style-type: none;
+}
+*/
+.gigDetails img {
+  max-width:300px;
+  max-height:300px;
+}
+
+
+
+
+.btn-success:hover {
+  background-color:#2BBB53;
+  color:#000;
+}
 
 
 #credit_card {
@@ -16,31 +69,41 @@
 
 
 #account_main_spacer {
-  min-height: 50px;
+  min-height: 25px;
 }
 
 #account_order {
   background-color: #42414B;
+  padding: 25px;
+  margin:10px;
+  float:left;
+  /*
   margin-right: 10px;
   margin-left: 10px;
-  padding: 25px;
   margin-top: 20px;
   margin-bottom: 20px;
+  */
 }
 
 #change_password {
   background-color: #42414B;
+  padding: 25px;
+  min-height:140px;
   margin-right: 10px;
   margin-left: 10px;
-  padding: 25px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 
 #change_user_details {
   background-color: #42414B;
+  padding: 25px;
+  min-height:140px;
   margin-right: 10px;
   margin-left: 10px;
-  padding: 25px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 
@@ -75,84 +138,6 @@
   margin-right:20px;
 }
 
-/*
-input .required_field {
-  padding:11px 19px 10px;
-  border:1px; 
-  solid #cc5152
-}
-*/
-
-
-/*
-.account_settings_cc_number {
-  margin:10px;
-}
-
-.account_settings_cvv {
-  margin:10px;
-}
-
-.account_settings_cc_month {
-  margin:10px;
-}
-
-.account_settings_cc_year {
-  margin:10px;
-}
-*/
-
-
-
-
-
-
-/*
-.login_w_gig_email_address {
-  margin-left: 10px;
-}
-
-
-.login_w_gig_password {
-  margin-left: 41px;
-}
-
-.login_email_address {
-  margin-left: 10px;
-}
-
-.login_password {
-  margin-left: 42px;
-}
-*/
-
-
-/*
-.settings_first_name {
-  margin-left: 78px;
-}
-
-
-.settings_last_name {
-  margin-left: 81px;
-}
-
-.settings_email_address {
-  margin-left: 58px;
-}
-
-.settings_phone_number {
-  margin-left: 53px;
-}
-
-.settings_new_password_1 {
-  margin-left: 55px;
-}
-
-.settings_new_password_2 {
-  margin-left: 5px;
-}
-*/
 
 .navbar-nav li {
   color:#000;
@@ -225,6 +210,7 @@ div.footer {
   background-color: #272916;
   margin-top: 10px;
   margin-bottom: 10px;
+  clear:both;
 }
 
 
@@ -284,12 +270,6 @@ div.footer {
 
 .textLink  {
   color:#586949;
-}
-
-.gig_list_item {
-  outline: 5px solid #000;
-  background-color: #42414B;
-  list-style-type: none;
 }
 
 
