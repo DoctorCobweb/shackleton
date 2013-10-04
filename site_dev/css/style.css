@@ -1,7 +1,113 @@
 @import url(bootstrap.min.css);
 /* @import url(css/bootstrap-responsive.css); */
 
+.btn-success:hover {
+  background-color:#2BBB53;
+}
 
+
+
+#credit_card {
+  margin-top:20px;
+  margin-bottom:20px;
+  margin-left:10px;
+  margin-right:10px;
+}
+
+
+#account_main_spacer {
+  min-height: 50px;
+}
+
+#account_order {
+  background-color: #42414B;
+  margin-right: 10px;
+  margin-left: 10px;
+  padding: 25px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+#change_password {
+  background-color: #42414B;
+  margin-right: 10px;
+  margin-left: 10px;
+  padding: 25px;
+}
+
+
+#change_user_details {
+  background-color: #42414B;
+  margin-right: 10px;
+  margin-left: 10px;
+  padding: 25px;
+}
+
+
+#enter_new_cc_details {
+  display: none;
+  background-color:#42414B;
+  padding:25px;
+  margin-left:10px;
+  margin-right:10px;
+  min-height:150px;
+}
+
+.btn-success {
+  color: #fff;
+  background-color: #42414B;
+  border-color: #2BBB53;
+
+}
+
+#account_orders {
+  margin-left:20px;
+  margin-right:10px;
+}
+
+#account_billing{
+  margin-left:10px;
+  margin-right:10px;
+}
+
+#account_settings {
+  margin-left:10px;
+  margin-right:20px;
+}
+
+/*
+input .required_field {
+  padding:11px 19px 10px;
+  border:1px; 
+  solid #cc5152
+}
+*/
+
+
+/*
+.account_settings_cc_number {
+  margin:10px;
+}
+
+.account_settings_cvv {
+  margin:10px;
+}
+
+.account_settings_cc_month {
+  margin:10px;
+}
+
+.account_settings_cc_year {
+  margin:10px;
+}
+*/
+
+
+
+
+
+
+/*
 .login_w_gig_email_address {
   margin-left: 10px;
 }
@@ -16,36 +122,37 @@
 }
 
 .login_password {
-  margin-left: 41px;
+  margin-left: 42px;
 }
+*/
 
 
-
-
+/*
 .settings_first_name {
-  margin-left: 72px;
+  margin-left: 78px;
 }
 
 
 .settings_last_name {
-  margin-left: 75px;
+  margin-left: 81px;
 }
 
 .settings_email_address {
-  margin-left: 52px;
+  margin-left: 58px;
 }
 
 .settings_phone_number {
-  margin-left: 47px;
+  margin-left: 53px;
 }
 
 .settings_new_password_1 {
-  margin-left: 51px;
+  margin-left: 55px;
 }
 
 .settings_new_password_2 {
   margin-left: 5px;
 }
+*/
 
 .navbar-nav li {
   color:#000;
@@ -95,9 +202,6 @@ h3 {
   padding: 10px;
 }
 
-#enter_new_cc_details {
-  display: none;
-}
 
 
 #change_cc_details {
@@ -156,13 +260,11 @@ div.footer {
 }
 
 .proceed {
-  /*background-color: #42414B; greyish purple. mellow */
   margin: 10px;
   padding: 10px;
-
-
   background-color:#2BBB53;
   color:#FFFFFF;
+  float:left;
 }
 
 #reserve-form {

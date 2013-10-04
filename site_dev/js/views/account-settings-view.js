@@ -206,6 +206,7 @@ define([
 
             //then re-render the UI
             self.render();
+            
 
           },
           error: function (model, xhr, options) {

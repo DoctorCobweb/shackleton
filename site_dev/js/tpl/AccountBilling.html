@@ -8,29 +8,40 @@
     <div id="expiration_date"><b>Expiration Date: </b><%= expiration_date %></div>
   </div>
 
-  <div class="proceed" id="change_cc">CHANGE CC DETAILS</div>
+  <!-- <div class="proceed" id="change_cc">CHANGE CC DETAILS</div> -->
+  <button type="button" class="btn btn-success" id="change_cc">CHANGE CREDIT CARD DETAILS</button>
+
 
 
   <div id="enter_new_cc_details">
-    <h3>Enter details to change your credit card.</h3>
-    <p>
-    <label>Card Number</label>
-    <input type="text" size="20" autocomplete="off" id="cc_number" data-encrypted-name
-="cc_number" />
-    </p>
-    <p>
-    <label>CVV</label>
-    <input type="text" size="4" autocomplete="off" id="cc_cvv" data-encrypted-name="cc
-_cvv" />
-    </p>
-    <p>
-    <label>Expiration (MM/YYYY)</label>
-    <input type="text" size="2" name="cc_month" id="cc_month"/> / <input type="text" s
-ize="4" name="cc_year" id="cc_year"/>
-    </p>
-  
-    <div id="submit" class="proceed">SUBMIT</div>
+
+    <h3>Enter details to change your credit card</h3>
+
+    <form role="form">
+
+      <div class="form-group col-md-3">
+        <input type="text" autocomplete="off" id="cc_number" data-encrypted-name="cc_number" placeholder="Credit Card Number" class="form-control"/>
+      </div>
+
+
+      <div class="form-group col-md-3">
+        <input type="text" autocomplete="off" id="cc_cvv" class="form-control" data-encrypted-name="cc_cvv" placeholder="CVV"/>
+      </div>
+
+      <div class="form-group col-md-3">
+        <input type="text" name="cc_month" id="cc_month" class="form-control" placeholder="Expiration Month (MM)"/>
+      </div> 
+
+      <div class="form-group col-md-3">
+        <input type="text" name="cc_year" id="cc_year" class="form-control" placeholder="Expiration Year (YYYY)"/>
+      </div> 
+
+      <div class="form-group col-md-3">
+        <button type="button" class="btn btn-success form-control" id="submit_new_cc">SUBMIT CREDIT CARD</button>
+      </div>
+    </form>
 
   </div>
 
+  <!-- <div id="submit" class="proceed">SUBMIT</div> -->
 </html>

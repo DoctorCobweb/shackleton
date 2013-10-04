@@ -61,10 +61,18 @@ define([
         console.log('in GigListItemView render()');
            
         this.$el.html(this.template(this.model.toJSON()));
+
+        //we use the count variable passed in from gigs-view.js to uniquely name the 
+        //class attribute for each gig. needed to make css mouseover and mouseleave
+        //events change colors etc.
         this.$el.addClass('gig_' + this.options.count);
 
         //cache some elements so we are not always walkin da DOM.
         //this.$the_gig = $('.gig_' + this.options.count); //this is undefined !!!
+        //this.$the_gig = this.$('.gig_' + this.options.count); 
+        //console.log('jquery cache: '); 
+        //console.log(this.$('.gig_' + this.options.count));
+        //console.log(this.$the_gig.css('background-color'));
     
         return this;
       },

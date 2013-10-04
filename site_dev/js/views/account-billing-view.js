@@ -24,7 +24,7 @@ define([
        'blur #cc_month':            'cc_month_blur',
        'blur #cc_year':             'cc_year_blur',
        'click #change_cc':          'change_cc',
-       'click #submit':             'submit'
+       'click #submit_new_cc':      'submit'
 
       },
 
@@ -41,7 +41,7 @@ define([
         console.dir(this.braintree);
 
         this.field_to_set = {};
-        //this.ENTER_KEY = 13;
+        this.ENTER_KEY = 13;
 
       },
 
@@ -98,10 +98,10 @@ define([
       cc_year_update: function (e) {
         console.log('cc_year');
   
-        //if (e.which === this.ENTER_KEY) {
-          //this.close_input_field(this.$cc_year, 'cc_year');
-          //this.submit();
-        //}
+        if (e.which === this.ENTER_KEY) {
+          this.close_input_field(this.$cc_year, 'cc_year');
+          this.submit();
+        }
 
         return;
       },
@@ -174,8 +174,33 @@ define([
       },
 
       submit: function () {
-
         var self = this;
+
+        //check if any input fields are empty. if so then warn them with red borders
+        //around the relevent inputs. then return.
+        console.log(this.$cc_number.val().trim() === '');
+
+        if (this.$cc_number.val().trim() === '') {
+          this.$cc_number.addClass('required_field');
+          //this.$cc_number.css('border', '#cc5152');
+          return;
+        }
+        if (this.$cc_cvv.val().trim() === '') {
+          this.$cc_number.addClass('required_field');
+          //this.$cc_cvv.css('border', '#cc5152');
+          return;
+        }
+        if (this.$cc_month.val().trim() === '') {
+          this.$cc_number.addClass('required_field');
+          //this.$cc_month.css('border', '#cc5152');
+          return;
+        }
+        if (this.$cc_year.val().trim() === '') {
+          this.$cc_number.addClass('required_field');
+          //this.$cc_year.css('border', '#cc5152');
+          return;
+        }
+
 
         $.ajax({
           url: '/api/users/change_cc_details/',
