@@ -1,7 +1,21 @@
 @import url(bootstrap.min.css);
 /* @import url(css/bootstrap-responsive.css); */
 
+#register_new_account {
+  float:left;
+  background-color: #42414B;
+  padding: 25px;
+  margin-bottom:20px;
+}
 
+
+
+.login_details {
+  float:left;
+  background-color: #42414B;
+  padding: 25px;
+  margin-bottom:20px;
+}
 
 .gigDetails img {
   float:left;
@@ -60,16 +74,19 @@
 }
 
 
-#credit_card {
-  margin-top:20px;
+#account_credit_card {
+  background-color: #42414B;
+  padding: 25px;
   margin-bottom:20px;
   margin-left:10px;
   margin-right:10px;
+  float:left;
 }
 
 
 #account_main_spacer {
   min-height: 25px;
+  clear:both;
 }
 
 #account_order {
@@ -77,43 +94,41 @@
   padding: 25px;
   margin:10px;
   float:left;
-  /*
-  margin-right: 10px;
-  margin-left: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  */
 }
 
 #change_password {
   background-color: #42414B;
   padding: 25px;
-  min-height:140px;
   margin-right: 10px;
   margin-left: 10px;
   margin-top: 20px;
   margin-bottom: 20px;
+  float:left;
 }
 
 
 #change_user_details {
   background-color: #42414B;
   padding: 25px;
-  min-height:140px;
   margin-right: 10px;
   margin-left: 10px;
   margin-top: 20px;
   margin-bottom: 20px;
+  float:left;
 }
 
 
-#enter_new_cc_details {
+#account_enter_new_cc_details {
   display: none;
   background-color:#42414B;
   padding:25px;
   margin-left:10px;
   margin-right:10px;
-  min-height:150px;
+  float:left;
+}
+
+#account_credit_card  #account_change_cc {
+  margin-top:10px;
 }
 
 .btn-success {
@@ -250,7 +265,6 @@ div.footer {
   padding: 10px;
   background-color:#2BBB53;
   color:#FFFFFF;
-  float:left;
 }
 
 #reserve-form {
@@ -343,30 +357,3 @@ a:active {
   /* text-decoration-underline:none; */
 
 }
-
-/*
-a.plain:link {
-    color: #333;
-    text-decoration: none;
-}
-
-a.plain:active {
-    color: #333;
-    text-decoration: none;
-}
-
-a.plain:visited {
-    color: #333;
-    text-decoration: none;
-}
-
-a.plain:hover {
-    color: #333;
-    text-decoration: none;
-}
-
-.thumbnails li {
-    margin-left: 0px !important;
-    margin-right: 20px !important;
-}
-*/

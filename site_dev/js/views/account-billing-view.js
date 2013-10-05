@@ -23,7 +23,7 @@ define([
        'blur #cc_cvv':              'cc_cvv_blur',
        'blur #cc_month':            'cc_month_blur',
        'blur #cc_year':             'cc_year_blur',
-       'click #change_cc':          'change_cc',
+       'click #account_change_cc':  'change_cc',
        'click #submit_new_cc':      'submit'
 
       },
@@ -164,11 +164,11 @@ define([
         console.log('change_cc handler');
 
         //hide the change cc details button 
-        this.$('#change_cc').css('display', 'none');
+        this.$('#account_change_cc').css('display', 'none');
 
         //show the change_cc view by making display:block
         //the view comes with a submit button, which should make the ajax call below
-        this.$('#enter_new_cc_details').css('display', 'block'); 
+        this.$('#account_enter_new_cc_details').css('display', 'block'); 
 
 
       },
@@ -212,7 +212,7 @@ define([
               console.log(textStatus);
               console.dir(jqXHR);
 
-              self.$('#enter_new_cc_details').css('display', 'none'); 
+              self.$('#account_enter_new_cc_details').css('display', 'none'); 
 
               var updated_card = {};
               updated_card.masked_number = data.customer.creditCards[0].maskedNumber;

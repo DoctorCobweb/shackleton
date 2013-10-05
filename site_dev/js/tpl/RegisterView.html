@@ -1,23 +1,39 @@
 <html>
-  <div>
-    <h3>Register a new User Account. </h3>
+  <div id="register_new_account">
+    <h3>Register a new account</h3>
    
-    <label>First Name</label>
-    <input type="text" id="first_name" />
-
-    <label>Last Name</label>
-    <input type="text" id="last_name" />
-
-    <label>Phone Number</label>
-    <input type="text" id="phone_number" />
-
-    <label>Email</label>
-    <input type="text" id="email_address"/>
-
-    <label>Password</label>
-    <input type="password" id="password"/></br>
-
-   <div id="register" class="proceed">REGISTER</div>
+    <form role="form">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" id="first_name" class="form-control" />
+      </div>
+  
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" id="last_name" class="form-control" />
+      </div>
+  
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="text" id="phone_number" class="form-control" />
+      </div>
+  
+      <div class="form-group">
+        <label>Email</label>
+        <input type="text" id="email_address" class="form-control"/>
+      </div>
+  
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" class="form-control"/></br>
+      </div>
+      
+  
+      <div class="form-group">
+     <button type="button "id="register" class="btn btn-success form-control">REGISTER</button>
+        <!--<div id="register" class="proceed">REGISTER</div> -->
+      </div>
+    </form>
 
   </div>
 </html>

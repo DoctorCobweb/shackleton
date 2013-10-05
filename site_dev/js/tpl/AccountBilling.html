@@ -1,23 +1,19 @@
 <html>
-  <h3>User Account: Billing Details</h3>
 
-  <div class="row col-md-6">
-  <div id="credit_card">
-    <b>Credit Card:</b>
-    <div id="masked_number"><b>Masked Number: </b><%= masked_number %></div>
+  <div id="account_credit_card">
+    <h3>Your current billing details</h3>
+    <div id="masked_number"><b>Card Number: </b><%= masked_number %></div>
     <div id="last_4"><b>Last4: </b><%= last_4  %></div>
     <div id="expiration_date"><b>Expiration Date: </b><%= expiration_date %></div>
-  </div>
+    <button type="button" class="btn btn-success" id="account_change_cc">CHANGE CREDIT CARD DETAILS</button>
   </div>
   <!-- <div class="proceed" id="change_cc">CHANGE CC DETAILS</div> -->
-  <button type="button" class="btn btn-success" id="change_cc">CHANGE CREDIT CARD DETAILS</button>
 
 
 
-  <div class="row col-md-6">
-  <div id="enter_new_cc_details">
+  <div id="account_enter_new_cc_details">
 
-    <h3>Enter details to change your credit card</h3>
+    <h3>Enter credit card details</h3>
 
     <form role="form">
 
@@ -46,8 +42,6 @@
         <button type="button" class="btn btn-success form-control" id="submit_new_cc">SUBMIT CREDIT CARD</button>
       </div>
     </form>
-
-  </div>
   </div>
 
   <!-- <div id="submit" class="proceed">SUBMIT</div> -->
