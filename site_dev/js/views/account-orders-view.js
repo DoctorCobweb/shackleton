@@ -26,12 +26,20 @@ define([
 
       render: function () {
         console.log('in render() of account-orders-view.js');
-
-
-        // render the OrdersView by rendering each order in collection
-        _.each(this.model.models, function (item) {
-          this.render_order_list_item(item);
-        }, this);
+        console.log('this.model: ')
+        console.dir(this.model); //object
+        console.log('this.model.models: ' + this.model.models); // Array
+        console.log('this.model.models.length: ' + this.model.models.length);
+       
+        if (!this.model.models.length) {
+          console.log('the user has no orders yet saved/purchased.');
+          this.$el.html('<li>You have no orders yet</li>');
+        } else {
+          // render the OrdersView by rendering each order in collection
+          _.each(this.model.models, function (item) {
+            this.render_order_list_item(item);
+          }, this);
+        } 
 
         return this;
       },

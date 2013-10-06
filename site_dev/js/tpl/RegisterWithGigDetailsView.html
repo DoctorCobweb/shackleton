@@ -1,25 +1,31 @@
-<html>
-  <div>
-    <h3>Register a new User Account. </h3>
+<div id="register_with_pending_order">
+  <form role="form"> 
+    <h3>Register a new user account</h3>
    
-    <h5>the View has the gig details as this.model</h5>
+    <div class="form-group">
+      <label for="first_name">First Name</label>
+      <input type="text" id="first_name" class="form-control" />
+    </div>
 
-    <label>First Name</label>
-    <input type="text" id="first_name" />
+    <div class="form-group">
+      <label for="last_name">Last Name</label>
+      <input type="text" id="last_name" class="form-control" />
+    </div>
 
-    <label>Last Name</label>
-    <input type="text" id="last_name" />
+    <div class="form-group">
+      <label for="phone_number">Phone Number</label>
+      <input type="text" id="phone_number" class="form-control" />
+    </div>
 
-    <label>Phone Number</label>
-    <input type="text" id="phone_number" />
+    <div class="form-group">
+      <label for="email_addres">Email</label>
+      <input type="text" id="email_address" class="form-control"/>
+    </div>
 
-    <label>Email</label>
-    <input type="text" id="email_address"/>
-
-    <label>Password</label>
-    <input type="password" id="password"/></br>
-
-   <div id="register" class="proceed">REGISTER</div>
-
-  </div>
-</html>
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" class="form-control"/>
+    </div>
+  </form>
+  <div id="register" class="proceed">REGISTER</div>
+</div>
