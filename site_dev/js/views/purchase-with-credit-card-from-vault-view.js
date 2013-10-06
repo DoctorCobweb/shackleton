@@ -238,6 +238,7 @@ define([
 
         var checkout_view = new CheckoutView({model: model});
         this.show_view('#featureContent', checkout_view);
+        window.scrollTo(0,350);
 
       } else if (status === 'authorized') {
         console.log('transaction_status: ' + status);

@@ -142,6 +142,7 @@ define([
               self.show_view('#featureContent', successful_registration);
               self.display_account_tab(true);
               self.switch_log_button('#logout_header','#login_header');
+              window.scrollTo(0, 350);
 
             } else {
 

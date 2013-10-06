@@ -131,6 +131,8 @@ define([
              
               //show the user account tab
               self.display_account_tab(true);
+
+              window.scrollTo(0, 350);
             } else {
               console.log('login failed, try again'); 
               console.dir(data);

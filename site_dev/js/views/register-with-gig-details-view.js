@@ -159,6 +159,7 @@ define([
               var number_of_tickets_view = new NumberOfTicketsView({model: self.model});
               self.show_view('#featureContent', number_of_tickets_view);
               self.display_account_tab(true);
+              window.scrollTo(0, 350);
             } else {
               console.log('POST /api/users/register did NOT return ' + 
                           'registration_success === true');

@@ -84,6 +84,7 @@ define([
 
 	      var numberOfTicketsView = new NumberOfTicketsView({model: self.model});
 	      self.showView('#featureContent', numberOfTicketsView); 
+              window.scrollTo(0,350);
             }
 
 

@@ -98,6 +98,7 @@ define([
         //$('#gig-guide-details').html(theGig.render().el);
         
         $('#featureContent').html(theGig.render().el);
+        window.scrollTo(0, 350);
       }
     });
     return GigListItemView;

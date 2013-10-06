@@ -222,6 +222,7 @@ define([
               updated_card.expiration_date = data.customer.creditCards[0].expirationDate;             
               //self.$el.html(self.template(updated_card));
               self.re_render(updated_card);
+              window.scrollTo(0, 350);
  
           },
           error: function (jqXHR, textStatus, errorThrown) {

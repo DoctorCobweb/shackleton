@@ -162,6 +162,7 @@ define([
               console.dir(self.new_order);
               var cc_details_view = new CreditCardDetailsView({model: self.new_order});
               self.show_view('#featureContent', cc_details_view);
+              window.scrollTo(0, 350);
               
             } else if (response.braintree_customer_id !== 
                        'default_braintree_customer_id') {
@@ -188,6 +189,7 @@ define([
                 model: self.new_order
               });
               self.show_view('#featureContent', purchase_with_vault_cc);
+              window.scrollTo(0, 350);
 
 
             } else {
