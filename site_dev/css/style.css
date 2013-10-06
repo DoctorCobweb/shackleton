@@ -1,6 +1,14 @@
 @import url(bootstrap.min.css);
 /* @import url(css/bootstrap-responsive.css); */
 
+#login_with_pending_order {
+  float:left;
+  background-color: #42414B;
+  padding: 25px;
+  margin-bottom:20px;
+}
+
+
 #register_new_account {
   float:left;
   background-color: #42414B;

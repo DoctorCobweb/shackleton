@@ -21,7 +21,7 @@ define([
         'keypress #phone_number':  'phone_number_keypress',
         'keypress #email_address': 'email_address_keypress',
         'keypress #password':      'password_keypress',
-        'blur #first_name':         'first_name_blur',
+        'blur #first_name':        'first_name_blur',
         'blur #last_name':         'last_name_blur',
         'blur #phone_number':      'phone_number_blur',
         'blur #email_address':     'email_address_blur',
@@ -32,9 +32,7 @@ define([
       initialize: function () {
         console.log('in initialize() of register-view.js');
         this.current_view = this;
-
         this.ENTER_KEY = 13;
-
       },
 
       render: function () {
@@ -54,22 +52,18 @@ define([
 
       first_name_keypress: function (event) {
         console.log('in first_name_keypress');
-        return;
       },
 
       last_name_keypress: function (event) {
         console.log('in last_name_keypress');
-        return;
       },
 
       phone_number_keypress: function (event) {
         console.log('in phone_number_keypress');
-        return;
       },
 
       email_address_keypress: function (event) {
         console.log('in email_address_keypress');
-        return;
       },
  
       password_keypress: function (event) {
@@ -83,7 +77,6 @@ define([
           this.close_input_field(this.$password, 'password');
           this.register();
         }
-        return;
       },
 
       first_name_blur: function (event) {
@@ -148,6 +141,7 @@ define([
               var successful_registration = new SuccessfulRegistration();
               self.show_view('#featureContent', successful_registration);
               self.display_account_tab(true);
+              self.switch_log_button('#logout_header','#login_header');
 
             } else {
 
@@ -160,13 +154,18 @@ define([
             
           },
           error: function (jqXHR, textStatus, err) {
-            console.log('ERROR: registration success.'); 
+            console.log('ERROR: registration error.'); 
             console.dir(jqXHR);
             console.log(textStatus);
             console.dir(err);
 
           }
         });
+      },
+
+      switch_log_button: function (element_to_show, element_to_hide) {
+        $(element_to_hide).css('display', 'none');
+        $(element_to_show).css('display', 'block');
       },
 
       display_account_tab: function (logic) {

@@ -11,7 +11,6 @@
 //moved require config stuff off into its own file: require_config.js
 //in app.build.js the mainConfigFile will path to this file now.
 
-
 /*
 require.config({
 
@@ -51,7 +50,6 @@ require.config({
   }
 });
 */
-
 
 
 //start app
