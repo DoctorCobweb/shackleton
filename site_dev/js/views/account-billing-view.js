@@ -164,11 +164,11 @@ define([
         console.log('change_cc handler');
 
         //hide the change cc details button 
-        this.$('#account_change_cc').css('display', 'none');
+        this.$('#account_billing_change_cc').css('display', 'none');
 
         //show the change_cc view by making display:block
         //the view comes with a submit button, which should make the ajax call below
-        this.$('#account_enter_new_cc_details').css('display', 'block'); 
+        this.$('#account_billing_update_cc_details').css('display', 'block'); 
 
 
       },
@@ -176,6 +176,8 @@ define([
       submit: function () {
         var self = this;
 
+
+        //TODO !!!!
         //check if any input fields are empty. if so then warn them with red borders
         //around the relevent inputs. then return.
         console.log(this.$cc_number.val().trim() === '');
@@ -212,7 +214,7 @@ define([
               console.log(textStatus);
               console.dir(jqXHR);
 
-              self.$('#account_enter_new_cc_details').css('display', 'none'); 
+              self.$('#account_billing_update_cc_details').css('display', 'none'); 
 
               var updated_card = {};
               updated_card.masked_number = data.customer.creditCards[0].maskedNumber;

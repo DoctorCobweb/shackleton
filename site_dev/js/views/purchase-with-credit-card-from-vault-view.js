@@ -23,17 +23,17 @@ define([
     template: _.template(PurchaseWithCreditCardFromVaultHTML),
 
     events: {
-      'keypress #cc_number':       'cc_number_update',
-      'keypress #cc_cvv':          'cc_cvv_update',
-      'keypress #cc_month':        'cc_month_update',
-      'keypress #cc_year':         'cc_year_update',
-      'blur #cc_number':           'cc_number_blur',
-      'blur #cc_cvv':              'cc_cvv_blur',
-      'blur #cc_month':            'cc_month_blur',
-      'blur #cc_year':             'cc_year_blur',
-      'click #submit':             'submit',
-      'click #edit_cc_details':    'edit_cc_details',
-      'click #submit_1':           'submit_1' 
+      'keypress #cc_number':                       'cc_number_update',
+      'keypress #cc_cvv':                          'cc_cvv_update',
+      'keypress #cc_month':                        'cc_month_update',
+      'keypress #cc_year':                         'cc_year_update',
+      'blur #cc_number':                           'cc_number_blur',
+      'blur #cc_cvv':                              'cc_cvv_blur',
+      'blur #cc_month':                            'cc_month_blur',
+      'blur #cc_year':                             'cc_year_blur',
+      'click #submit':                             'submit',
+      'click #during_checkout_edit_cc_details':    'edit_cc_details',
+      'click #submit_1':                           'submit_1' 
     },
 
     initialize: function () {
@@ -63,7 +63,7 @@ define([
 
       this.$el.html(this.template(this.model.toJSON()));
 
-      this.$('#enter_cc_details').css('display', 'none');
+      //this.$('#enter_cc_details').css('display', 'none');
  
       //calculate the total to display to the client site page.
       //actual billing total will be the transaction_amount, which is calculated
@@ -253,8 +253,8 @@ define([
     edit_cc_details: function () {
 
       this.$('#submit').css('display', 'none');
-      this.$('#edit_cc_details').css('display', 'none');
-      this.$('#enter_cc_details').css('display', 'block'); 
+      this.$('#during_checkout_edit_cc_details').css('display', 'none');
+      this.$('#during_checkout_update_cc_details').css('display', 'block'); 
 
 
     },

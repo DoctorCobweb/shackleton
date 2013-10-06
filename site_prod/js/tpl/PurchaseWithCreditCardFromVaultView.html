@@ -1,4 +1,3 @@
-<html>
   <h2>Purchase with Credit Card from Vault View</h2>
 
 
@@ -28,34 +27,44 @@
   <h4>Total Amount $:  <%= ticket_price %> * <%= number_of_tickets %> = <div id="summary_total_amount"></div></h4>
 
 
-  <h3>Bill credit card: </h3>
-  <h5>Number: </h5><div id="cc_masked_number"></div>
-  <h5>Expiration: </h5><div id="cc_expiration_date"></div>
-
-
-
-  <div class="proceed" id="edit_cc_details">change default cc? </div>
-
-
-
-  <div id="enter_cc_details">
-    <p>
-    <label>Card Number</label>
-    <input type="text" size="20" autocomplete="off" id="cc_number" data-encrypted-name="cc_number" />
-     </p>
-     <p>
-     <label>CVV</label>
-     <input type="text" size="4" autocomplete="off" id="cc_cvv" data-encrypted-name="cc_cvv" />
-     </p>
-     <p>
-     <label>Expiration (MM/YYYY)</label>
-     <input type="text" size="2" name="cc_month" id="cc_month"/> / <input type="text" size="4" name="cc_year" id="cc_year"/>
-     </p>
-
-    <div id="submit_1" class="proceed">SUBMIT</div>
+  <!-- TODO: change the id number for outermoset <div> -->
+  <div id="account_billing_credit_card">
+    <h3>This credit card will be billed</h3>
+    <h5>Number: </h5><div id="cc_masked_number"></div>
+    <h5>Expiration: </h5><div id="cc_expiration_date"></div>
   </div>
 
 
+
+ <!-- <div class="proceed" id="edit_cc_details">CHANGE YOUR CREDIT CARD DETAILS</div> -->
+  <div class="proceed" id="during_checkout_edit_cc_details">CHANGE YOUR CREDIT CARD DETAILS</div>
   <div id="submit" class="proceed">SUBMIT</div>
 
-</html>
+
+
+  <!-- <div id="enter_cc_details"> -->
+  <div id="during_checkout_update_cc_details">
+    <form role="form">
+      <div class="form-group">
+        <label for="cc_number">Card Number</label>
+        <input type="text" autocomplete="off" class="form-control" id="cc_number" data-encrypted-name="cc_number" placeholder="Credit Card Number"/>
+      </div>
+    
+      <div class="form-group">
+         <label for="cc_cvv">CVV</label>
+         <input type="text" autocomplete="off" class="form-control" id="cc_cvv" data-encrypted-name="cc_cvv" placeholder="CVV" />
+      </div>
+    
+      <div class="form-group">
+         <label for="cc_month">Expiration Month</label>
+         <input type="text" name="cc_month" id="cc_month" class="form-control" placeholder="MM"/>
+      </div>
+    
+      <div class="form-group">
+         <label for="cc_year">Expiration Year</label>
+         <input type="text" name="cc_year" id="cc_year" class="form-control" placeholder="YYYY"/>
+      </div>
+
+    </form>
+    <div id="submit_1" class="proceed">SUBMIT</div>
+  </div>
