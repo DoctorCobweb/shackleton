@@ -366,7 +366,7 @@ li > b {
 #featureContent {
   /*background-color: #ee5c42; */
   background-color: #161516;
-  margin-bottom:10px;
+  margin-bottom:20px;
   margin-top:10px;
   padding:20px; 
 }
@@ -391,6 +391,8 @@ li > b {
 
 .navbar-default .navbar-brand {
   color:#3A3939;
+  font-weight:bold;
+  font-size:18px;
 }
 
 .navbar-default {
