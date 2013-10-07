@@ -124,12 +124,23 @@ define([
         console.log('in register function');
         var self = this;
 
+        //if any elements have an 'has-error' class, remove the class before submitting 
+        //for registration. if not, then if they resubmit registration and get a field
+        //wrong again, the UI will not update to show which fields are now good, and
+        //which are not.
+        var form_group_array = self.$('.form-group');
+        //console.log(form_group_array);
+        if (form_group_array.hasClass('has-error')) {
+          form_group_array.removeClass('has-error');
+        }
+        
+
         $.ajax({
           url: '/api/users/register',
           type: 'POST',
           data: self.registration_details,
           success: function (data, textStatus, jqXHR) {
-            console.log('SUCCESS: in ajax succes callback');
+            console.log('SUCCESS: in ajax success callback');
             console.dir(data);
             console.log(textStatus);
             console.dir(jqXHR);
@@ -144,23 +155,32 @@ define([
               self.switch_log_button('#logout_header','#login_header');
               window.scrollTo(0, 350);
 
-            } else if (data.errors.duplicate_email === true ){ 
-              console.log('DUPLICATE EMAIL ERROR');
+            } 
+            if (data.errors.duplicate_email === true ) { 
+              console.log('ERROR: DUPLICATE_EMAIL');
               //data.success is false from here on.
-              //we have a duplication email address error
+              //we have a duplication email address error (duplicate key)
 
               var $email_address = $('#email_address');
 
               $email_address.parent('.form-group').addClass('has-error');
-              $email_address.attr('placeholder', 'Address already taken');
+              //$email_address.attr('placeholder', 'Address already taken');
 
-            } else {
-              //we have validation errors, an Array of objects.
+            }
+            if (!self.isEmpty(data.errors.validation_errors)) {
+              //we have input validation errors, an Array of objects.
               console.log('VALIDATION ERROR');
               console.dir(data.errors.validation_errors); 
 
+              for (var key in data.errors.validation_errors) {
+                //console.log(data.errors.validation_errors[key].param);
+                //console.log(data.errors.validation_errors[key].msg);
 
-              //self.render();
+                var id_of_bad_input = '#' + data.errors.validation_errors[key].param; 
+                console.log(id_of_bad_input);
+                $(id_of_bad_input).parent('.form-group').addClass('has-error'); 
+                
+              }
             }
             
           },
@@ -175,6 +195,18 @@ define([
           }
         });
       },
+
+      isEmpty: function (obj) {
+        console.log('in isEmpty() function');
+        for (var prop in obj) {
+          if (obj.hasOwnProperty(prop)) {
+            return false; //obj is NOT empty
+          }
+        }
+        return true; //obj IS empty
+
+      },
+
 
       switch_log_button: function (element_to_show, element_to_hide) {
         $(element_to_hide).css('display', 'none');

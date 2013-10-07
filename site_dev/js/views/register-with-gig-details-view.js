@@ -138,48 +138,80 @@ define([
         console.log('in register function');
         var self = this;
 
+        //if any elements have an 'has-error' class, remove the class before submitting
+        //for registration. if not, then if they resubmit registration and get a field
+        //wrong again, the UI will not update to show which fields are now good, and
+        //which are not.
+        var form_group_array = self.$('.form-group');
+        //console.log(form_group_array);
+        if (form_group_array.hasClass('has-error')) {
+          form_group_array.removeClass('has-error');
+        }
+
+
         $.ajax({
           url: '/api/users/register',
           type: 'POST',
           data: self.registration_details,
           success: function (data, textStatus, jqXHR) {
-            console.log('SUCCESS: in ajax request');
+            console.log('SUCCESS: in ajax success callback');
             console.dir(data);
             console.log(textStatus);
             console.dir(jqXHR);
 
-            if (data.errors) {
-              alert('ASSERTION ERRORS: invalid user input');
-              console.log('ASSERTION ERRORS: invalid user input');
-              console.dir(data);
-              //self.render();
-            } else if (data.registration_success === true) {
+            if (data.success === true) {
               console.log('SUCCESS: registration success.'); 
-              self.switch_log_button('#logout_header', '#login_header');
+
               var number_of_tickets_view = new NumberOfTicketsView({model: self.model});
               self.show_view('#featureContent', number_of_tickets_view);
               self.display_account_tab(true);
+              self.switch_log_button('#logout_header', '#login_header');
               window.scrollTo(0, 350);
-            } else {
-              console.log('POST /api/users/register did NOT return ' + 
-                          'registration_success === true');
-              console.log('ERROR in registration:');
-              console.dir(data);
-              self.render();
+            }
+            if (data.errors.duplicate_email === true){
+              console.log('ERROR: DUPLICATE_EMAIL');
+              //data.success is false from here on.
+              //we have a duplicate email addess error (duplicate key)
+
+              var $email_address = $('#email_address');
+              $email_address.parent('.form-group').addClass('has-error');
+            }
+            if (!self.isEmpty(data.errors.validation_errors)) {
+              //we have input validation errors, an Array of objects
+              console.log('ERROR: VALIDATION_ERROR');
+              console.dir(data.errors.validation_errors);
+ 
+              for (var key in data.errors.validation_errors) {
+                var id_of_bad_input = '#' + data.errors.validation_errors[key].param;
+                console.log(id_of_bad_input);
+                $(id_of_bad_input).parent('.form-group').addClass('has-error');
+              }
             }
             
           },
           error: function (jqXHR, textStatus, err) {
-            console.log('ERROR: registration success.'); 
+            console.log('ERROR: ajax error callback: registration error'); 
             console.dir(jqXHR);
             console.log(textStatus);
             console.dir(err);
 
+            //call it an internal server error. and re render the view to get them to
+            //submit again
+            self.render();
           }
         });
       },
 
+      isEmpty: function (obj) {
+        console.log('in isEmpty() function');
+        for (var prop in obj) {
+          if (obj.hasOwnProperty(prop)) {
+            return false; //obj is NOT empty
+          }
+        }
+        return true; //obj IS empty
 
+      },
 
       switch_log_button: function (element_to_show, element_to_hide) {
         $(element_to_hide).css('display', 'none');

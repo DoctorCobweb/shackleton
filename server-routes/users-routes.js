@@ -42,7 +42,7 @@ var MONGODB_DUPLICATE_KEY_ERROR = 11000;
 
 //____________________________ROUTES (in this order in the file)____________________
 //
-//
+// key x = commented out handler. staging to see if it is needed or not.
 //
 //___METHOD____ROUTE_____________________________________MIDDLEWARE_________________
 //
@@ -54,12 +54,12 @@ var MONGODB_DUPLICATE_KEY_ERROR = 11000;
 //   DELETE    '/api/users/logout'                       logged_in_required
 //   POST      '/api/users/register'                     not_logged_in_required
 //   POST      '/api/users/login'                        not_logged_in_required
-//   POST      '/api/users/change_user_details'
+// x   POST      '/api/users/change_user_details'
 //   POST      '/api/users/change_password/'             logged_in_required
 //   POST      '/api/users/change_cc_details/'
 //   PUT       '/api/users/reset_the_customer_id/:id' 
-//   POST      '/api/users/login_with_pending_order/'    not_logged_in_required 
-//   POST      '/api/users/register_with_pending_order'  not_logged_in_required 
+// x  POST      '/api/users/login_with_pending_order/'    not_logged_in_required 
+// x  POST      '/api/users/register_with_pending_order'  not_logged_in_required 
 //   DELETE    '/api/users/:id' 
 //   PUT       '/api/users/:id'                          logged_in_required
 
@@ -218,7 +218,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
   //-------------------REGISTER--REFACTOR START--------------
 
-
+  //called from register-view.js AND register-with-gig-details-view.js
   app.post('/api/users/register', not_logged_in_required, function (req, res) {
 
     req.checkBody('first_name', 'Empty first name').notEmpty();
@@ -235,12 +235,24 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     req.sanitize('email_address').xss();
     req.sanitize('password').xss();
 
+
+    //NOTE ON HOW ERRORS ARE HANDLED:
+    //types of errors returned clientside & where they are generated in this order: 
+    //1. the first errors possible are input validation errors.
+    //2.the second source of an error is mongoDB throwing a duplicate key error. this
+    //  happens when user tries to use an email_address which is already in users &
+    //  passwords collection
+
+    //internal errors is a term to respresent errors returned from callbacks in the
+    //function call chains, which are not duplicate key errors e.g. database read err.
+
     //errors is an Array of Objects. One obj for each validation check
     var _validation_errors = req.validationErrors();
 
     if (_validation_errors) {
       return res.send({'errors': {validation_errors: _validation_errors,
-                                  duplicate_email: false
+                                  duplicate_email: false,
+                                  internal_errors: {}
                                  }, 
                         success: false
                       });
@@ -248,16 +260,22 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
    
 
     register_a_new_user(req, res, function (err) {
+      //these areas come from the chain of function calls below.
       if (err) {
         console.log('in POST /api/users/register and error has been thrown: ');
         console.log(err);
         console.log('error code is: ' + err.code);
         console.log('typeof(err.code):: ' + typeof(err.code));
     
-        if (err.code === MONGODB_DUPLICATE_KEY_ERROR) {
+        //MUST first check if the error obj has a code key in it. if we dont check for
+        //it, we will be comparing undefined === MONGO_DUPLICATE_KEY_ERROR which
+        //technically does what is wanted but is not explicit enought. could cause a
+        //subtle bug if the MONGO... was ever accidentally not defined
+        if (err.code && err.code === MONGODB_DUPLICATE_KEY_ERROR) {
 
-          return res.send({'errors': {validation_erros: [],
-                                      duplicate_email: true
+          return res.send({'errors': {validation_errors: [],
+                                      duplicate_email: true,
+                                      internal_errors: {}
                                      }, 
                            success: false
                           });
@@ -266,7 +284,12 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
         } else {
           //if err is not handled here, process will be terminated!
-          throw err;
+          return res.send({'errors': {validation_errors: [], 
+                                      duplicate_email: false,
+                                      internal_errors: err                
+                          }, 
+                          success: false 
+                         });
         }
  
 
@@ -365,7 +388,12 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
          user.email_address);
 
 
-       return res.send({'errors': {}, success: true});
+       return res.send({'errors': {validation_errors: [],
+                                   duplicate_key: false,
+                                   internal_errors: {}
+                                  }, 
+                        success: true
+                      });
      });
    }
   
@@ -385,16 +413,36 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     req.sanitize('password').xss();
 
 
-    var errors = req.validationErrors();
 
-    if (errors) {
-      return res.send({'errors': errors});
+    //NOTE ON HOW ERRORS ARE HANDLED:
+    //types of errors returned clientside & where they are generated in this order: 
+    //1. the first errors possible are input validation errors.
+    //2.the second source of an error is mongoDB throwing a duplicate key error. this
+    //  happens when user tries to use an email_address which is already in users &
+    //  passwords collection
+
+    //errors is an Array of Objects. One obj for each validation check
+    var _validation_errors = req.validationErrors();
+
+    if (_validation_errors) {
+      return res.send({'errors': {validation_errors: _validation_errors,
+                                  internal_errors: {}
+                                 }, 
+                        user_authenticated: false
+                      });
     }
 
 
+
     log_the_user_in(req, res, function (err) {
+      console.log('in login error call back handler');
       if (err) {
-        throw err;
+        return res.send({'errors': {validation_errors: [],
+                                    internal_errors: err
+                                   },
+                         user_authenticated: false
+                        }); 
+
       }
     });
   });
@@ -419,7 +467,11 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
         return callback(err);
       }
       if (!user) {
-        return res.send({'error': 'user_is_null'});
+        return res.send({'errors': { validation_errors: [],
+                                     internal_errors: {'error': 'no_user_found'}  
+                                   },
+                          user_authenticated: false
+                        }); 
       }
       the_found_user = user;
       find_password_model();
@@ -436,7 +488,11 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
         return callback(err);
       }
       if (!pass) {
-        return res.send({'error': 'password_is_null'});
+        return res.send({'errors': { validation_errors: [],
+                                     internal_errors: {'error': 'no_password_found'}  
+                                   },
+                          user_authenticated: false
+                        }); 
       }
       the_stored_pass = pass;
       bcrypt.hash(req.body.password, pass.salt, authenticate_user);
@@ -449,6 +505,14 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
       }
       if (!submitted_hash) {
         return res.send({'error': 'hash_calculated_from_submitted_password_is_null'});
+        return res.send({'errors': { validation_errors: [],
+                                     internal_errors: {'error': 'no_hash_calculated' +
+                                                                'for_submitted_password'  
+                                                      }  
+                                   },
+                          user_authenticated: false
+                        }); 
+
       }
       if (submitted_hash === the_stored_pass.hash) {
         console.log('*** USER SUPPLIED A VALID PASSWORD ***');
@@ -459,7 +523,11 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
       } else {
         console.log('*** USER DID _NOT_ SUPPLY A VALID PASSWORD ***');
         req.session.user_authenticated = false;
-        return res.send({user_authenticated: false}); 
+        return res.send({'errors': { validation_errors: [],
+                                     internal_errors: {'error': 'invalid_password'}  
+                                   },
+                          user_authenticated: false
+                        }); 
       }
     }
       
@@ -468,13 +536,21 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
       req.session.user_last_name = the_found_user.last_name;
       req.session.user_first_name = the_found_user.first_name;
       req.session.user_id = the_found_user._id;
-      return res.send({user_authenticated: true, user_id: the_found_user._id});
+      return res.send({'errors': {validation_errors: [], 
+                                  internal_errors: {}
+                                 },
+                         user_authenticated: true, 
+                         user_id: the_found_user._id
+                      });
     }
 
 
     //START: start the function calls 
     find_the_user();
   }
+
+
+
 
   /*
   //dont think this is USED ANYMORE!
@@ -1052,177 +1128,6 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
 
 
-
-
-
-
-
-//__________________REFACTOR FINISH___________________________
-
-
-
-  //TODO: refactor all the nested functions. do you need all thses return keywords?
-  //user login handler
-  app.post('/api/users/login_with_pending_order/', not_logged_in_required, 
-    function (req, res) {
-
-    console.log('in POST /api/users/login_with_pending_order/ handler.');
-
-
-    for (key in req.body) {
-      console.log('login_with_pending_order: req.body[' + key + '] = ' + req.body[key]);
-    }
-
-    //get the password hash from the password database, authenticate the sent in password
-    //then set up the session if successful. if not, log the errors or redirect to
-    //login form again.
-    return PasswordModel.findOne({
-      emailAddress: req.body.emailAddress}
-      , function (err, passwordDoc){
-
-        //make sure that passwordDoc is not null i.e. that there is a doc in the collection
-        //for the emailAddress supplied.
-        if (!err && passwordDoc) {
-         
-          //calculate the hash of the sent in password. need to compare the result to the
-          //hash stored in our passwords_database to decide authentication of user.
-          bcrypt.hash(req.body.password, passwordDoc.salt, function (err, submittedHash) {
-            if (!err) {
-            
-              //AUTHORISATION PROCEDURE
-              if (submittedHash === passwordDoc.hash) {
-
-                //we have an authenticated user
-                req.session.user_authenticated = true;
-
-                //now find the user and set the req.session values.
-                return findTheUserAndSetSessionWithPendingOrder(req, res);           
-              } else {
-
-                console.log('*** user in NOT authenicated ** ' 
-                  + 'in POST /api/users/login_with_pending_order/ handler.');
-                //NOT authenticated user
-                req.session.user_authenticated = false;
-                //return res.redirect('#/login');
-                return res.send({user_authenticated: false});
-              }
-            } else {
-
-              console.log('ERROR: /api/users/login_with_pending_order/: hashing error of submitted hash');
-              req.session.user_authenticated = false;
-              return res.redirect('#/login');
-            }
-          }); 
-        } else { //no PasswordModel found for emailAddress supplied.
-
-          console.log('ERROR: unable to find passwordDoc for that emailAddress. Err msg ' 
-            + err);
-          req.session.user_authenticated = false;
-          return res.redirect('#/login');
-        }
-      }
-    );
-  });
-
-
-
-
-
-  //REGISTER WITH PENDING ORDER API---------------------
-
-  //create a new user who has a pending order
-  //SECURITY: an authenticated user CANNOT create another account. (?)
-  app.post('/api/users/register_with_pending_order', not_logged_in_required, 
-    function (req, res) {
-
-    console.log('in POST /api/users/register_with_pending_order => creating a new user.');
-
-    var inputFormData = {};
-
-    //must put in default values for all fields in the UserModel.
-    //if not, because fields have required:true set, err obj will be triggered.
-    //in PUT /api/users/:id we dont use user_defaults to fill in empty fields,
-    //which WILL then generate an error as wanted.
-    //cycle through the req.body object to set values to the user document.
-    for(key in user_defaults) {
-      if (!req.body[key]) {
-        inputFormData[key] = user_defaults[key]; 
-      } else {
-        inputFormData[key] = req.body[key];
-      }
-    }
- 
-    //creating a bcrypt hash of the password sent during signup
-    bcrypt.genSalt(10, function (err, salt) {
-      bcrypt.hash(req.body.password, salt, function (err, hash) {
-        if (!err) {
-
-         //instantiate a new password document for the User
-         var password = new PasswordModel({
-           emailAddress: req.body.emailAddress, 
-           salt: salt, 
-           hash: hash
-           });
- 
-         password.save(function (err) {
-           if (!err) {
-             console.log('SUCCESS: in POST /api/users/register. Saving password.');
-             console.log('password.emailAddress: ' + password.emailAddress);
-             console.log('password.salt: '         + password.salt);
-             console.log('password.hash: '         + password.hash);
-
-             req.session.user_emailAddress = password.emailAddress; 
-
-             //only instantiate a new user if emailAddress passed in is unique.
-             //otherwise, callback will have an non null err obj
-             var user = new UserModel(inputFormData);
-             
-             return user.save(function (err) {
-               if (!err) {
-                 console.log('SUCCESS: in POST /api/users/register_with_pending_order handler. emailAddress: ' 
-                   + user.emailAddress);
-
-                 //set user _id in the session object now. needed for PUT /api/users/:id
-                 //handler, as you want to use route middleware restrict_user_to_self in the
-                 //route handler. otherwise, someone can register an account, and change other
-                 //users documents by simply guessing their _id and making the PUT request.
-                 //set some session variables
-                 req.session.user_id = user._id;
-                 req.session.user_authenticated = true;
-
-                 //send an email to account to verify registration of user
-                 //response is to say check your email account for link to verify account.
-                 return res.send({'authenticated': true, 'user_id': user._id});
-               } else {
-                 console.log('ERROR: in POST /api/users/register_with_pending_order handler. Error msg: ' + err);
-                 return res.send('ERROR in creating a new account. Error msg: '
-                   + err);
-               }
-             });
-           } else {
-
-             //this block of code is accessed if user tries to create an account which
-             //already exists i.e. there is already and account using that email.
-
-             console.log('ERROR: in POST /api/users/register_with_pending_order. ' 
-               + ' Trying to save password document. Error msg: '
-               + err);
-             return res.send('ERROR: in POST /api/users/register_with_pending_order. Error msg' + err);
-           }        
-         });
-        } else {
-          console.log('ERROR: in POST /api/users/register_with_pending_order. Trying to generate bcrypt.' 
-          + err);
-        }
-      });
-    });   
-  });
-
-
-
-
-
-
   //delete a user with id
   app.delete('/api/users/:id', 
     logged_in_required, restrict_user_to_self, 
@@ -1310,6 +1215,169 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
 
 
+//__________________REFACTOR FINISH___________________________
+
+
+  /* EXPERIMENTAL COMMENT OUT OF THIS HANDLER....
+  //TODO: refactor all the nested functions. do you need all thses return keywords?
+  //user login handler
+  app.post('/api/users/login_with_pending_order/', not_logged_in_required, 
+    function (req, res) {
+
+    console.log('in POST /api/users/login_with_pending_order/ handler.');
+
+
+    for (key in req.body) {
+      console.log('login_with_pending_order: req.body[' + key + '] = ' + req.body[key]);
+    }
+
+    //get the password hash from the password database, authenticate the sent in password
+    //then set up the session if successful. if not, log the errors or redirect to
+    //login form again.
+    return PasswordModel.findOne({
+      emailAddress: req.body.emailAddress}
+      , function (err, passwordDoc){
+
+        //make sure that passwordDoc is not null i.e. that there is a doc in the collection
+        //for the emailAddress supplied.
+        if (!err && passwordDoc) {
+         
+          //calculate the hash of the sent in password. need to compare the result to the
+          //hash stored in our passwords_database to decide authentication of user.
+          bcrypt.hash(req.body.password, passwordDoc.salt, function (err, submittedHash) {
+            if (!err) {
+            
+              //AUTHORISATION PROCEDURE
+              if (submittedHash === passwordDoc.hash) {
+
+                //we have an authenticated user
+                req.session.user_authenticated = true;
+
+                //now find the user and set the req.session values.
+                return findTheUserAndSetSessionWithPendingOrder(req, res);           
+              } else {
+
+                console.log('*** user in NOT authenicated ** ' 
+                  + 'in POST /api/users/login_with_pending_order/ handler.');
+                //NOT authenticated user
+                req.session.user_authenticated = false;
+                //return res.redirect('#/login');
+                return res.send({user_authenticated: false});
+              }
+            } else {
+
+              console.log('ERROR: /api/users/login_with_pending_order/: hashing error of submitted hash');
+              req.session.user_authenticated = false;
+              return res.redirect('#/login');
+            }
+          }); 
+        } else { //no PasswordModel found for emailAddress supplied.
+
+          console.log('ERROR: unable to find passwordDoc for that emailAddress. Err msg ' 
+            + err);
+          req.session.user_authenticated = false;
+          return res.redirect('#/login');
+        }
+      }
+    );
+  });
+  */
+
+
+
+
+
+  //REGISTER WITH PENDING ORDER API---------------------
+
+  /* EXPERIMENTAL COMMENT OUT OF THIS HANDLER....
+  //create a new user who has a pending order
+  //SECURITY: an authenticated user CANNOT create another account. (?)
+  app.post('/api/users/register_with_pending_order', not_logged_in_required, 
+    function (req, res) {
+
+    console.log('in POST /api/users/register_with_pending_order => creating a new user.');
+
+    var inputFormData = {};
+
+    //must put in default values for all fields in the UserModel.
+    //if not, because fields have required:true set, err obj will be triggered.
+    //in PUT /api/users/:id we dont use user_defaults to fill in empty fields,
+    //which WILL then generate an error as wanted.
+    //cycle through the req.body object to set values to the user document.
+    for(key in user_defaults) {
+      if (!req.body[key]) {
+        inputFormData[key] = user_defaults[key]; 
+      } else {
+        inputFormData[key] = req.body[key];
+      }
+    }
+ 
+    //creating a bcrypt hash of the password sent during signup
+    bcrypt.genSalt(10, function (err, salt) {
+      bcrypt.hash(req.body.password, salt, function (err, hash) {
+        if (!err) {
+
+         //instantiate a new password document for the User
+         var password = new PasswordModel({
+           emailAddress: req.body.emailAddress, 
+           salt: salt, 
+           hash: hash
+           });
+ 
+         password.save(function (err) {
+           if (!err) {
+             console.log('SUCCESS: in POST /api/users/register. Saving password.');
+             console.log('password.emailAddress: ' + password.emailAddress);
+             console.log('password.salt: '         + password.salt);
+             console.log('password.hash: '         + password.hash);
+
+             req.session.user_emailAddress = password.emailAddress; 
+
+             //only instantiate a new user if emailAddress passed in is unique.
+             //otherwise, callback will have an non null err obj
+             var user = new UserModel(inputFormData);
+             
+             return user.save(function (err) {
+               if (!err) {
+                 console.log('SUCCESS: in POST /api/users/register_with_pending_order handler. emailAddress: ' 
+                   + user.emailAddress);
+
+                 //set user _id in the session object now. needed for PUT /api/users/:id
+                 //handler, as you want to use route middleware restrict_user_to_self in the
+                 //route handler. otherwise, someone can register an account, and change other
+                 //users documents by simply guessing their _id and making the PUT request.
+                 //set some session variables
+                 req.session.user_id = user._id;
+                 req.session.user_authenticated = true;
+
+                 //send an email to account to verify registration of user
+                 //response is to say check your email account for link to verify account.
+                 return res.send({'authenticated': true, 'user_id': user._id});
+               } else {
+                 console.log('ERROR: in POST /api/users/register_with_pending_order handler. Error msg: ' + err);
+                 return res.send('ERROR in creating a new account. Error msg: '
+                   + err);
+               }
+             });
+           } else {
+
+             //this block of code is accessed if user tries to create an account which
+             //already exists i.e. there is already and account using that email.
+
+             console.log('ERROR: in POST /api/users/register_with_pending_order. ' 
+               + ' Trying to save password document. Error msg: '
+               + err);
+             return res.send('ERROR: in POST /api/users/register_with_pending_order. Error msg' + err);
+           }        
+         });
+        } else {
+          console.log('ERROR: in POST /api/users/register_with_pending_order. Trying to generate bcrypt.' 
+          + err);
+        }
+      });
+    });   
+  });
+  */
 
 
 

@@ -100,9 +100,24 @@ define([
         return; 
       },
 
+
+
       login: function () {
         console.log('in login function');
         var self = this;
+
+        //if any elements have an 'has-error' class, remove the class before submitting
+        //for registration. if not, then if they resubmit registration and get a field
+        //wrong again, the UI will not update to show which fields are now good, and
+        //which are not.
+        var form_group_array = self.$('.form-group');
+        //console.log(form_group_array);
+        if (form_group_array.hasClass('has-error')) {
+          form_group_array.removeClass('has-error');
+        }
+
+
+
 
         //try to log the user in
         $.ajax({ 
@@ -115,12 +130,8 @@ define([
             console.log(textStatus);
             console.dir(jqXHR);
 
-            if (data.errors) {
-              alert('ASSERTION ERROR: invalid user input'); 
-              console.log('ASSERTION ERROR: invalid user input'); 
-              console.dir(data.errors);
-              self.render();
-            } else if (data.user_authenticated) {
+
+            if (data.user_authenticated) {
               //go on to number of tickets view
               self.current_view = self;
               var numberOfTicketsView = new NumberOfTicketsView({model: self.model});
@@ -133,19 +144,27 @@ define([
               self.display_account_tab(true);
 
               window.scrollTo(0, 350);
-            } else {
-              console.log('login failed, try again'); 
-              console.dir(data);
-              self.render();
+            } 
+            if (!self.isEmpty(data.errors.internal_errors)) {
+              //there are internal errors
+              if (data.errors.internal_errors.error &&
+                  data.errors.internal_errors.error === 'invalid_password')
+              {
+                console.log('INVALID PASSWORD');
+                self.$('#password').parent('.form-group').addClass('has-error');
+              } else {
+                //internal error - could be no user for that email address??
+                self.render();
+              }              
             }
-
- 
           },
           error: function (jqXHR, textStatus, err) {
             console.log('ERROR: POST /api/users/login');
             console.dir(jqXHR);
             console.log(textStatus);
             console.dir(err);
+            //treat this as an internal error.
+            self.render();
           }
         });
       }, 
@@ -160,6 +179,17 @@ define([
 
 
       },
+
+      isEmpty: function (obj) {
+        console.log('in isEmpty() function');
+        for (var prop in obj) {
+          if (obj.hasOwnProperty(prop)) {
+            return false; //obj is NOT empty
+          }
+        }
+        return true; //obj IS empty
+
+      },  
 
       switch_log_button: function (element_to_show, element_to_hide) {
         $(element_to_hide).css('display', 'none');
