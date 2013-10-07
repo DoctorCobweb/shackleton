@@ -101,9 +101,12 @@ define([
 
        this.check_authentication_set_links();
 
+       /*
        if (!this.theRegisterView) {
         this.theRegisterView = new RegisterView();
        }
+       */
+       this.theRegisterView = new RegisterView();
        this.show_view('#featureContent', this.theRegisterView);
      },
 

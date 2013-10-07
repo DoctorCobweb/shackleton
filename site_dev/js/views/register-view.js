@@ -129,12 +129,12 @@ define([
           type: 'POST',
           data: self.registration_details,
           success: function (data, textStatus, jqXHR) {
-            console.log('SUCCESS: in ajax request');
+            console.log('SUCCESS: in ajax succes callback');
             console.dir(data);
             console.log(textStatus);
             console.dir(jqXHR);
 
-            if (data.registration_success === true) {
+            if (data.success === true) {
               console.log('SUCCESS: registration success.'); 
 
               //create the successful registation view
@@ -144,21 +144,33 @@ define([
               self.switch_log_button('#logout_header','#login_header');
               window.scrollTo(0, 350);
 
-            } else {
+            } else if (data.errors.duplicate_email === true ){ 
+              console.log('DUPLICATE EMAIL ERROR');
+              //data.success is false from here on.
+              //we have a duplication email address error
 
-              //TODO: handle sanitization errors by displaying them in UI
-              console.log('POST /api/users/register did NOT return ' + 
-                          'registration_success === true');
-              console.log(data);
-              self.render();
+              var $email_address = $('#email_address');
+
+              $email_address.parent('.form-group').addClass('has-error');
+              $email_address.attr('placeholder', 'Address already taken');
+
+            } else {
+              //we have validation errors, an Array of objects.
+              console.log('VALIDATION ERROR');
+              console.dir(data.errors.validation_errors); 
+
+
+              //self.render();
             }
             
           },
           error: function (jqXHR, textStatus, err) {
-            console.log('ERROR: registration error.'); 
+            console.log('ERROR: ajax error callback: registration error.'); 
             console.dir(jqXHR);
             console.log(textStatus);
             console.dir(err);
+            //call it an internal error. re render the view to get them to submit again
+            self.render();
 
           }
         });

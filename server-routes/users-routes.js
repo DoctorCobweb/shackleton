@@ -35,7 +35,10 @@ var gateway = braintree.connect({
   privateKey: "d82482f85851a6f80bd02ef438a3d38f"
 });
 
-
+//error code for a duplicate key entry in database. in this file it will get thrown
+//when user tries to register with an email address (key in database) which already 
+//exists
+var MONGODB_DUPLICATE_KEY_ERROR = 11000;         
 
 //____________________________ROUTES (in this order in the file)____________________
 //
@@ -221,6 +224,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     req.checkBody('first_name', 'Empty first name').notEmpty();
     req.checkBody('last_name', 'Empty last name').notEmpty();
     req.checkBody('phone_number','Empty phone number').notEmpty();
+    req.checkBody('phone_number','Phone number must be numeric').isNumeric();
     req.checkBody('email_address', 'Empty email address').notEmpty();
     req.checkBody('email_address', 'Not a valid email address').isEmail();
     req.checkBody('password', 'Password length must be 6 to 20 characters').len(6, 20);
@@ -231,16 +235,42 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     req.sanitize('email_address').xss();
     req.sanitize('password').xss();
 
+    //errors is an Array of Objects. One obj for each validation check
+    var _validation_errors = req.validationErrors();
 
-    var errors = req.validationErrors();
-
-    if (errors) {
-      return res.send({'errors': errors});
+    if (_validation_errors) {
+      return res.send({'errors': {validation_errors: _validation_errors,
+                                  duplicate_email: false
+                                 }, 
+                        success: false
+                      });
     }
    
+
     register_a_new_user(req, res, function (err) {
       if (err) {
-        throw err;
+        console.log('in POST /api/users/register and error has been thrown: ');
+        console.log(err);
+        console.log('error code is: ' + err.code);
+        console.log('typeof(err.code):: ' + typeof(err.code));
+    
+        if (err.code === MONGODB_DUPLICATE_KEY_ERROR) {
+
+          return res.send({'errors': {validation_erros: [],
+                                      duplicate_email: true
+                                     }, 
+                           success: false
+                          });
+
+          //return res.send({'error': 'duplicate_email_address'});
+
+        } else {
+          //if err is not handled here, process will be terminated!
+          throw err;
+        }
+ 
+
+
       }
     });
 
@@ -335,7 +365,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
          user.email_address);
 
 
-       return res.send({'registration_success': true});
+       return res.send({'errors': {}, success: true});
      });
    }
   

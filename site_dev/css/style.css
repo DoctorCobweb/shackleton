@@ -1,7 +1,11 @@
 @import url(bootstrap.min.css);
 /* @import url(css/bootstrap-responsive.css); */
 
-
+.has-error .form-control, 
+.has-error .form-control:focus {
+  border-color: #c00;
+  background-color: #3A3939;
+}
 
 .proceed {
   padding: 10px;
