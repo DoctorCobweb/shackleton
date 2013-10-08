@@ -177,32 +177,6 @@ define([
         var self = this;
 
 
-        //TODO !!!!
-        //check if any input fields are empty. if so then warn them with red borders
-        //around the relevent inputs. then return.
-        console.log(this.$cc_number.val().trim() === '');
-
-        if (this.$cc_number.val().trim() === '') {
-          this.$cc_number.addClass('required_field');
-          //this.$cc_number.css('border', '#cc5152');
-          return;
-        }
-        if (this.$cc_cvv.val().trim() === '') {
-          this.$cc_number.addClass('required_field');
-          //this.$cc_cvv.css('border', '#cc5152');
-          return;
-        }
-        if (this.$cc_month.val().trim() === '') {
-          this.$cc_number.addClass('required_field');
-          //this.$cc_month.css('border', '#cc5152');
-          return;
-        }
-        if (this.$cc_year.val().trim() === '') {
-          this.$cc_number.addClass('required_field');
-          //this.$cc_year.css('border', '#cc5152');
-          return;
-        }
-
 
         $.ajax({
           url: '/api/users/change_cc_details/',

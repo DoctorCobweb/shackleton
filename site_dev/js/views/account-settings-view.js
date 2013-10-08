@@ -248,6 +248,7 @@ define([
   
               //then re-render the UI
               self.render();
+              self.$('#change_user_details').prepend(_.template(UserFeedbackHTML));
             }
            
             

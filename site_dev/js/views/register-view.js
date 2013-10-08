@@ -168,7 +168,7 @@ define([
               //$email_address.attr('placeholder', 'Address already taken');
 
             }
-            if (!self.isEmpty(data.errors.validation_errors)) {
+            if (!_.isEmpty(data.errors.validation_errors)) {
               //we have input validation errors, an Array of objects.
               console.log('VALIDATION ERROR');
               console.dir(data.errors.validation_errors); 
@@ -197,6 +197,7 @@ define([
         });
       },
 
+      /*
       isEmpty: function (obj) {
         console.log('in isEmpty() function');
         for (var prop in obj) {
@@ -207,7 +208,7 @@ define([
         return true; //obj IS empty
 
       },
-
+      */
 
       switch_log_button: function (element_to_show, element_to_hide) {
         $(element_to_hide).css('display', 'none');

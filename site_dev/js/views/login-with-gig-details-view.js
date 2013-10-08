@@ -145,7 +145,7 @@ define([
 
               window.scrollTo(0, 350);
             } 
-            if (!self.isEmpty(data.errors.internal_errors)) {
+            if (!_.isEmpty(data.errors.internal_errors)) {
               //there are internal errors
               if (data.errors.internal_errors.error &&
                   data.errors.internal_errors.error === 'invalid_password')
@@ -180,6 +180,7 @@ define([
 
       },
 
+      /*
       isEmpty: function (obj) {
         console.log('in isEmpty() function');
         for (var prop in obj) {
@@ -190,6 +191,7 @@ define([
         return true; //obj IS empty
 
       },  
+      */
 
       switch_log_button: function (element_to_show, element_to_hide) {
         $(element_to_hide).css('display', 'none');

@@ -40,6 +40,11 @@ var gateway = braintree.connect({
 //exists
 var MONGODB_DUPLICATE_KEY_ERROR = 11000;         
 
+
+
+
+
+
 //____________________________ROUTES (in this order in the file)____________________
 //
 // key x = commented out handler. staging to see if it is needed or not.
@@ -62,6 +67,11 @@ var MONGODB_DUPLICATE_KEY_ERROR = 11000;
 // x  POST      '/api/users/register_with_pending_order'  not_logged_in_required 
 //   DELETE    '/api/users/:id' 
 //   PUT       '/api/users/:id'                          logged_in_required
+
+
+
+
+
 
 
 
@@ -711,7 +721,6 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     console.log('in POST /api/users/change_cc_details handler');
     console.log(req.body);
 
-    /*
     req.checkBody('cc_number', 'Credit Card number is empty').notEmpty();
     req.checkBody('cc_cvv', 'Credit Card CVV is empty').notEmpty();
     req.checkBody('cc_month', 'Credit Card expiration month is empty').notEmpty();
@@ -723,17 +732,36 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     req.sanitize('cc_year').xss();
 
 
-    var errors = req.validationErrors();
+    var _validation_errors = req.validationErrors();
 
-    if (errors) {
-      return res.send({'errors': errors});
+    if (_validation_errors) {
+      return res.send({'errors': {validation_errors: _validation_errors,
+                                  internal_errors: {},
+                                  braintree_errors: {}
+                                 },
+                        'success': false
+                      });
     }
-    */
+
+
+
+
 
 
     change_cc_in_vault_for_user(req, res, function (err) {
-      if (err) throw err;
+      if (err) {
+        return res.send({'errors': {validation_errors: [],
+                                    internal_errors: err,
+                                    braintree_errors: {}
+                                   },
+                          'success': false
+                        });
+
+      //if (err) throw err;
+      } 
     });
+
+
   });
 
   function change_cc_in_vault_for_user(req, res, callback) {
@@ -749,8 +777,10 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     function the_user_callback(err, user) {
       console.log('=> change_cc_in_vault_for_user => the_user_callback');
       if (err) return callback(err);
-      if (!user) return res.send({'error': 'user_is_null'});  
+      if (!user) {
+        return callback({'error': 'user_is_null'});
 
+      }
       the_user = user;
       submit_cc_to_braintree();
     }
