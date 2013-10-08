@@ -138,15 +138,6 @@ define([
         console.log('in register function');
         var self = this;
 
-        //if any elements have an 'has-error' class, remove the class before submitting
-        //for registration. if not, then if they resubmit registration and get a field
-        //wrong again, the UI will not update to show which fields are now good, and
-        //which are not.
-        var form_group_array = self.$('.form-group');
-        //console.log(form_group_array);
-        if (form_group_array.hasClass('has-error')) {
-          form_group_array.removeClass('has-error');
-        }
 
 
         $.ajax({
@@ -158,6 +149,16 @@ define([
             console.dir(data);
             console.log(textStatus);
             console.dir(jqXHR);
+
+            //if any elements have an 'has-error' class, remove the class before 
+            //submitting for registration. if not, then if they resubmit registration 
+            // and get a field wrong again, the UI will not update to show which 
+            //fields are now good, and which are not.
+            var form_group_array = self.$('.form-group');
+            //console.log(form_group_array);
+            if (form_group_array.hasClass('has-error')) {
+              form_group_array.removeClass('has-error');
+            }
 
             if (data.success === true) {
               console.log('SUCCESS: registration success.'); 
