@@ -195,17 +195,61 @@ define([
         var self = this;
 
         this.user.save({}, {
-          success: function (model, response, options) {
+          success: function (data, response, options) {
             console.log('SUCCESS: updated user settings!!!');
-            console.dir(model);
+            console.dir(data);
             console.log(response);
             console.log(options);
 
-            //reset the model for this view to reflect the update
-            self.model = model; 
+            var $user_feedback = self.$('#change_user_details > .user_feedback');
 
-            //then re-render the UI
-            self.render();
+            //also close the successful update div if it is showing
+            if ($user_feedback.css('display') == 'block') {
+              $user_feedback.css('display', 'none');
+            }
+
+            //YOU MUST CHECK FOR ERRORS FIRST. IF NONE OF THESE CHECKS ARE MET ONLY THEN
+            //CAN U ASSUME WE HAVE A USER MODEL SUCCESSFULLY RETURNED. 
+            if (response.errors) {
+              if (!_.isEmpty(response.errors.validation_errors)) {
+                //we have validation errors for the input     
+                console.log('VALIDATION ERRORS');
+  
+                //self.$('#change_user_details input').addClass('has-error');
+  
+                //loop through the Array of validation errors, set to red for error input
+                for (var key in response.errors.validation_errors) {
+                  var id_of_bad_input = '#' + 
+                      response.errors.validation_errors[key].param;
+                  console.log(id_of_bad_input);
+                  $(id_of_bad_input).parent('.form-group').addClass('has-error');
+                }
+                return;
+              }
+  
+              if (!_.isEmpty(response.errors.internal_errors)) {
+                //we have internal errors
+                console.log('INTERNAL ERRORS');
+                self.render();
+                self.$('#change_user_details input').addClass('has-error');
+                return;
+              }
+
+            }
+
+            if (!_.isEmpty(data)) {
+            //if (response.success) {
+              //reset the model for this view to reflect the update
+              console.log(self.model);
+              //self.model = response.model; 
+              self.model = data; 
+              //console.log('**************');
+              //console.log(self.model);
+  
+              //then re-render the UI
+              self.render();
+            }
+           
             
 
           },
@@ -214,6 +258,7 @@ define([
             console.dir(model);
             console.log(xhr);
             console.log(options);
+            self.$('#change_user_details input').addClass('has-error');
           },
         });
       },
@@ -245,21 +290,59 @@ define([
             console.log(textStatus);
             console.dir(jqXHR);
 
+            var $user_feedback = self.$('#change_password > .user_feedback');
+            //if any elements have an 'has-error' class, remove the class
+            //before submitting for registration. if not, then if they resubmit
+            //registration and get a field wrong again, the UI will not update to
+            //show which fields are now good, and which are not.
+            var form_group_array = self.$('.form-group');
+            //console.log(form_group_array);
+            if (form_group_array.hasClass('has-error')) {
+              form_group_array.removeClass('has-error');
+            }
+   
+            //also close the successful update div if it is showing
+            if ($user_feedback.css('display') == 'block') {
+              $user_feedback.css('display', 'none');
+            }
 
-            if (data.errors) {
-     
-              //TODO: reflect the errors to UI properly
-              console.log('error returned');
-              console.log(data);
-              alert('error in input, check console.log');
 
-            } else {
-              console.log($('#featureContent'));
-  
-              //display a UI element spanning across the screen
-              //saying what's happened 
-              $('#featureContent').prepend(_.template(UserFeedbackHTML));
+            if (data.success) {
+              console.log('SUCCESS: password has been reset');
+
+              //reset the ui
               self.render();
+              //insert a <div> saying it was successful
+              self.$('#change_password').prepend(_.template(UserFeedbackHTML));
+            }
+
+            if (!_.isEmpty(data.errors.validation_errors)) {
+              //we have validation errors for the input     
+              console.log('VALIDATION ERRORS');
+
+              //loop through the Array of validation errors, set to red for error input
+              for (var key in data.errors.validation_errors) {
+                var id_of_bad_input = '#' + data.errors.validation_errors[key].param;
+                console.log(id_of_bad_input);
+                $(id_of_bad_input).parent('.form-group').addClass('has-error');
+              }
+
+            } 
+
+            if (!_.isEmpty(data.errors.internal_errors)) {
+              //we have internal errors.
+              //of particular interest is if the 2 passwords typed in actually match
+              //and the others, for now, just treat generically
+              if (data.errors.internal_errors.error === 'passwords_do_not_match') {
+                console.log('INTERNAL ERRORS: passwords dont match');
+              } else {
+                console.log('INTERNAL ERRORS: generic internal error');
+                
+              }
+              //set the fields red to indicate error
+              self.$('#new_password_1').parent('.form-group').addClass('has-error');
+              self.$('#new_password_2').parent('.form-group').addClass('has-error');
+
             }
 
 
@@ -269,6 +352,10 @@ define([
             console.dir(jqXHR);
             console.log(textStatus);
             console.dir(errorThrown);
+
+            //set the fields red to indicate error
+            self.$('#new_password_1').parent('.form-group').addClass('has-error');
+            self.$('#new_password_2').parent('.form-group').addClass('has-error');
           }
         })
       },
@@ -319,6 +406,18 @@ define([
       },
       */
 
+      /*
+      isEmpty: function (obj) {
+        console.log('in isEmpty() function');
+        for (var prop in obj) {
+          if (obj.hasOwnProperty(prop)) {
+            return false; //obj is NOT empty
+          }
+        }
+        return true; //obj IS empty
+
+      },
+      */
 
 
       show_view: function (selector, view) {

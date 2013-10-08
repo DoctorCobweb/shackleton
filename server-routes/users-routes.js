@@ -552,221 +552,6 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
 
 
-  /*
-  //dont think this is USED ANYMORE!
-  //it was called from the user account settings view when they submit changes to
-  //their settings.
-  //a new approach of creating a user backbone model clientside, then saving it,
-  //now calls PUT /api/users/:id
-  app.post('/api/users/change_user_details', function (req, res) {
-    console.log('hello from POST /api/users/change_user_details');
-    console.log('req.body:');
-    console.log(req.body);
-
-
-
-    req.checkBody('first_name', 'Empty first name').notEmpty();
-    req.checkBody('last_name', 'Empty last name').notEmpty();
-    req.checkBody('phone_number','Empty phone number').notEmpty();
-    req.checkBody('email_address', 'Empty email address').notEmpty();
-    req.checkBody('email_address', 'Not a valid email address').isEmail();
-    
-    req.sanitize('first_name').xss();
-    req.sanitize('last_name').xss();
-    req.sanitize('phone_number').xss();
-    req.sanitize('email_address').xss();
-
-
-    var errors = req.validationErrors();
-
-    if (errors) {
-      return res.send({'errors': errors});
-    }
-
-
-
-    update_user_details(req, res, function (err) {
-      if (err) throw err;
-    });  
-
-  });
-
-
-  function update_user_details(req, res, callback) {
-    console.log('=> update_user_details => ');
-    var the_details_to_update = {};
-    var the_user;
-    var the_user_password_doc;
-
-    // STEPS
-    // -check the user update input sent in, validate/sanitize.
-    // -find the user given req.session.user_email_address
-    // -update the fields which user wants to update in user doc
-    //  if email address is changed then:
-    //  1. update the corresponding PasswordModel for the user to have new email address
-    //  2. update the braintree customer record to have a new email address. be careful
-    //     to keep the same customer id, otherwise will also have to update that as well
-    //     on our server
-   
-    function check_input() {
-      console.log('=> update_user_details => ');
-
-      for (var key in req.body) {
-        if (req.body[key]) {
-          the_details_to_update[key] = req.body[key];
-        }
-      }
-
-      console.log('the_details_to_update');
-      console.log(the_details_to_update);
-      find_the_user();
-    }
-
-    function find_the_user() {
-      console.log('=> update_user_details => find_the_user');
-      UserModel.findOne({email_address: req.session.user_email_address}, the_found_user);
-    }
- 
-    function the_found_user(err, user) {
-      console.log('=> update_user_details => the_found_user');
-      if (err) return callback(err);
-      if (!user) return res.send({'error': 'user_is_null'});
-     
-      the_user = user; 
-
-      for (var key in the_details_to_update) {
-        the_user[key] = the_details_to_update[key]; 
-      }
-
-
-      if (the_user.braintree_customer_id !== 'default_braintree_customer_id') {
-        console.log('the user HAS a braintree customer id => must update that too');
-        console.log('braintree_customer_id: ' + the_user.braintree_customer_id);
-        update_the_user_in_braintree_account();
-      }        
-
-      //if the user wants to change their email address, you must also change it in the
-      //password doc associated with the user!
-      if (the_details_to_update.email_address) {
-        console.log('the user wants to change their email address to: ' + 
-          the_details_to_update.email_address);
-
-        PasswordModel.findOne({email_address: req.session.user_email_address},
-          the_found_password_doc);
-
-      } else {
-        update_the_session_variables();
-        save_the_updated_user_fields();
-      }
-
-    }
-
-
-
-    function the_found_password_doc(err, pass_doc) {
-      console.log('=> update_user_details => the_found_password_doc');
-      if (err) return callback(err);
-      if (!pass_doc) return res.send({'error': 'password_doc_is_empty'});
-      
-      console.log('the old pass doc:');    
-      console.log(pass_doc);
- 
-      the_user_password_doc = pass_doc; 
-      the_user_password_doc.email_address = the_details_to_update.email_address;
-
-      save_the_updated_password_doc();
-    }
-
-
-    function save_the_updated_password_doc() {
-      console.log('=> update_user_details => save_the_updated_password_doc');
-      the_user_password_doc.save(function (err, pass) {
-        if (err) return callback(err);
-        
-        console.log('the password doc associated with user saved properly');
-        console.log('the new pass doc:');    
-        console.log(the_user_password_doc);
-
-        save_the_updated_user_fields(); 
-        update_the_session_variables();
-      }); 
-    }
-
-
-    function update_the_user_in_braintree_account() {
-      console.log('=> update_user_details => update_the_user_in_braintree_account');
-
-      //translate the update fields into fields expected by braintree
-      var braintree_update_fields = {};
-      
-      if (the_details_to_update.first_name) {
-        braintree_update_fields.firstName = the_details_to_update.first_name;
-      }
-      if (the_details_to_update.last_name) {
-        braintree_update_fields.lastName = the_details_to_update.last_name;
-      }
-      if (the_details_to_update.phone_number) {
-        braintree_update_fields.phone= the_details_to_update.phone_number;
-      }
-      if (the_details_to_update.email_address) {
-        braintree_update_fields.email = the_details_to_update.email_address;
-      }
-   
-      console.log('the user customer id before updating: ' 
-        + the_user.braintree_customer_id);
-
-      console.log(braintree_update_fields);
-
-      gateway.customer.update(
-        the_user.braintree_customer_id, 
-        braintree_update_fields,
-        function (err, result) {
-          if (err) {
-            console.log(err);
-            return callback(err);
-          }
-
-          if (!result.success) return res.send(result);
-
-          console.log('SUCCESS: result from updating customer in vault:');
-          console.log(result);
-
-        }
-      );
-
-    }
-
-
-    function save_the_updated_user_fields() {
-      console.log('=> update_user_details => save_the_updated_user_fields');
-      return the_user.save(function (err, user) {
-        if (err) return callback(err);
-        return res.send(user); 
-      });
-    }
-
-
-    function update_the_session_variables() {
-      console.log('=> update_user_details => update_the_session_variables');
-
-      if (the_details_to_update.first_name) {
-        req.session.user_first_name = the_details_to_update.first_name;
-      }
-      
-      if (the_details_to_update.last_name) {
-        req.session.user_last_name = the_details_to_update.last_name;
-      }
-
-      if (the_details_to_update.email_address) {
-        req.session.user_email_address = the_details_to_update.email_address;
-      }
-    }
-
-
-    //START: start the function calls
-    check_input();
-  }
-  */
 
 
 
@@ -774,10 +559,8 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
   app.post('/api/users/change_password/', logged_in_required, function (req, res) {
     console.log('in /api/users/change_password');
-    console.log('req.body.new_password_1' + req.body.new_password_1);
-    console.log('req.body.new_password_2' + req.body.new_password_2);
-
-
+    //console.log('req.body.new_password_1' + req.body.new_password_1);
+    //console.log('req.body.new_password_2' + req.body.new_password_2);
 
     req.checkBody('new_password_1', 'Password length must be 6 to 20 characters')
       .len(6, 20);
@@ -788,15 +571,27 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     req.sanitize('new_password_2').xss();
 
 
-    var errors = req.validationErrors();
+    var _validation_errors = req.validationErrors();
 
-    if (errors) {
-      return res.send({'errors': errors});
+    if (_validation_errors) {
+      return res.send({'errors': {validation_errors: _validation_errors,
+                                  internal_errors: {}
+                                 },
+                        'success': false
+                      });
     }
 
 
     start_password_change(req, res, function (err) {
-      if (err) throw err;
+      console.log('in password_change error callback');
+      if (err) {
+        return res.send({'errors': {validation_errors: [],
+                                    internal_errors: err
+                                   },
+                         'success': false
+                        }); 
+      }
+
     });
   });
 
@@ -808,14 +603,17 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     function compare_the_passwords() {
      console.log('=> start_password_change => compare_the_passwords');
 
+      /*
       if (!req.body.new_password_1 || !req.body.new_password_2) {
         console.log('one or both of the password fields are blank/null/undefined');
         return res.send({'error': 'passwords_or_password_is_blank'});
       }
+      */
 
       if (req.body.new_password_1 !== req.body.new_password_2) {
         console.log('the 2 passwords DO NOT MATCH');
-        return res.send({'error': 'passwords_do_not_match'});
+        return callback({'error': 'passwords_do_not_match'});
+        //return res.send({'error': 'passwords_do_not_match'});
       } else {
         console.log('the 2 passwords MATCH');
         generate_the_salt();
@@ -850,7 +648,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
        return callback(err);
      }
      if (!hash) {
-       return callback({'error': 'generated_salt_is_null'});
+       return callback({'error': 'generated_hash_is_null'});
      }
      the_hash = hash;  
      find_the_password_doc();
@@ -890,7 +688,10 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
      return the_password_doc.save(function (err) {
        if (err) return callback(err);
        
-       return res.send({'success': 'password_update_successful'});
+       return res.send({'errors': {},
+                        'success': true
+                       });
+       //return res.send({'success': 'password_update_successful'});
      });
    }
 
@@ -1163,12 +964,14 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
   //called when user updates their attributes in the account settings view
   app.put('/api/users/:id', logged_in_required, function (req, res) {
     console.log('in PUT /api/users/:id handler');
+    console.log('PRE SAVING ANYTHING req.body:');
     console.log(req.body);
 
 
     req.checkBody('first_name', 'Empty first name').notEmpty();
     req.checkBody('last_name', 'Empty last name').notEmpty();
     req.checkBody('phone_number','Empty phone number').notEmpty();
+    req.checkBody('phone_number','Phone number must be numberic').isNumeric();
     req.checkBody('email_address', 'Empty email address').notEmpty();
     req.checkBody('email_address', 'Not a valid email address').isEmail();
     
@@ -1178,11 +981,16 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     req.sanitize('email_address').xss();
 
 
-    var errors = req.validationErrors();
+    var _validation_errors = req.validationErrors();
 
-    if (errors) {
-      return res.send({'errors': errors});
+    if (_validation_errors) {
+      return res.send({'errors': {validation_errors: _validation_errors,
+                                  internal_errors: {}
+                                 },
+                       'success': false
+                      });
     }
+
 
     //n.b. this is req.params i.e. plural, and is an object
     //console.log('req.params');
@@ -1196,8 +1004,20 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     //console.log(req.param('first_name'));
 
     UserModel.findById(req.session.user_id, function (err, user) {
-      if (err) throw(err);
-      if (!user) return res.send({'error':'user_is_null'});
+      if (err) {
+        return res.send({'errors': { validation_errors: [],
+                                     internal_errors: err
+                                   }, 
+                         'success': false
+                        });
+      }
+      if (!user) {
+        return res.send({'errors': { validation_errors: [],
+                                     internal_errors: {'error':'user_is_null'} 
+                                   }, 
+                         'success': false
+                        });
+      }
  
       user.first_name = req.param('first_name'); 
       user.last_name = req.param('last_name'); 
@@ -1205,9 +1025,17 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
       user.email_address = req.param('email_address'); 
 
       return user.save(function(err, saved_user) {
-        if (err) throw(err);
-        if (!saved_user) return res.send({'error':'user_is_null'});
-        
+        if (err) {
+          return res.send({'errors': { validation_errors: [],
+                                       internal_errors: err
+                                     }, 
+                           'success': false
+                          });
+        }
+        //if (!saved_user) return res.send({'error':'user_is_null'});
+
+        //we CANT return a custom obj to backbone with errors and success keys etc
+        //must be a user model.
         return res.send(saved_user);
       });
     }); 
@@ -1378,6 +1206,225 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     });   
   });
   */
+
+
+  /*
+  //dont think this is USED ANYMORE!
+  //it was called from the user account settings view when they submit changes to
+  //their settings.
+  //a new approach of creating a user backbone model clientside, then saving it,
+  //now calls PUT /api/users/:id
+  app.post('/api/users/change_user_details', function (req, res) {
+    console.log('hello from POST /api/users/change_user_details');
+    console.log('req.body:');
+    console.log(req.body);
+
+
+
+    req.checkBody('first_name', 'Empty first name').notEmpty();
+    req.checkBody('last_name', 'Empty last name').notEmpty();
+    req.checkBody('phone_number','Empty phone number').notEmpty();
+    req.checkBody('email_address', 'Empty email address').notEmpty();
+    req.checkBody('email_address', 'Not a valid email address').isEmail();
+    
+    req.sanitize('first_name').xss();
+    req.sanitize('last_name').xss();
+    req.sanitize('phone_number').xss();
+    req.sanitize('email_address').xss();
+
+
+    var errors = req.validationErrors();
+
+    if (errors) {
+      return res.send({'errors': errors});
+    }
+
+
+
+    update_user_details(req, res, function (err) {
+      if (err) throw err;
+    });  
+
+  });
+
+
+  function update_user_details(req, res, callback) {
+    console.log('=> update_user_details => ');
+    var the_details_to_update = {};
+    var the_user;
+    var the_user_password_doc;
+
+    // STEPS
+    // -check the user update input sent in, validate/sanitize.
+    // -find the user given req.session.user_email_address
+    // -update the fields which user wants to update in user doc
+    //  if email address is changed then:
+    //  1. update the corresponding PasswordModel for the user to have new email address
+    //  2. update the braintree customer record to have a new email address. be careful
+    //     to keep the same customer id, otherwise will also have to update that as well
+    //     on our server
+   
+    function check_input() {
+      console.log('=> update_user_details => ');
+
+      for (var key in req.body) {
+        if (req.body[key]) {
+          the_details_to_update[key] = req.body[key];
+        }
+      }
+
+      console.log('the_details_to_update');
+      console.log(the_details_to_update);
+      find_the_user();
+    }
+
+    function find_the_user() {
+      console.log('=> update_user_details => find_the_user');
+      UserModel.findOne({email_address: req.session.user_email_address}, the_found_user);
+    }
+ 
+    function the_found_user(err, user) {
+      console.log('=> update_user_details => the_found_user');
+      if (err) return callback(err);
+      if (!user) return res.send({'error': 'user_is_null'});
+     
+      the_user = user; 
+
+      for (var key in the_details_to_update) {
+        the_user[key] = the_details_to_update[key]; 
+      }
+
+
+      if (the_user.braintree_customer_id !== 'default_braintree_customer_id') {
+        console.log('the user HAS a braintree customer id => must update that too');
+        console.log('braintree_customer_id: ' + the_user.braintree_customer_id);
+        update_the_user_in_braintree_account();
+      }        
+
+      //if the user wants to change their email address, you must also change it in the
+      //password doc associated with the user!
+      if (the_details_to_update.email_address) {
+        console.log('the user wants to change their email address to: ' + 
+          the_details_to_update.email_address);
+
+        PasswordModel.findOne({email_address: req.session.user_email_address},
+          the_found_password_doc);
+
+      } else {
+        update_the_session_variables();
+        save_the_updated_user_fields();
+      }
+
+    }
+
+
+
+    function the_found_password_doc(err, pass_doc) {
+      console.log('=> update_user_details => the_found_password_doc');
+      if (err) return callback(err);
+      if (!pass_doc) return res.send({'error': 'password_doc_is_empty'});
+      
+      console.log('the old pass doc:');    
+      console.log(pass_doc);
+ 
+      the_user_password_doc = pass_doc; 
+      the_user_password_doc.email_address = the_details_to_update.email_address;
+
+      save_the_updated_password_doc();
+    }
+
+
+    function save_the_updated_password_doc() {
+      console.log('=> update_user_details => save_the_updated_password_doc');
+      the_user_password_doc.save(function (err, pass) {
+        if (err) return callback(err);
+        
+        console.log('the password doc associated with user saved properly');
+        console.log('the new pass doc:');    
+        console.log(the_user_password_doc);
+
+        save_the_updated_user_fields(); 
+        update_the_session_variables();
+      }); 
+    }
+
+
+    function update_the_user_in_braintree_account() {
+      console.log('=> update_user_details => update_the_user_in_braintree_account');
+
+      //translate the update fields into fields expected by braintree
+      var braintree_update_fields = {};
+      
+      if (the_details_to_update.first_name) {
+        braintree_update_fields.firstName = the_details_to_update.first_name;
+      }
+      if (the_details_to_update.last_name) {
+        braintree_update_fields.lastName = the_details_to_update.last_name;
+      }
+      if (the_details_to_update.phone_number) {
+        braintree_update_fields.phone= the_details_to_update.phone_number;
+      }
+      if (the_details_to_update.email_address) {
+        braintree_update_fields.email = the_details_to_update.email_address;
+      }
+   
+      console.log('the user customer id before updating: ' 
+        + the_user.braintree_customer_id);
+
+      console.log(braintree_update_fields);
+
+      gateway.customer.update(
+        the_user.braintree_customer_id, 
+        braintree_update_fields,
+        function (err, result) {
+          if (err) {
+            console.log(err);
+            return callback(err);
+          }
+
+          if (!result.success) return res.send(result);
+
+          console.log('SUCCESS: result from updating customer in vault:');
+          console.log(result);
+
+        }
+      );
+
+    }
+
+
+    function save_the_updated_user_fields() {
+      console.log('=> update_user_details => save_the_updated_user_fields');
+      return the_user.save(function (err, user) {
+        if (err) return callback(err);
+        return res.send(user); 
+      });
+    }
+
+
+    function update_the_session_variables() {
+      console.log('=> update_user_details => update_the_session_variables');
+
+      if (the_details_to_update.first_name) {
+        req.session.user_first_name = the_details_to_update.first_name;
+      }
+      
+      if (the_details_to_update.last_name) {
+        req.session.user_last_name = the_details_to_update.last_name;
+      }
+
+      if (the_details_to_update.email_address) {
+        req.session.user_email_address = the_details_to_update.email_address;
+      }
+    }
+
+
+    //START: start the function calls
+    check_input();
+  }
+  */
+
+
 
 
 

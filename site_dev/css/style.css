@@ -1,6 +1,15 @@
 @import url(bootstrap.min.css);
 /* @import url(css/bootstrap-responsive.css); */
 
+
+.has-success .form-control, 
+.has-success .form-control:focus {
+  border-color: #77b300;
+  background-color: #484E3C;
+}
+
+
+
 .has-error .form-control, 
 .has-error .form-control:focus {
   border-color: #c00;
@@ -262,8 +271,9 @@ h3 {
 
 .user_feedback {
   background-color: #ECA336;
-  margin: 10px;
-  padding: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
 }
 
 
