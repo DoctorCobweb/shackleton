@@ -76,9 +76,9 @@ text!tpl/OrderListItemView.html
 js/views/order-list-item-view.js
 js/views/account-orders-view.js
 text!tpl/AccountBilling.html
+text!tpl/UserFeedback.html
 js/views/account-billing-view.js
 text!tpl/AccountSettings.html
-text!tpl/UserFeedback.html
 js/views/account-settings-view.js
 text!tpl/AccountBillingDefault.html
 js/views/account-billing-default-view.js
