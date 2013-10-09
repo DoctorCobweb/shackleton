@@ -5,10 +5,11 @@ define([
     'backbone',
     'text!tpl/AccountBillingDefault.html',
     'braintree',
-    'views/account-billing-view'
+    'views/account-billing-view',
+    'text!tpl/UserFeedback.html'
   ], 
   function (Backbone, AccountBillingDefaultHTML, Braintree,
-            AccountBillingView) {
+            AccountBillingView, UserFeedbackHTML) {
     var AccountBillingDefaultView = Backbone.View.extend({
       tagName: 'div',
  
@@ -144,34 +145,108 @@ define([
         console.log('in submit handler');
         console.dir(this.field_to_set);
 
+
+
+
+
+
+
         $.ajax({
           url: '/api/users/change_cc_details/',
           type: 'POST',
           data: self.field_to_set,
           success: function (data, textStatus, jqXHR) {
-              console.log('SUCCESS: submitted the cc to braintree');
-              console.dir(data);
-              console.log(textStatus);
-              console.dir(jqXHR);
-         
-              /*
-              if (data.errors) {
-                alert('data entry errors returned. see console.log');
-                console.log('data entry errors returned.');
-                console.dir(data);
-                self.render();
-              } else {
-                var billing_view = new AccountBillingView({billing_data: data});
-                console.log('billing_view is: ');
-                console.dir(billing_view);
-                self.show_view('#account_main', billing_view);
-              }
-              */
+            console.log('SUCCESS: submitted the cc to braintree');
+            console.dir(data);
+            console.log(textStatus);
+            console.dir(jqXHR);
 
-              var billing_view = new AccountBillingView({billing_data: data});
+
+
+
+
+
+            //if any elements have an 'has-error' class, remove the class
+            //before submitting for registration. if not, then if they resubmit
+            //registration and get a field wrong again, the UI will not update to
+            //show which fields are now good, and which are not.
+            var form_group_array = self.$('.form-group');
+            //console.log(form_group_array);
+            if (form_group_array.hasClass('has-error')) {
+              form_group_array.removeClass('has-error');
+            }
+
+
+
+            var $user_feedback = self.$('#account_billing_new_cc_details > .user_feedback');
+            //also close the successful update div if it is showing
+            if ($user_feedback.css('display') == 'block') {
+              $user_feedback.css('display', 'none');
+            }
+
+
+
+            if (data.success === false) {
+              if (!_.isEmpty(data.errors.validation_errors)) {
+                //we have validation errors due to bad user input. note: this is not
+                //from braintree api returning validation errors, but from express-
+                //validator module first checking if input is empty etc
+                console.log('VALIDATION ERRORS');
+
+
+
+                //loop through the Array of validation errors, set to red for error
+                //input
+                for (var key in data.errors.validation_errors) {
+                  var id_of_bad_input = '#' + data.errors.validation_errors[key].param;
+                  console.log(id_of_bad_input);
+                  $(id_of_bad_input).parent('.form-group').addClass('has-error');
+                }
+                return;
+              }
+              if (!_.isEmpty(data.errors.internal_errors)) {
+                //we have internal errors
+                console.log('INTERNAL ERRORS');
+
+                //TODO: implement this more
+                //more user feedback needed
+                self.render();
+
+                return;
+              }
+              if (!_.isEmpty(data.errors.braintree_errors)) {
+                //we have braintree errors. could be
+                //1. from validation of cc field,
+                //2. gatway rejected
+                //3. gateway busy
+                //4. etc...
+                console.log('BRAINTREE ERRORS');
+                console.dir(data.errors.braintree_errors);
+                //TODO: implement further
+                //more user feedback needed
+                self.render();
+
+                return;
+              }
+            } else {
+              //data.success === true; // true
+              //SUCCESSSFUL CC details update
+              console.log('SUCCESSFUL CC DETAILS UPDATE');
+
+              //hide the update cc details ui form stuff
+              //self.$('#account_billing_update_cc_details').css('display', 'none');
+
+              var billing_view = new AccountBillingView({billing_data: data.result});
               console.log('billing_view is: ');
               console.dir(billing_view);
               self.show_view('#account_main', billing_view);
+
+              //display success: this time we need to set it on the new billing_view!
+              billing_view.$('#account_billing_credit_card')
+                .prepend(_.template(UserFeedbackHTML));
+
+              window.scrollTo(0, 350);
+            } 
 
           },
           error: function (jqXHR, textStatus, errorThrown) {
@@ -179,6 +254,9 @@ define([
             console.dir(jqXHR);
             console.log(textStatus);
             console.dir(errorThrown);
+
+            //TODO: implement user feedback more
+            self.render();
           }
         });
       },

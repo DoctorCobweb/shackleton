@@ -291,7 +291,7 @@ define([
             console.log(textStatus);
             console.dir(jqXHR);
 
-            var $user_feedback = self.$('#change_password > .user_feedback');
+
             //if any elements have an 'has-error' class, remove the class
             //before submitting for registration. if not, then if they resubmit
             //registration and get a field wrong again, the UI will not update to
@@ -302,6 +302,8 @@ define([
               form_group_array.removeClass('has-error');
             }
    
+
+            var $user_feedback = self.$('#change_password > .user_feedback');
             //also close the successful update div if it is showing
             if ($user_feedback.css('display') == 'block') {
               $user_feedback.css('display', 'none');

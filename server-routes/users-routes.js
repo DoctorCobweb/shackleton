@@ -768,6 +768,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     console.log('=> change_cc_in_vault_for_user =>');
 
     var the_user;
+    var the_token;
 
     function find_user() {
       console.log('=> change_cc_in_vault_for_user => find_user');
@@ -808,9 +809,20 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
     function user_already_has_a_cc_in_vault() {
       console.log('=> change_cc_in_vault_for_user => user_already_has_a_cc_in_vault');
+
       gateway.customer.find(the_user.braintree_customer_id, function (err, customer) {
-        token = customer.creditCards[0].token;
-        update_the_customer_cc(token);
+        if (err) return callback(err);
+        if (!customer) {
+          return callback({'error': 'customer_is_null'});
+        }
+
+        //set the cc token
+        //token = customer.creditCards[0].token;
+        //the_token = customer.creditCards[0].token;
+        //update_the_customer_cc(token);
+
+        //send in the cc token obtained from braintree 
+        update_the_customer_cc(customer.creditCards[0].token);
       });
     }
 
@@ -829,12 +841,43 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
           }   
         }, 
         function (err, result) {
-          if (err) return callback(err);
-          if (!result.success) return res.send(result);
+          if (err) {
+
+            return res.send({'errors': {validation_errors: [],
+                                        internal_errors: {},
+                                        braintree_errors: err 
+                                       },
+                              'success': false
+                            });
+            //return callback(err);
+          }
+          if (!result.success) {
+            console.log('!result.success. result: ');
+            console.log(result);
+
+            return res.send({'errors': {validation_errors: [],
+                                        internal_errors: {},
+                                        braintree_errors: result 
+                                       },
+                              'success': false
+                            });
+            //return res.send(result);
+          }
+
           console.log('result from updating cc in vault: ');
           console.log(result);
           console.log(result.customer.creditCards[0]);
-          return res.send(result);
+
+
+          //SUCCESSFUL CC UPDATE
+          return res.send({'errors': {validation_errors: [],
+                                      internal_errors: {},
+                                      braintree_errors: {} 
+                                     },
+                            'result': result,
+                            'success': true 
+                          });
+          //return res.send(result);
         }
       );
     }
@@ -865,7 +908,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
           return callback(err);
         }
         if (!result) {
-          return res.send({'error': 'result_is_null'});
+          return callback({'error': 'result_is_null'});
         }
         if (result.success) {
           console.log('SUCCESS: created a braintree customer. braintree_customer_id: '
@@ -883,11 +926,28 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
           details.last_4 =          result.customer.creditCards[0].last4;
           details.masked_number =   result.customer.creditCards[0].maskedNumber;
 
-          return res.send(details);
+          //return res.send(details);
+          return res.send({'errors': {validation_errors: [],
+                                      internal_errors: {},
+                                      braintree_errors: {} 
+                                     },
+                            'result': details,
+                            'success': true 
+                          });
 
         } else {
           //braintree send back result.success = false
-          return callback(result);
+          //return callback(result);
+          console.log('BRAINTREE_ERROR: unable to create new customer and cc');
+
+          return res.send({'errors': {validation_errors: [],
+                                      internal_errors: {},
+                                      braintree_errors: details
+                                     },
+                            'success': false
+                          });
+
+
         }
       });
     }

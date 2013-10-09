@@ -4,9 +4,10 @@
 define([
     'backbone',
     'text!tpl/AccountBilling.html',
-    'braintree'
+    'braintree',
+    'text!tpl/UserFeedback.html'
   ], 
-  function (Backbone, AccountBillingHTML, Braintree) {
+  function (Backbone, AccountBillingHTML, Braintree, UserFeedbackHTML) {
     var AccountBillingView = Backbone.View.extend({
       tagName: 'div',
  
@@ -170,6 +171,12 @@ define([
         //the view comes with a submit button, which should make the ajax call below
         this.$('#account_billing_update_cc_details').css('display', 'block'); 
 
+        var $user_feedback = self.$('#account_billing_credit_card > .user_feedback');
+        //also close the successful update div if it is showing
+        if ($user_feedback.css('display') == 'block') {
+          $user_feedback.css('display', 'none');
+        }
+
 
       },
 
@@ -177,50 +184,125 @@ define([
         var self = this;
 
 
-
         $.ajax({
           url: '/api/users/change_cc_details/',
           type: 'POST',
           data: self.field_to_set,
           success: function (data, textStatus, jqXHR) {
-              console.log('SUCCESS: submitted the cc to braintree');
-              console.dir(data);
-              console.log(textStatus);
-              console.dir(jqXHR);
+            console.log('SUCCESS: submitted the cc to braintree');
+            console.dir(data);
+            console.log(textStatus);
+            console.dir(jqXHR);
+            
+            //if any elements have an 'has-error' class, remove the class
+            //before submitting for registration. if not, then if they resubmit
+            //registration and get a field wrong again, the UI will not update to
+            //show which fields are now good, and which are not.
+            var form_group_array = self.$('.form-group');
+            //console.log(form_group_array);
+            if (form_group_array.hasClass('has-error')) {
+              form_group_array.removeClass('has-error');
+            }
 
+
+
+            var $user_feedback = self.$('#account_billing_credit_card > .user_feedback');
+            //also close the successful update div if it is showing
+            if ($user_feedback.css('display') == 'block') {
+              $user_feedback.css('display', 'none');
+            }
+
+
+
+
+
+            if (data.success === false) {
+              if (!_.isEmpty(data.errors.validation_errors)) {
+                //we have validation errors due to bad user input. note: this is not
+                //from braintree api returning validation errors, but from express-
+                //validator module first checking if input is empty etc
+                console.log('VALIDATION ERRORS');
+     
+
+
+                //loop through the Array of validation errors, set to red for error 
+                //input
+                for (var key in data.errors.validation_errors) {
+                  var id_of_bad_input = '#' + data.errors.validation_errors[key].param;
+                  console.log(id_of_bad_input);
+                  $(id_of_bad_input).parent('.form-group').addClass('has-error');
+                }
+                return;
+              }
+              if (!_.isEmpty(data.errors.internal_errors)) {
+                //we have internal errors
+                console.log('INTERNAL ERRORS');
+               
+                //TODO: implement this more
+                //more user feedback needed
+                self.render();
+
+                return;
+              }
+              if (!_.isEmpty(data.errors.braintree_errors)) {
+                //we have braintree errors. could be 
+                //1. from validation of cc field,
+                //2. gatway rejected
+                //3. gateway busy
+                //4. etc...
+                console.log('BRAINTREE ERRORS');
+                console.dir(data.errors.braintree_errors);
+                //TODO: implement further
+                //more user feedback needed
+                self.render();
+
+                return;
+              }
+            } else {
+              //data.success === true; // true
+              //SUCCESSSFUL CC details update
+              console.log('SUCCESSFUL CC DETAILS UPDATE');
+
+              //hide the update cc details ui form stuff
               self.$('#account_billing_update_cc_details').css('display', 'none'); 
 
-              var updated_card = {};
-              updated_card.masked_number = data.customer.creditCards[0].maskedNumber;
-              updated_card.last_4 = data.customer.creditCards[0].last4;
-              updated_card.expiration_date = data.customer.creditCards[0].expirationDate;             
+              var _card = {};
+              _card.masked_number = data.result.customer.creditCards[0].maskedNumber;
+              _card.last_4 = data.result.customer.creditCards[0].last4;
+              _card.expiration_date = data.result.customer.creditCards[0].expirationDate;
+
               //self.$el.html(self.template(updated_card));
-              self.re_render(updated_card);
+
+              //then re-render the UI
+              self.re_render(_card);
+              self.$('#account_billing_credit_card')
+                .prepend(_.template(UserFeedbackHTML));
+
               window.scrollTo(0, 350);
- 
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            console.log('ERROR: failed setting the braintree cc in vault');
-            console.dir(jqXHR);
-            console.log(textStatus);
-            console.dir(errorThrown);
-          }
-        });
-      },
 
+            }
 
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+          console.log('ERROR: failed setting the braintree cc in vault');
+          console.dir(jqXHR);
+          console.log(textStatus);
+          console.dir(errorThrown);
 
-
-
-      show_view: function (selector, view) {
-        console.log('in show_view()');
-        if (this.current_view) {
-          this.current_view.close();
+          self.render();
         }
-        $(selector).html(view.render().el);
-        this.current_view = view;
-        return view;
+      });
+    },
+
+    show_view: function (selector, view) {
+      console.log('in show_view()');
+      if (this.current_view) {
+        this.current_view.close();
       }
+      $(selector).html(view.render().el);
+      this.current_view = view;
+      return view;
+    }
 
 
     });
