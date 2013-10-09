@@ -9,7 +9,7 @@ define([
     var CheckoutView = Backbone.View.extend({
       tagName: 'div',
 
-      className: 'checkoutDetails',
+      className: 'view_checkout_details',
 
       template: _.template(CheckoutHTML),
 

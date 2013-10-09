@@ -16,7 +16,8 @@ define([
   var CreditCardDetailsView = Backbone.View.extend({
     tagName: 'div',
 
-    className: 'credit_card_details',
+    //className: 'credit_card_details',
+    className: 'view_credit_card_details',
 
     template: _.template(CreditCardDetailsHTML),
 
@@ -36,6 +37,7 @@ define([
       console.log('in initialize() of credit-card-details-view.js');
 
       this.current_view = this;
+      this.are_tickets_reserved = false;
 
       //IMPORTANT: need to bind all methods to use the view instance as this variable
       _.bindAll(this);
@@ -162,25 +164,35 @@ define([
 
       var self = this;
 
-      //make http PUT /api/orders/:id request
-      this.model.save({}, 
-        {
-          error: function (model, xhr) {
-            console.log('ERROR in saving/updating the model');
-            console.dir(model);
-            console.dir(xhr);
-          },
-          success: function (model,response) {
-            console.log('SUCCESS in saving/updating the model');
-            console.dir(model);
-            console.dir(response);
- 
-            //handle all the possible cc status responses
-            self.handle_cc_statuses(response, model);
+      if (!this.are_tickets_reserved) {
+        //reservation TIMEDOUT
 
+        //TODO implement further
+        alert('YOUR TICKET RESERVATION HAS EXPIRED'); 
+        return;
+      } else {
+        //reservation is still VALID
+ 
+        //make http PUT /api/orders/:id request
+        this.model.save({}, 
+          {
+            error: function (model, xhr) {
+              console.log('ERROR in saving/updating the model');
+              console.dir(model);
+              console.dir(xhr);
+            },
+            success: function (model,response) {
+              console.log('SUCCESS in saving/updating the model');
+              console.dir(model);
+              console.dir(response);
+   
+              //handle all the possible cc status responses
+              self.handle_cc_statuses(response, model);
+  
+            }
           }
-        }
-      );
+        );
+      }
     },
 
 
@@ -214,6 +226,10 @@ define([
 
       this.poll = 0;
       this.interval_id = setInterval(this.poller, 1000);
+
+      // *** IMPORTANT ***
+      //set are_tickets_reserved = true
+      this.are_tickets_reserved = true;
     },
 
     parse_cookie_string: function () {
@@ -245,10 +261,12 @@ define([
       if (this.cookies_obj.reserve_tickets) {
         this.poll++;
         this.$('#ticker').html(this.poll);
+
       } else {
         console.log('ALONGSIDE YOUR HORSE, YOUR TICKET RESERVATION BOLTED OUT THE GATE.');
         clearInterval(this.interval_id);
         var self = this;
+
 
         $.ajax({
           url: '/api/orders/ticket_reserve_timeout',
@@ -268,6 +286,11 @@ define([
  
           }
         });
+
+
+        // *** IMPORTANT ***
+        this.are_tickets_reserved = false;
+        alert('YOUR TICKET RESERVATION HAS EXPIRED');
       }
     },
 

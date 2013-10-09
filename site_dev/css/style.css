@@ -50,15 +50,122 @@
   margin-top:20px;
 }
 
-
-
-.login_details {
+#checkout_details {
   float:left;
   background-color: #42414B;
   padding: 25px;
   margin-bottom:20px;
   margin-top:20px;
 }
+
+
+.view_checkout_details {
+  overflow: auto;
+}
+
+.view_number_of_tickets {
+  overflow: auto;
+}
+
+.view_purchase_with_cc_from_vault_details {
+  overflow: auto;
+}
+
+#purchase_with_vault_cc {
+  float:left;
+  background-color: #42414B;
+  padding: 25px;
+  margin-bottom:20px;
+  margin-top:20px;
+}
+
+#purchase_with_vault_cc > #vault_cc {
+  float:left;
+  background-color: #161516;
+  padding: 25px;
+  margin-bottom:20px;
+  margin-top:20px;
+
+}
+
+
+#purchase_with_vault_cc > #submit {
+  float: left;
+}
+
+#during_checkout_update_cc_details {
+  display:none;
+  background-color: #161516;
+  padding: 25px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  float:left;
+}
+
+
+.view_credit_card_details {
+  overflow:auto
+}
+
+/* this refers to the first time purchaser who has not entered any cc detail b4 */
+/* style for whole CreditCardDetailsView.html content */
+#during_checkout_credit_card_details {
+  float:left;
+  background-color: #42414B;
+  padding: 25px;
+  margin-bottom:20px;
+  margin-top:20px;
+}
+
+/* this refers to the first time purchaser who has not entered any cc detail b4 */
+#during_checkout_new_credit_card_details {
+  background-color: #161516;
+  padding: 25px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  float:left;
+}
+
+.ticket_select {
+  background-color: #efff33;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 20px;
+  text-align:center;
+  color:#161516;
+  font-size:15px;
+  font-weight:bold;
+}
+
+
+.registerDetails {
+  overflow: auto;
+}
+
+.register_with_gig_details {
+  overflow: auto;
+}
+
+.view_login_details {
+  overflow: auto;
+}
+
+#login_details {
+  float:left;
+  background-color: #42414B;
+  padding: 25px;
+  margin-bottom:20px;
+  margin-top:20px;
+}
+
+.login_with_gig_details {
+  overflow:auto;
+}
+
 
 .gigDetails img {
   float:left;
@@ -67,7 +174,7 @@
 
 
 .gigDetails div {
-  float:left;
+  float:left; 
   margin:10px;
 }
 
@@ -109,32 +216,45 @@
   max-height:300px;
 }
 
-/* the 'button' which user clicks when they want to change their cc details */
-#during_checkout_edit_cc_details {
-  clear:both;
+.gigDetails {
+  margin: 10px;
+  overflow:auto; 
+  /* ^^^ makes sure height doesnt collapse to 0px since all children float:left */
 }
 
-#during_checkout_update_cc_details {
-  display:none;
-  background-color: #42414B;
-  padding: 25px;
-  margin-right: 10px;
-  margin-left: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+.view_account_orders_details {
+  overflow: auto;
+}
+
+
+
+.view_account_settings_details {
+  overflow: auto;
+}
+
+#account_settings_parent {
+  /* background-color: #42414B; */
+  background-color: #161516;
+  margin-bottom:20px;
+  margin-top:20px;
+  margin-left:10px;
+  margin-right:10px;
   float:left;
 }
 
-#during_checkout_new_credit_card_details {
-  background-color: #42414B;
-  padding: 25px;
-  margin-right: 10px;
-  margin-left: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  float:left;
+
+.view_account_billing_details {
+  overflow: auto;
 }
 
+#account_billing_parent {
+  background-color: #42414B;
+  margin-bottom:20px;
+  margin-top:20px;
+  margin-left:10px;
+  margin-right:10px;
+  float:left;
+}
 
 /* the credit card on file */
 #account_billing_credit_card {
@@ -217,24 +337,6 @@
 
 }
 
-/*
-#account_orders {
-  margin-left:20px;
-  margin-right:10px;
-}
-
-#account_billing{
-  margin-left:10px;
-  margin-right:10px;
-}
-
-#account_settings {
-  margin-left:10px;
-  margin-right:20px;
-}
-*/
-
-
 
 h3 {
   color:#EE9433;
@@ -276,11 +378,12 @@ h3 {
   text-align: center;
 }
 
-
-
+/* not used, i think */
+/*
 #change_cc_details {
   display: none;
 }
+*/
 
 body {
   color:#EE9433;
@@ -304,9 +407,6 @@ div.footer {
 }
 
 
-.checkoutDetails {
-  margin: 10px
-}
 
 
 .creditCardDetails {
@@ -328,17 +428,6 @@ div.footer {
   margin: 10px
 }
 
-
-.ticket_select {
-  background-color: #efff33;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding: 20px;
-  text-align:center;
-  color:#161516;
-  font-size:15px;
-  font-weight:bold;
-}
 
 
 #reserve-form {
@@ -385,9 +474,6 @@ li > b {
   padding:20px; 
 }
 
-.gigDetails {
-  margin: 10px;
-}
 
 .main .container-fluid {
   /*background-color: #79973f; */

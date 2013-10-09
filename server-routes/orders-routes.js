@@ -79,11 +79,18 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     res.cookie(
       'reserve_tickets', 
       req.body.number_of_tickets.toString(10),
+
+      //nb: httpOnly:true will not let the client site app poll the cookie. 
+      //=> no ticket reservation is available given the current implementation
+      //e.g. {maxAge: 60 * 1000, httpOnly: true, signed: true} will NOT WORK
+
       {maxAge: 15 * 60 * 1000, signed: true} //reserve tix for 15mins
-      //{maxAge: 3 * 60 * 1000, httpOnly: true, signed: true}
+      //{maxAge: 10 * 1000, signed: true} //reserve tix for 10s
+
     );
 
 
+    //TESTING/MUCKING AROUND WITH COOKIES
     /*
     //test cookies
     res.cookie(

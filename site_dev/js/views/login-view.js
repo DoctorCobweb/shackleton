@@ -12,7 +12,7 @@ define([
     var LoginView = Backbone.View.extend({
       tagName: 'div',
 
-      className: 'login_details',
+      className: 'view_login_details',
 
       template: _.template(LoginHTML),
 

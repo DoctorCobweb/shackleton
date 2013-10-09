@@ -15,7 +15,7 @@ define([
 
       //el: '#featureList',
      
-      //className: 'thumbnails',
+      className: 'view_account_orders_details',
    
       events: {},
 

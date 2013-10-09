@@ -22,7 +22,8 @@ define([
     var NumberOfTicketsView = Backbone.View.extend({
       tagName: 'div',
 
-      className: 'number_of_tickets_details',
+      //className: 'number_of_tickets_details',
+      className: 'view_number_of_tickets',
 
       template: _.template(NumberOfTicketsHTML),
 

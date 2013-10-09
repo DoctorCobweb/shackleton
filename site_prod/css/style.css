@@ -46,19 +46,103 @@
   margin-bottom:20px;
   margin-top:20px;
 }
-.login_details {
+#checkout_details {
   float:left;
   background-color: #42414B;
   padding: 25px;
   margin-bottom:20px;
   margin-top:20px;
 }
+.view_checkout_details {
+  overflow: auto;
+}
+.view_number_of_tickets {
+  overflow: auto;
+}
+.view_purchase_with_cc_from_vault_details {
+  overflow: auto;
+}
+#purchase_with_vault_cc {
+  float:left;
+  background-color: #42414B;
+  padding: 25px;
+  margin-bottom:20px;
+  margin-top:20px;
+}
+#purchase_with_vault_cc > #vault_cc {
+  float:left;
+  background-color: #161516;
+  padding: 25px;
+  margin-bottom:20px;
+  margin-top:20px;
+}
+#purchase_with_vault_cc > #submit {
+  float: left;
+}
+#during_checkout_update_cc_details {
+  display:none;
+  background-color: #161516;
+  padding: 25px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  float:left;
+}
+.view_credit_card_details {
+  overflow:auto
+}
+#during_checkout_credit_card_details {
+  float:left;
+  background-color: #42414B;
+  padding: 25px;
+  margin-bottom:20px;
+  margin-top:20px;
+}
+#during_checkout_new_credit_card_details {
+  background-color: #161516;
+  padding: 25px;
+  margin-right: 10px;
+  margin-left: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  float:left;
+}
+.ticket_select {
+  background-color: #efff33;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 20px;
+  text-align:center;
+  color:#161516;
+  font-size:15px;
+  font-weight:bold;
+}
+.registerDetails {
+  overflow: auto;
+}
+.register_with_gig_details {
+  overflow: auto;
+}
+.view_login_details {
+  overflow: auto;
+}
+#login_details {
+  float:left;
+  background-color: #42414B;
+  padding: 25px;
+  margin-bottom:20px;
+  margin-top:20px;
+}
+.login_with_gig_details {
+  overflow:auto;
+}
 .gigDetails img {
   float:left;
   margin:20px;
 }
 .gigDetails div {
-  float:left;
+  float:left; 
   margin:10px;
 }
 .gigDetails .proceed {
@@ -84,26 +168,35 @@
   max-width:300px;
   max-height:300px;
 }
-#during_checkout_edit_cc_details {
-  clear:both;
+.gigDetails {
+  margin: 10px;
+  overflow:auto; 
+  
 }
-#during_checkout_update_cc_details {
-  display:none;
-  background-color: #42414B;
-  padding: 25px;
-  margin-right: 10px;
-  margin-left: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+.view_account_orders_details {
+  overflow: auto;
+}
+.view_account_settings_details {
+  overflow: auto;
+}
+#account_settings_parent {
+  
+  background-color: #161516;
+  margin-bottom:20px;
+  margin-top:20px;
+  margin-left:10px;
+  margin-right:10px;
   float:left;
 }
-#during_checkout_new_credit_card_details {
+.view_account_billing_details {
+  overflow: auto;
+}
+#account_billing_parent {
   background-color: #42414B;
-  padding: 25px;
-  margin-right: 10px;
-  margin-left: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-bottom:20px;
+  margin-top:20px;
+  margin-left:10px;
+  margin-right:10px;
   float:left;
 }
 #account_billing_credit_card {
@@ -198,9 +291,6 @@ h3 {
   padding-bottom: 5px;
   text-align: center;
 }
-#change_cc_details {
-  display: none;
-}
 body {
   color:#EE9433;
   background-color:#3A3939;
@@ -217,9 +307,6 @@ div.footer {
   margin-bottom: 10px;
   clear:both;
 }
-.checkoutDetails {
-  margin: 10px
-}
 .creditCardDetails {
   margin: 10px
 }
@@ -231,16 +318,6 @@ div.footer {
 }
 .registerWithPendingOrderDetails {
   margin: 10px
-}
-.ticket_select {
-  background-color: #efff33;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  padding: 20px;
-  text-align:center;
-  color:#161516;
-  font-size:15px;
-  font-weight:bold;
 }
 #reserve-form {
   background-color: #ee5c42;
@@ -268,9 +345,6 @@ li > b {
   margin-bottom:20px;
   margin-top:10px;
   padding:20px; 
-}
-.gigDetails {
-  margin: 10px;
 }
 .main .container-fluid {
   

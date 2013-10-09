@@ -16,7 +16,7 @@ define([
     var AccountSettingsView = Backbone.View.extend({
       tagName: 'div',
  
-      className: 'account_settings_details',
+      className: 'view_account_settings_details',
 
       template: _.template(AccountSettingsHTML),
 

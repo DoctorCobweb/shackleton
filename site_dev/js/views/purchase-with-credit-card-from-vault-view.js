@@ -18,7 +18,7 @@ define([
   var PurchaseWithCreditCardFromVaultView = Backbone.View.extend({
     tagName: 'div',
 
-    className: 'purchase_with_credit_card_details_from_vault_details',
+    className: 'view_purchase_with_cc_from_vault_details',
 
     template: _.template(PurchaseWithCreditCardFromVaultHTML),
 
@@ -41,6 +41,7 @@ define([
 
       this.current_view = this;
       this.new_cc_details = {};
+      this.are_tickets_reserved = false;
 
       //IMPORTANT: need to bind all methods to use the view instance as this variable
       _.bindAll(this);
@@ -53,8 +54,7 @@ define([
  
       //*** START THE RESERVE TICKETS PROCESS ***
       this.start_reserve_tickets_countdown();
-
-
+      
 
     },
 
@@ -200,26 +200,38 @@ define([
       console.dir(this.model);
 
       var self = this;
+      
+      //check to see if the cookie for reserving tickets has timed out
+      if (!this.are_tickets_reserved) {
+        //reservation TIMEDOUT
 
-      //make http PUT /api/orders/:id request
-      this.model.save({}, 
-        {
-          error: function (model, xhr) {
-            console.log('ERROR in saving/updating the model');
-            console.dir(model);
-            console.dir(xhr);
-          },
-          success: function (model,response) {
-            console.log('SUCCESS in saving/updating the model');
-            console.dir(model);
-            console.dir(response);
+        //TODO implement further
+        alert('YOUR TICKET RESERVATION HAS EXPIRED');
+        return;
 
-            //handles all the possible cc status responses
-            self.handle_cc_statuses(response, model);
+      } else {
+        //reservation is still VALID
 
+        //make http PUT /api/orders/:id request
+        this.model.save({}, 
+          {
+            error: function (model, xhr) {
+              console.log('ERROR in saving/updating the model');
+              console.dir(model);
+              console.dir(xhr);
+            },
+            success: function (model,response) {
+              console.log('SUCCESS in saving/updating the model');
+              console.dir(model);
+              console.dir(response);
+  
+              //handles all the possible cc status responses
+              self.handle_cc_statuses(response, model);
+  
+            }
           }
-        }
-      );
+        );
+      }
     },
 
 
@@ -256,7 +268,7 @@ define([
       this.$('#submit').css('display', 'none');
       this.$('#during_checkout_edit_cc_details').css('display', 'none');
       this.$('#during_checkout_update_cc_details').css('display', 'block'); 
-
+      this.$('#vault_cc').css('display', 'none');
 
     },
   
@@ -266,30 +278,39 @@ define([
  
       var self = this;
 
-      $.ajax({
-        url: '/api/users/change_cc_details/',
-        type: 'POST',
-        data: self.new_cc_details,
-        success: function (data, textStatus, jqXHR) {
-            console.log('SUCCESS: changed the cc details for the user');
-            console.dir(data);
-            console.log(textStatus);
+      //check to see if the ticket reservatin has timeout before going ahead
+      if (!this.are_tickets_reserved) {
+        //NO ticket reservation. reservation timed out
+        //TODO implement further
+        alert('YOUR TICKET RESERVATION HAS EXPIRED');
+        return;
+      } else {
+        //ticket reservation is still VALID
+
+        $.ajax({
+          url: '/api/users/change_cc_details/',
+          type: 'POST',
+          data: self.new_cc_details,
+          success: function (data, textStatus, jqXHR) {
+              console.log('SUCCESS: changed the cc details for the user');
+              console.dir(data);
+              console.log(textStatus);
+              console.dir(jqXHR);
+     
+              self.model.set({'braintree_customer_id': data.result.customer.id});
+              self.submit();
+  
+  
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log('ERROR: could not change the cc details for the user');
             console.dir(jqXHR);
+            console.log(textStatus);
+            console.dir(errorThrown);
    
-            self.model.set({'braintree_customer_id': data.customer.id});
-            self.submit();
-
-
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-          console.log('ERROR: could not change the cc details for the user');
-          console.dir(jqXHR);
-          console.log(textStatus);
-          console.dir(errorThrown);
- 
-        },
-      });
-
+          },
+        });
+      }
     },
 
 
@@ -348,8 +369,13 @@ define([
       console.log('document.cookie: ' + document.cookie);
       //console.log(this);
 
+
       this.poll = 0;
       this.interval_id = setInterval(this.poller, 1000);
+      
+      //*** IMPORTANT ***
+      //set are_tickets_reserved to true
+      this.are_tickets_reserved = true;
     },
 
     parse_cookie_string: function () {
@@ -381,10 +407,12 @@ define([
       if (this.cookies_obj.reserve_tickets) {
         this.poll++;
         this.$('#ticker').html(this.poll);
+
       } else {
         console.log('ALONGSIDE YOUR HORSE, YOUR TICKET RESERVATION BOLTED OUT THE GATE.');
         clearInterval(this.interval_id);  
         var self = this;        
+
  
         //delete the ticket reservation i.e. add back the reserved tick no. back to
         //the gig in gigs collection
@@ -406,6 +434,14 @@ define([
 
           }
         });
+
+
+        //*** IMPORTANT ***        
+        //set are_tickets_reserved to false
+        this.are_tickets_reserved = false;
+        alert('YOUR TICKET RESERVATION HAS EXPIRED');
+
+
       }
     },
 
