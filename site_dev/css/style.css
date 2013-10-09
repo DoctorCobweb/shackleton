@@ -2,12 +2,28 @@
 /* @import url(css/bootstrap-responsive.css); */
 
 
+.negative_user_feedback {
+  background-color: #EC2424;
+  color: #fff;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+}
+
+.successful_user_feedback {
+  background-color: #ECA336;
+  color: #fff;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  text-align: center;
+}
+
+
 .has-success .form-control, 
 .has-success .form-control:focus {
   border-color: #77b300;
   background-color: #484E3C;
 }
-
 
 
 .has-error .form-control, 
@@ -16,46 +32,50 @@
   background-color: #3A3939;
 }
 
+
 .proceed {
   padding: 10px;
-  background-color:#2BBB53;
-  color:#FFFFFF;
-  text-align:center;
-  margin-top:10px;
-  margin-bottom:10px;
+  background-color: #2BBB53;
+  color: #FFFFFF;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
+
 
 #register_with_pending_order {
-  float:left;
+  float: left;
   background-color: #42414B;
   padding: 25px;
-  margin-bottom:20px;
-  margin-top:20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
+
 #login_with_pending_order {
-  float:left;
+  float: left;
   background-color: #42414B;
   padding: 25px;
-  margin-bottom:20px;
-  margin-top:20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 
 #register_new_account {
-  float:left;
+  float: left;
   background-color: #42414B;
   padding: 25px;
-  margin-bottom:20px;
-  margin-top:20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
+
 #checkout_details {
-  float:left;
+  float: left;
   background-color: #42414B;
   padding: 25px;
-  margin-bottom:20px;
-  margin-top:20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 
@@ -63,29 +83,32 @@
   overflow: auto;
 }
 
+
 .view_number_of_tickets {
   overflow: auto;
 }
+
 
 .view_purchase_with_cc_from_vault_details {
   overflow: auto;
 }
 
+
 #purchase_with_vault_cc {
-  float:left;
+  float: left;
   background-color: #42414B;
   padding: 25px;
-  margin-bottom:20px;
-  margin-top:20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
+
 #purchase_with_vault_cc > #vault_cc {
-  float:left;
+  float: left;
   background-color: #161516;
   padding: 25px;
-  margin-bottom:20px;
-  margin-top:20px;
-
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
 
@@ -93,31 +116,34 @@
   float: left;
 }
 
+
 #during_checkout_update_cc_details {
-  display:none;
+  display: none;
   background-color: #161516;
   padding: 25px;
   margin-right: 10px;
   margin-left: 10px;
   margin-top: 20px;
   margin-bottom: 20px;
-  float:left;
+  float: left;
 }
 
 
 .view_credit_card_details {
-  overflow:auto
+  overflow: auto
 }
+
 
 /* this refers to the first time purchaser who has not entered any cc detail b4 */
 /* style for whole CreditCardDetailsView.html content */
 #during_checkout_credit_card_details {
-  float:left;
+  float: left;
   background-color: #42414B;
   padding: 25px;
-  margin-bottom:20px;
-  margin-top:20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
+
 
 /* this refers to the first time purchaser who has not entered any cc detail b4 */
 #during_checkout_new_credit_card_details {
@@ -127,18 +153,19 @@
   margin-left: 10px;
   margin-top: 20px;
   margin-bottom: 20px;
-  float:left;
+  float: left;
 }
+
 
 .ticket_select {
   background-color: #efff33;
   margin-top: 10px;
   margin-bottom: 10px;
   padding: 20px;
-  text-align:center;
+  text-align: center;
   color:#161516;
-  font-size:15px;
-  font-weight:bold;
+  font-size: 15px;
+  font-weight: bold;
 }
 
 
@@ -146,62 +173,71 @@
   overflow: auto;
 }
 
+
 .register_with_gig_details {
   overflow: auto;
 }
+
 
 .view_login_details {
   overflow: auto;
 }
 
+
 #login_details {
-  float:left;
+  float: left;
   background-color: #42414B;
   padding: 25px;
-  margin-bottom:20px;
-  margin-top:20px;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
 
+
 .login_with_gig_details {
-  overflow:auto;
+  overflow: auto;
 }
 
 
 .gigDetails img {
-  float:left;
-  margin:20px;
+  float: left;
+  margin: 20px;
 }
 
 
 .gigDetails div {
-  float:left; 
-  margin:10px;
+  float: left; 
+  margin: 10px;
 }
+
 
 .gigDetails .proceed {
-  float:left;
-  margin:20px;
+  float: left;
+  margin: 20px;
 }
+
 
 #gig_list_item_pic {
-  float:left;
+  float: left;
 }
 
+
 #gig_list_item_details {
-  float:left;
+  float: left;
 }
 
 
 #gig_list_item_get_tickets{
-  float:left;
+  float: left;
 }
+
 
 .gig_list_item {
   background-color: #42414B;
-  min-height:150px;
-  padding:10px;
-  margin:10px;
+  min-height: 150px;
+  padding: 10px;
+  margin: 10px;
 }
+
 
 /*
 .gig_list_item {
@@ -211,35 +247,37 @@
 }
 */
 
+
 .gigDetails img {
-  max-width:300px;
-  max-height:300px;
+  max-width: 300px;
+  max-height: 300px;
 }
+
 
 .gigDetails {
   margin: 10px;
-  overflow:auto; 
+  overflow: auto; 
   /* ^^^ makes sure height doesnt collapse to 0px since all children float:left */
 }
+
 
 .view_account_orders_details {
   overflow: auto;
 }
 
 
-
 .view_account_settings_details {
   overflow: auto;
 }
 
+
 #account_settings_parent {
-  /* background-color: #42414B; */
   background-color: #161516;
-  margin-bottom:20px;
-  margin-top:20px;
-  margin-left:10px;
-  margin-right:10px;
-  float:left;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  float: left;
 }
 
 
@@ -247,40 +285,45 @@
   overflow: auto;
 }
 
+
 #account_billing_parent {
   background-color: #42414B;
-  margin-bottom:20px;
-  margin-top:20px;
-  margin-left:10px;
-  margin-right:10px;
-  float:left;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  float: left;
 }
+
 
 /* the credit card on file */
 #account_billing_credit_card {
   background-color: #42414B;
   padding: 25px;
-  margin-bottom:20px;
-  margin-top:20px;
-  margin-left:10px;
-  margin-right:10px;
-  float:left;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+  float: left;
 }
 
+
 #account_billing_credit_card  #account_change_cc {
-  margin-top:10px;
+  margin-top: 10px;
 }
+
 
 #account_billing_update_cc_details {
   display: none;
-  background-color:#42414B;
-  padding:25px;
-  margin-left:10px;
-  margin-right:10px;
-  margin-bottom:20px;
-  margin-top:20px;
-  float:left;
+  background-color: #42414B;
+  padding: 25px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  float: left;
 }
+
 
 /* from AccountBillingDefaultView */
 #account_billing_new_cc_details {
@@ -290,22 +333,23 @@
   margin-left: 10px;
   margin-top: 20px;
   margin-bottom: 20px;
-  float:left;
+  float: left;
 }
-
 
 
 #account_main_spacer {
   min-height: 25px;
-  clear:both;
+  clear: both;
 }
+
 
 #account_order {
   background-color: #42414B;
   padding: 25px;
-  margin:10px;
-  float:left;
+  margin: 10px;
+  float: left;
 }
+
 
 #change_password {
   background-color: #42414B;
@@ -314,7 +358,7 @@
   margin-left: 10px;
   margin-top: 20px;
   margin-bottom: 20px;
-  float:left;
+  float: left;
 }
 
 
@@ -325,9 +369,8 @@
   margin-left: 10px;
   margin-top: 20px;
   margin-bottom: 20px;
-  float:left;
+  float: left;
 }
-
 
 
 .btn-success {
@@ -339,44 +382,87 @@
 
 
 h3 {
-  color:#EE9433;
-
+  color: #EE9433;
 }
 
-#main_title {
-  color:#333;
 
+#main_title {
+  color: #333;
 }
 
 
 .banner_view {
-  text-align:center;
-  /* background-color: #efff33; */
+  text-align: center;
   background-color: #2BBB53;
-  margin-bottom:10px;
+  margin-bottom: 10px;
 }
+
 
 .footer_heading {
-  font-weight: bold;
-
+  font-size: 13px;
+  color: #A36A3D;
+  text-decoration: underline;
 }
 
 
-.footer .container .sections .section {
-  width:100px;
-  float:left;
-  padding-right:10px;
-  padding-left:10px;
-  padding-top:10px;
+.footer {
+  overflow: auto;
 }
 
 
-.user_feedback {
-  background-color: #ECA336;
+.footer_container {
+  float: left;
+}
+
+
+.footer_sections {
+  overflow: auto;
+}
+
+
+.footer .container .footer_sections .section {
+  width: 100px;
+  float: left;
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 10px;
+  margin-left: 10px
+  margin-right: 10px
+}
+
+
+.footer_sections .section ul li {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  min-width: 150px;
+}
+
+
+.footer_sections .section ul li a {
+  background-color: #272916; /* green-brown */
+  color: #6B6B6B;
   padding-top: 5px;
   padding-bottom: 5px;
-  text-align: center;
+  font-size: 13px;
 }
+
+
+.footer_sections .section ul li a:link {
+}
+
+
+.footer_sections .section ul li a:visited {
+}
+
+
+.footer_sections .section ul li a:hover {
+  color: #C2BEBE;
+}
+
+
+.footer_sections .section ul li a:active {
+}
+
 
 /* not used, i think */
 /*
@@ -385,14 +471,17 @@ h3 {
 }
 */
 
+
 body {
-  color:#EE9433;
-  background-color:#3A3939;
+  color: #EE9433;
+  background-color: #3A3939;
 }
+
 
 #account {
   display: none;
 }
+
 
 #import_passbook_pass {
    display: none; 
@@ -400,13 +489,10 @@ body {
 
 
 div.footer {
-  background-color: #272916;
+  background-color: #272916; /* green-brown */
   margin-top: 10px;
-  margin-bottom: 10px;
-  clear:both;
+  clear: both;
 }
-
-
 
 
 .creditCardDetails {
@@ -429,7 +515,6 @@ div.footer {
 }
 
 
-
 #reserve-form {
   background-color: #ee5c42;
 }
@@ -440,13 +525,13 @@ div.footer {
 }
 
 
-
 .btn-warning {
   background-image: linear-gradient(to bottom, #F87531, #f89406);
 }
 
+
 .textLink  {
-  color:#586949;
+  color: #586949;
 }
 
 
@@ -456,54 +541,61 @@ ul {
   list-style-type: none;
 }
 
+
 /*
 li {
   color: #ffffff;
 }
 */
 
+
 li > b {
-  color: ##EE9433;
+  color: #EE9433;
 }
 
+
 #featureContent {
-  /*background-color: #ee5c42; */
   background-color: #161516;
-  margin-bottom:20px;
-  margin-top:10px;
-  padding:20px; 
+  margin-bottom: 20px;
+  margin-top: 10px;
+  padding: 20px; 
 }
 
 
 .main .container-fluid {
-  /*background-color: #79973f; */
   background-color: #586949;
 }
 
+
 .btn-success:hover {
-  background-color:#2BBB53;
-  color:#000;
+  background-color: #2BBB53;
+  color: #000;
 }
+
 
 .navbar-nav li {
-  color:#000;
+  color: #000;
 }
+
 
 .navbar-default .navbar-brand {
-  color:#3A3939;
-  font-weight:bold;
-  font-size:18px;
+  color: #3A3939;
+  font-weight: bold;
+  font-size: 18px;
 }
+
 
 .navbar-default {
-  background-color:#EE6D08;
-  border-color:#EE6D08;
+  background-color: #EE6D08;
+  border-color: #EE6D08;
 }
 
+
 .navbar-default .navbar-nav > li > a {
-  color:#3A3939;
-  font-weight:bold;
+  color: #3A3939;
+  font-weight: bold;
 }
+
 
 .navbar-default .navbar-nav>li>a:hover, 
 .navbar-default .navbar-nav>li>a:focus {
@@ -511,10 +603,12 @@ li > b {
   background-color: #fff; 
 }
 
+
 .navbar-default .navbar-toggle:hover, 
 .navbar-default .navbar-toggle:focus {
   background-color: #282828;
 }
+
 
 .navbar-default .navbar-toggle {
   border-color: #FFFFFF;
@@ -528,36 +622,30 @@ li > b {
 
 a {
   color: #CC4100; 
-  padding-left:2px;
-  padding-right:2px;
+  padding-left: 2px;
+  padding-right: 2px;
 }
+
 
 a:link  {
   background-color: #EE6D08;
-  /* background-color: #000; */
-  text-decoration-underline:none;
+  text-decoration-underline: none;
   text-decoration-color: #CC4100;
-  /* text-decoration:line-through; */
-
 }
+
 
 a:visited  {
-  background-color: ##EE6D08;
-  /* background-color: #000; */
-  /* text-decoration-underline:none; */
-
+  background-color: #EE6D08;
 }
+
+
 a:hover {
   background-color: #2BBB53;
-  /* text-decoration-underline:none; */
-  /*text-decoration-color: #ffffff; */
   color: #000;
-  text-decoration:none;
-
+  text-decoration: none;
 }
+
 
 a:active {
   background-color: #2BBB53;
-  /* text-decoration-underline:none; */
-
 }

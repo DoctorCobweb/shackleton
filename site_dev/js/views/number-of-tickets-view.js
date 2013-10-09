@@ -8,7 +8,8 @@ define([
     'collections/ordersCollection',
     'views/credit-card-details-view',
     'views/checkout-view',
-    'views/purchase-with-credit-card-from-vault-view'
+    'views/purchase-with-credit-card-from-vault-view',
+    'text!tpl/NegativeUserFeedback.html'
   ],
   function (Backbone, 
             NumberOfTicketsHTML, 
@@ -16,7 +17,8 @@ define([
             OrdersCollection,
             CreditCardDetailsView,
             CheckoutView,
-            PurchaseWithCreditCardFromVaultView) 
+            PurchaseWithCreditCardFromVaultView,
+            NegativeUserFeedbackHTML) 
   {
 
     var NumberOfTicketsView = Backbone.View.extend({
@@ -123,6 +125,16 @@ define([
       submit: function () {
         console.log('clicked proceed to payment button');
         var self = this;
+
+        if(!self.number_of_tickets) {
+          console.log('ERROR: no tickets have been selected');
+          this.$('#number_of_tickets')
+            .prepend(_.template(NegativeUserFeedbackHTML)({'error': 'No tickets selected'}));
+
+          
+
+          return;
+        }
 
 
         //*** CREATE A NEW ORDER HERE ***

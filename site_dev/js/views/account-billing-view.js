@@ -5,9 +5,9 @@ define([
     'backbone',
     'text!tpl/AccountBilling.html',
     'braintree',
-    'text!tpl/UserFeedback.html'
+    'text!tpl/SuccessfulUserFeedback.html'
   ], 
-  function (Backbone, AccountBillingHTML, Braintree, UserFeedbackHTML) {
+  function (Backbone, AccountBillingHTML, Braintree, SuccessfulUserFeedbackHTML) {
     var AccountBillingView = Backbone.View.extend({
       tagName: 'div',
  
@@ -171,10 +171,10 @@ define([
         //the view comes with a submit button, which should make the ajax call below
         this.$('#account_billing_update_cc_details').css('display', 'block'); 
 
-        var $user_feedback = self.$('#account_billing_credit_card > .user_feedback');
+        var $successful_user_feedback = self.$('#account_billing_credit_card > .successful_user_feedback');
         //also close the successful update div if it is showing
-        if ($user_feedback.css('display') == 'block') {
-          $user_feedback.css('display', 'none');
+        if ($successful_user_feedback.css('display') == 'block') {
+          $successful_user_feedback.css('display', 'none');
         }
 
 
@@ -206,10 +206,10 @@ define([
 
 
 
-            var $user_feedback = self.$('#account_billing_credit_card > .user_feedback');
+            var $successful_user_feedback = self.$('#account_billing_credit_card > .successful_user_feedback');
             //also close the successful update div if it is showing
-            if ($user_feedback.css('display') == 'block') {
-              $user_feedback.css('display', 'none');
+            if ($successful_user_feedback.css('display') == 'block') {
+              $successful_user_feedback.css('display', 'none');
             }
 
 
@@ -276,7 +276,7 @@ define([
               //then re-render the UI
               self.re_render(_card);
               self.$('#account_billing_credit_card')
-                .prepend(_.template(UserFeedbackHTML));
+                .prepend(_.template(SuccessfulUserFeedbackHTML)({'success':'Updated billing details'}));
 
               window.scrollTo(0, 350);
 

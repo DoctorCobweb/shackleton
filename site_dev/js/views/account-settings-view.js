@@ -9,10 +9,10 @@
 define([
     'backbone',
     'text!tpl/AccountSettings.html',
-    'text!tpl/UserFeedback.html',
+    'text!tpl/SuccessfulUserFeedback.html',
     'models/user-model'
   ], 
-  function (Backbone, AccountSettingsHTML, UserFeedbackHTML, User) {
+  function (Backbone, AccountSettingsHTML, SuccessfulUserFeedbackHTML, User) {
     var AccountSettingsView = Backbone.View.extend({
       tagName: 'div',
  
@@ -201,11 +201,11 @@ define([
             console.log(response);
             console.log(options);
 
-            var $user_feedback = self.$('#change_user_details > .user_feedback');
+            var $successful_user_feedback = self.$('#change_user_details > .successful_user_feedback');
 
             //also close the successful update div if it is showing
-            if ($user_feedback.css('display') == 'block') {
-              $user_feedback.css('display', 'none');
+            if ($successful_user_feedback.css('display') == 'block') {
+              $successful_user_feedback.css('display', 'none');
             }
 
             //YOU MUST CHECK FOR ERRORS FIRST. IF NONE OF THESE CHECKS ARE MET ONLY THEN
@@ -248,7 +248,8 @@ define([
   
               //then re-render the UI
               self.render();
-              self.$('#change_user_details').prepend(_.template(UserFeedbackHTML));
+              self.$('#change_user_details').
+                prepend(_.template(SuccessfulUserFeedbackHTML)({'success':'Updated your settings'}));
             }
            
             
@@ -303,10 +304,10 @@ define([
             }
    
 
-            var $user_feedback = self.$('#change_password > .user_feedback');
+            var $successful_user_feedback = self.$('#change_password > .successful_user_feedback');
             //also close the successful update div if it is showing
-            if ($user_feedback.css('display') == 'block') {
-              $user_feedback.css('display', 'none');
+            if ($successful_user_feedback.css('display') == 'block') {
+              $successful_user_feedback.css('display', 'none');
             }
 
 
@@ -316,7 +317,8 @@ define([
               //reset the ui
               self.render();
               //insert a <div> saying it was successful
-              self.$('#change_password').prepend(_.template(UserFeedbackHTML));
+              self.$('#change_password').
+                prepend(_.template(SuccessfulUserFeedbackHTML)({'success':'Updated your password'}));
             }
 
             if (!_.isEmpty(data.errors.validation_errors)) {

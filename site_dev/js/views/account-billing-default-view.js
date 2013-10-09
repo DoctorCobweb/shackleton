@@ -6,10 +6,10 @@ define([
     'text!tpl/AccountBillingDefault.html',
     'braintree',
     'views/account-billing-view',
-    'text!tpl/UserFeedback.html'
+    'text!tpl/SuccessfulUserFeedback.html'
   ], 
   function (Backbone, AccountBillingDefaultHTML, Braintree,
-            AccountBillingView, UserFeedbackHTML) {
+            AccountBillingView, SuccessfulUserFeedbackHTML) {
     var AccountBillingDefaultView = Backbone.View.extend({
       tagName: 'div',
  
@@ -178,10 +178,10 @@ define([
 
 
 
-            var $user_feedback = self.$('#account_billing_new_cc_details > .user_feedback');
+            var $successful_user_feedback = self.$('#account_billing_new_cc_details > .successful_user_feedback');
             //also close the successful update div if it is showing
-            if ($user_feedback.css('display') == 'block') {
-              $user_feedback.css('display', 'none');
+            if ($successful_user_feedback.css('display') == 'block') {
+              $successful_user_feedback.css('display', 'none');
             }
 
 
@@ -243,7 +243,7 @@ define([
 
               //display success: this time we need to set it on the new billing_view!
               billing_view.$('#account_billing_credit_card')
-                .prepend(_.template(UserFeedbackHTML));
+                .prepend(_.template(SuccessfulUserFeedbackHTML)({'success':'Updated billing details'}));
 
               window.scrollTo(0, 350);
             } 

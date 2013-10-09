@@ -237,7 +237,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     req.checkBody('phone_number','Phone number must be numeric').isNumeric();
     req.checkBody('email_address', 'Empty email address').notEmpty();
     req.checkBody('email_address', 'Not a valid email address').isEmail();
-    req.checkBody('password', 'Password length must be 6 to 20 characters').len(6, 20);
+    req.checkBody('password', 'Password length must be 8 to 20 characters').len(8, 20);
     
     req.sanitize('first_name').xss();
     req.sanitize('last_name').xss();
@@ -572,10 +572,10 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
     //console.log('req.body.new_password_1' + req.body.new_password_1);
     //console.log('req.body.new_password_2' + req.body.new_password_2);
 
-    req.checkBody('new_password_1', 'Password length must be 6 to 20 characters')
-      .len(6, 20);
-    req.checkBody('new_password_2', 'Password length must be 6 to 20 characters')
-      .len(6, 20);
+    req.checkBody('new_password_1', 'Password length must be 8 to 20 characters')
+      .len(8, 20);
+    req.checkBody('new_password_2', 'Password length must be 8 to 20 characters')
+      .len(8, 20);
     
     req.sanitize('new_password_1').xss();
     req.sanitize('new_password_2').xss();
