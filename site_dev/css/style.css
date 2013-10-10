@@ -2,6 +2,11 @@
 /* @import url(css/bootstrap-responsive.css); */
 
 
+.gigs_container {
+  overflow: auto;
+}
+
+
 .negative_user_feedback {
   background-color: #EC2424;
   color: #fff;
@@ -276,7 +281,9 @@
   background-color: #42414B;
   min-height: 150px;
   padding: 10px;
-  margin: 10px;
+  margin: 5px;
+  float: left;
+  width: 100%;
 }
 
 
@@ -435,7 +442,7 @@ h3 {
 .banner_view {
   text-align: center;
   background-color: #2BBB53;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 
@@ -531,8 +538,8 @@ body {
 
 div.footer {
   background-color: #272916; /* green-brown */
-  margin-top: 10px;
   clear: both;
+  /* margin-top: 10px; */
 }
 
 
@@ -597,9 +604,13 @@ li > b {
 
 #featureContent {
   background-color: #161516;
-  margin-bottom: 20px;
-  margin-top: 10px;
-  padding: 20px; 
+  padding-top: 10px;
+  /* padding-left: 0px; */
+  /* padding-right: 0px; */
+  /* margin-bottom: 20px; */
+  /* padding: 10px; */
+  /*margin-top: 10px; */
+ 
 }
 
 
