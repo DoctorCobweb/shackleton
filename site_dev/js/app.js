@@ -1,6 +1,6 @@
 //site/js/app.js
 
-//IMPORTANT: uncomment the require.config() here when wanting to use r.js optimized 
+//IMPORTANT: comment out the require.config() here when wanting to use r.js optimized 
 //version of the app. this is because there is a separate require.config() setup in a file
 //called require_config.js (in the same dir as this file)
 

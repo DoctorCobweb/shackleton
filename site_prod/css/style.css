@@ -317,8 +317,8 @@ h3 {
 }
 .banner_view {
   text-align: center;
-  background-color: #2BBB53;
   margin-bottom: 20px;
+  
 }
 .footer_heading {
   font-size: 13px;
@@ -414,7 +414,7 @@ li > b {
 #featureContent {
   background-color: #161516;
   padding-top: 10px;
-  
+  padding-bottom: 10px;
   
   
   

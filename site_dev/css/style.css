@@ -441,8 +441,8 @@ h3 {
 
 .banner_view {
   text-align: center;
-  background-color: #2BBB53;
   margin-bottom: 20px;
+  /* background-color: #2BBB53; */
 }
 
 
@@ -605,10 +605,10 @@ li > b {
 #featureContent {
   background-color: #161516;
   padding-top: 10px;
+  padding-bottom: 10px;
   /* padding-left: 0px; */
   /* padding-right: 0px; */
   /* margin-bottom: 20px; */
-  /* padding: 10px; */
   /*margin-top: 10px; */
  
 }

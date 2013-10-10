@@ -37,7 +37,8 @@ define([
     'views/ticket-types-view',
     'views/newsletter-view',
     'views/faq-view',
-    'views/search-view'
+    'views/search-view',
+    'views/footer-view'
 
   ], 
   function (Backbone, GigsView, AboutView, ContactView, LoginView,
@@ -48,7 +49,7 @@ define([
     AccountView, RegisterView,
     PrivacyPolicyView, ReturnsPolicyView,
     TicketTypesView, NewsletterView,
-    FaqView, SearchView) {
+    FaqView, SearchView, FooterView) {
 
     var AppRouter = Backbone.Router.extend({
     
@@ -91,16 +92,26 @@ define([
         'newsletter':                'newsletter',
         'faq':                       'faq',
         'search' :                   'search',
-        'register':                  'register'
-
+        'register':                  'register',
+        'footer':                    'footer'
 
       },
+
+     footer: function () {
+       //this route is only available for .col-xs devices (mobiles) and appears only 
+       //in the collapsed navbar
+       console.log('in footer() of router.js');
+
+       this.check_authentication_set_links();
+       this.is_bootstrap_btn_navbar_visible();
+       this.theFooterView = new FooterView();
+       this.show_view('#featureContent', this.theFooterView);
+     },
 
      register: function () {
        console.log('in register() of router.js');
 
        this.check_authentication_set_links();
-
        this.is_bootstrap_btn_navbar_visible();
        /*
        if (!this.theRegisterView) {

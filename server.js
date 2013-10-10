@@ -175,6 +175,10 @@ app.configure(function () {
   }));
   app.use(app.router);
 
+
+  //express will use the first static path to foler it encounters. so when site_prod 
+  //app.use call is uncommented it will use that & ignore site_dev static folder even 
+  //when it is uncommented also (!)
   //uncomment this to use production, optimized, code from r.js process
   app.use(express.static(path.join(application_root, 'site_prod')));
 
