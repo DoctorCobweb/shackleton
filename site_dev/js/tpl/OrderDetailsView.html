@@ -6,7 +6,7 @@
       <li><b>_id: </b><%= _id %></li>
       <li><b>gig_id: </b><%= gig_id %></li>
       <li><b>main_event: </b><%= main_event %></li>
-      <li><b>event_date: </b><%= event_date %></li>
+      <li><b>event_date: </b><%= $.format.date(new Date(event_date), 'dd MMMM yyyy') %></li>
       <li><b>venue: </b><%= venue %></li>
       <li><b>opening_time: </b><%= opening_time %></li>
       <li><b>age_group: </b><%= age_group %></li>

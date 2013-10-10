@@ -8,7 +8,7 @@
         <li><b>Main Event: </b><%= main_event %></li>
         <li><b>Supports: </b><%= supports %></li>
         <li><b>Venue: </b><%= venue %></li>
-        <li><b>Date: </b><%= event_date%></li>
+        <li><b>Date: </b>  <%= $.format.date(new Date(event_date), 'dd MMMM yyyy') %></li>
         <li><b>Price: </b><%= price %></li>
       </ul>
     </div>
