@@ -71,6 +71,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
   //######  ROUTE HANDLER ######################################################
 
   app.post('/api/orders/', function (req, res) {
+    console.log('POST /api/orders/ handler... Creating the order.');
 
     //TODO: flesh this cookie ticket reservation process out more.
     //set a cookie with a timeout corresponding to how long the tix are reserved
@@ -322,8 +323,16 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       //braintree customer id or not
       if (the_user.braintree_customer_id === 'default_braintree_customer_id') {
 
+        // *** IMPORTANT ***
+        // i dont think this function chain is ever called. because the ui flow has
+        //changed so only purchases are made after cc has been verified & hence there is
+        //a braintree customer id present.
+        //
+        // for now then comment the call out & see if any bugs result. => still hav a
+        // dependency on this function chain.
+        //
         //STREAM 1: user_is_new_purchaser i.e. has _no_ braintree customer id 
-        user_is_new_purchaser();
+        //user_is_new_purchaser();
 
       } else {
 
@@ -486,14 +495,14 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
                             + 'result.transaction.status: ' + result.transaction.status);
               console.log(result);
 
+              the_order.braintree_customer_id = the_user.braintree_customer_id;
               the_order.transaction_status = result.transaction.status;
               the_order.transaction_id = result.transaction.id;
 
-              save_the_order_changes();
               save_the_user_changes();
 
-              return res.send(the_order);
-
+              save_the_order_changes();
+              //return res.send(the_order);
             } else {
               handle_transaction_error(result);
 
@@ -519,14 +528,22 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     }
 
     function save_the_order_changes() {
-      the_order.save(function (err) {
+      the_order.save(function (err, saved_order) {
         if (err) {
           return callback(err);
         }
+        if (!saved_order) {
+          return callback({'error':'saved_order_is_null'});
+        } 
         console.log('order updates saved');
-
-
+        
         //SUCCESSFUL ORDER PURCHASE. 
+        // *** IMPORTANT *** : this is the response to say order is SUCCESSFUL
+        res.send(saved_order);
+
+        //refactor this stuff into another fuction, and the just call it from here.
+        //now go onto creating the pdf ticket and send email
+       
         //send the the user an email containing the ticket in pdf format
 
 

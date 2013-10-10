@@ -198,7 +198,8 @@ define([
           self.$('#vault_cc > #cc_expiration_date').html(data.result.expiration_date);
           self.$('#submit_order').css('display', 'block');
 
-           
+          //do we need to add braintree_customer_id to the model before saving model?
+ 
 
 
         },
