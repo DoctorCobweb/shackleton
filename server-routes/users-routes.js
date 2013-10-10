@@ -714,9 +714,10 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
   //used in account 1. => billing => change cc 
   //                2. => billing default => submit cc
-  //returns customer obj if user does not have a cc in vault already
-  //OR
-  //return braintree result obj if user does have a cc in vault
+  //returns obj with cc details:
+  //1. expiration date
+  //2. last4 digits of card number
+  //3. masked card number
   app.post('/api/users/change_cc_details/', function (req, res) {
     console.log('in POST /api/users/change_cc_details handler');
     console.log(req.body);
@@ -869,12 +870,24 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
           console.log(result.customer.creditCards[0]);
 
 
+          var details = {};
+
+          details.expiration_date = result.customer.creditCards[0].expirationDate;
+          details.last_4 =          result.customer.creditCards[0].last4;
+          details.masked_number =   result.customer.creditCards[0].maskedNumber;
+
+
+
+
           //SUCCESSFUL CC UPDATE
+          //nb: we are returning the Customer object which has A LOT of extra info.
+          //=> may want to limit the amount of info sent back clientside
           return res.send({'errors': {validation_errors: [],
                                       internal_errors: {},
                                       braintree_errors: {} 
                                      },
-                            'result': result,
+                            //'result': result,
+                            'result': details,
                             'success': true 
                           });
           //return res.send(result);
@@ -942,7 +955,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
           return res.send({'errors': {validation_errors: [],
                                       internal_errors: {},
-                                      braintree_errors: details
+                                      braintree_errors: result 
                                      },
                             'success': false
                           });

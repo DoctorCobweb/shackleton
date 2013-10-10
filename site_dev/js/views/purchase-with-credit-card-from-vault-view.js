@@ -6,13 +6,15 @@ define([
     'braintree',
     'text!tpl/PurchaseWithCreditCardFromVaultView.html',
     'views/checkout-view',
-    'views/credit-card-details-view'
+    'views/credit-card-details-view',
+    'text!tpl/SuccessfulUserFeedback.html'
   ],
   function (Backbone, 
             Braintree, 
             PurchaseWithCreditCardFromVaultHTML, 
             CheckoutView,
-            CreditCardDetailsView) 
+            CreditCardDetailsView,
+            SuccessfulUserFeedbackHTML) 
   {
 
   var PurchaseWithCreditCardFromVaultView = Backbone.View.extend({
@@ -33,7 +35,7 @@ define([
       'blur #cc_year':                             'cc_year_blur',
       'click #submit':                             'submit',
       'click #during_checkout_edit_cc_details':    'edit_cc_details',
-      'click #submit_1':                           'submit_1' 
+      'click #submit_updated_cc':                  'submit_updated_cc' 
     },
 
     initialize: function () {
@@ -265,16 +267,22 @@ define([
 
     edit_cc_details: function () {
 
+      //hide the old submit button
       this.$('#submit').css('display', 'none');
-      this.$('#during_checkout_edit_cc_details').css('display', 'none');
+ 
+      //show the update cc details UI
       this.$('#during_checkout_update_cc_details').css('display', 'block'); 
+      
+      //this.$('#during_checkout_edit_cc_details').css('display', 'none');
+
+      //temporarily hide the vault cc UI
       this.$('#vault_cc').css('display', 'none');
 
     },
   
 
-    submit_1: function () {
-      console.log('you just clicked submit_1 div');
+    submit_updated_cc: function () {
+      console.log('you just clicked submit_updated_cc div');
  
       var self = this;
 
@@ -296,9 +304,23 @@ define([
               console.dir(data);
               console.log(textStatus);
               console.dir(jqXHR);
-     
-              self.model.set({'braintree_customer_id': data.result.customer.id});
-              self.submit();
+    
+              //WHY did i do this again??? is it really essential for the order?
+              //you already have the user _id 
+              //self.model.set({'braintree_customer_id': data.result.customer.id});
+
+              //display the vault_cc with the new cc details
+              self.$('#vault_cc').css('display','block');
+              self.$('#cc_masked_number').html(data.result.masked_number);     
+              self.$('#cc_expiration_date').html(data.result.expiration_date);     
+              self.$('#vault_cc')
+                .prepend(_.template(SuccessfulUserFeedbackHTML)({'success':'Updated credit card'}));
+              self.$('#during_checkout_update_cc_details').css('display', 'none');
+              self.$('#submit').css('display', 'block');
+              
+
+              //submit for payment
+              //self.submit();
   
   
           },

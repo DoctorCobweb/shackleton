@@ -89,6 +89,23 @@
 }
 
 
+#during_checkout_credit_card_details > #submit_order {
+  display: none;
+  float: left;
+}
+
+
+#during_checkout_credit_card_details > #vault_cc {
+  display: none;
+  float: left;
+  background-color: #161516;
+  padding: 25px;
+  margin-bottom: 20px;
+  margin-top: 20px;
+
+}
+
+
 .view_purchase_with_cc_from_vault_details {
   overflow: auto;
 }

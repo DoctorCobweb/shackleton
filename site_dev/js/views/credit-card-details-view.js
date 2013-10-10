@@ -22,15 +22,17 @@ define([
     template: _.template(CreditCardDetailsHTML),
 
     events: {
-      'keypress #cc_number':      'cc_number_update',
-      'keypress #cc_cvv':         'cc_cvv_update',
-      'keypress #cc_month':       'cc_month_update',
-      'keypress #cc_year':        'cc_year_update',
-      'blur #cc_number':          'cc_number_blur',
-      'blur #cc_cvv':             'cc_cvv_blur',
-      'blur #cc_month':           'cc_month_blur',
-      'blur #cc_year':            'cc_year_blur',
-      'click #submit':            'submit'
+      'keypress #cc_number':                        'cc_number_update',
+      'keypress #cc_cvv':                           'cc_cvv_update',
+      'keypress #cc_month':                         'cc_month_update',
+      'keypress #cc_year':                          'cc_year_update',
+      'blur #cc_number':                            'cc_number_blur',
+      'blur #cc_cvv':                               'cc_cvv_blur',
+      'blur #cc_month':                             'cc_month_blur',
+      'blur #cc_year':                              'cc_year_blur',
+      'click #submit_new_cc':                       'submit_new_cc',
+      'click #submit_order':                        'submit_order',
+      'click #during_checkout_edit_cc_details':     'edit_vault_cc'
     },
 
     initialize: function () {
@@ -38,6 +40,7 @@ define([
 
       this.current_view = this;
       this.are_tickets_reserved = false;
+      this.field_to_set = {};
 
       //IMPORTANT: need to bind all methods to use the view instance as this variable
       _.bindAll(this);
@@ -138,15 +141,15 @@ define([
       console.dir(input_element);
       console.log('model_attribute: ' + model_attribute);
    
-      var field_to_set = {};
+      //var field_to_set = {};
 
       var value = input_element.val().trim();
       var encrypted_value = this.braintree.encrypt(value);
       
-      field_to_set[model_attribute] = encrypted_value;
+      this.field_to_set[model_attribute] = encrypted_value;
  
       //set the field in this.model 
-      this.model.set(field_to_set);
+      this.model.set(this.field_to_set);
 
       console.log('value entered into field, ' + model_attribute + ' is ' 
         + value);
@@ -157,12 +160,70 @@ define([
     },
 
 
-    submit: function (e) {
-      console.log('submitting cc details');
+    edit_vault_cc: function () {
+      this.$cc_number.val('');
+      this.$cc_cvv.val('');
+      this.$cc_month.val('');
+      this.$cc_year.val('');
+      //hide the vault UI, hide the submit_order button, display to credit card for UI 
+      this.$('#vault_cc').css('display', 'none');     
+      this.$('#submit_order').css('display', 'none');
+      this.$('#during_checkout_new_credit_card_details').css('display', 'block');
+
+    },
+
+
+    submit_new_cc: function () {
+      console.log('submitting new cc details for verification');
       console.log('this.model: ');
       console.dir(this.model);
 
       var self = this;
+
+      $.ajax({
+        url: '/api/users/change_cc_details/',
+        type: 'POST',
+        data: self.field_to_set,
+        success: function (data, textStatus, jqXHR) {
+          console.log('SUCCESS: submitted new cc details');
+          console.dir(data);
+          console.log(textStatus);
+          console.dir(jqXHR);
+
+          //hide the cc details entry form, show vault_cc view, show the submit button
+          
+          self.$('#during_checkout_new_credit_card_details').css('display', 'none');
+          self.$('#vault_cc').css('display', 'block');
+          self.$('#vault_cc > #cc_masked_number').html(data.result.masked_number);
+          self.$('#vault_cc > #cc_expiration_date').html(data.result.expiration_date);
+          self.$('#submit_order').css('display', 'block');
+
+           
+
+
+        },
+        error: function (jqXHR, textStatus, errorThrown ) {
+          console.log('ERROR: in submitting new cc details');
+          console.dir(jqXHR);
+          console.log(textStatus);
+          console.dir(errorThrown);
+ 
+          //TODO: implement futher
+          self.render();
+ 
+          return;
+
+        }
+      });
+
+
+
+    },
+
+   
+    submit_order: function () {
+      console.log('in submit_order function');
+      var self = this;    
 
       if (!this.are_tickets_reserved) {
         //reservation TIMEDOUT
@@ -176,23 +237,24 @@ define([
         //make http PUT /api/orders/:id request
         this.model.save({}, 
           {
-            error: function (model, xhr) {
-              console.log('ERROR in saving/updating the model');
-              console.dir(model);
-              console.dir(xhr);
-            },
             success: function (model,response) {
-              console.log('SUCCESS in saving/updating the model');
+              console.log('SUCCESS in saving/updating the model => order has been made');
               console.dir(model);
               console.dir(response);
    
               //handle all the possible cc status responses
               self.handle_cc_statuses(response, model);
   
+            },
+            error: function (model, xhr) {
+              console.log('ERROR in saving/updating the model');
+              console.dir(model);
+              console.dir(xhr);
             }
           }
         );
       }
+
     },
 
 

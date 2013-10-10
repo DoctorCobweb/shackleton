@@ -260,16 +260,15 @@ define([
               }
             } else {
               //data.success === true; // true
-              //SUCCESSSFUL CC details update
               console.log('SUCCESSFUL CC DETAILS UPDATE');
 
               //hide the update cc details ui form stuff
               self.$('#account_billing_update_cc_details').css('display', 'none'); 
 
               var _card = {};
-              _card.masked_number = data.result.customer.creditCards[0].maskedNumber;
-              _card.last_4 = data.result.customer.creditCards[0].last4;
-              _card.expiration_date = data.result.customer.creditCards[0].expirationDate;
+              _card.masked_number = data.result.masked_number;
+              _card.last_4 = data.result.last_4;
+              _card.expiration_date = data.result.expiration_date;
 
               //self.$el.html(self.template(updated_card));
 
