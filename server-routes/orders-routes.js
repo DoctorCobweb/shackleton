@@ -323,7 +323,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       //braintree customer id or not
       if (the_user.braintree_customer_id === 'default_braintree_customer_id') {
 
-        // *** IMPORTANT ***
+        // *** IMPORTANT *** eventually get rid of this function chain...
         // i dont think this function chain is ever called. because the ui flow has
         //changed so only purchases are made after cc has been verified & hence there is
         //a braintree customer id present.
@@ -342,6 +342,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       } 
     }
 
+    /*
     function user_is_new_purchaser() {
       console.log('=> update_the_order => user_is_new_purchaser');
 
@@ -389,6 +390,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       });
 
     }
+    */
 
     function user_is_returning_purchaser() {
       console.log('=> update_the_order => user_is_returning_purchaser');
@@ -440,7 +442,9 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       if (!options) {
         return callback({'internal_backend_error': 'failed_to_supply_options_object'});
       }
- 
+
+
+      /* 
       if (options.method === 'submitted_cc_details') {
 
         console.log('in submit_for_settlement, options.method '
@@ -471,11 +475,10 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
             return res.send(the_order);
           }
         );
+      }
+      */
 
-
-
-
-      } else if (options.method === 'braintree_customer_id') {
+       if (options.method === 'braintree_customer_id') {
 
         console.log('in submit_for_settlement, options.method ' 
                       + '=== \'braintree_customer_id\'');
@@ -509,12 +512,13 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
             }
           }
         );
-
-
       } else {
         return callback({'internal_backend_error': 'options.method_value_unexpected'});
       }
+
     }
+
+
 
     function handle_transaction_error(result) {
       console.log('=> update_the_order => handle_transaction_error');

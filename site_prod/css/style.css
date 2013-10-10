@@ -21,6 +21,12 @@
   padding-bottom: 5px;
   text-align: center;
 }
+.successful_user_feedback #output {
+  float: none;
+}
+.negative_user_feedback #output {
+  float: none;
+}
 .has-success .form-control, 
 .has-success .form-control:focus {
   border-color: #77b300;
@@ -76,6 +82,16 @@
 #during_checkout_credit_card_details > #submit_order {
   display: none;
   float: left;
+}
+#vault_cc h5 {
+  float: left; 
+}
+#vault_cc #cc_masked_number,
+#vault_cc #cc_expiration_date {
+  float: left;
+  margin-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 #during_checkout_credit_card_details > #vault_cc {
   display: none;

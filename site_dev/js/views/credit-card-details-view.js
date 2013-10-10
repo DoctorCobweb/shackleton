@@ -5,12 +5,14 @@ define([
     'backbone',
     'braintree',
     'text!tpl/CreditCardDetailsView.html',
-    'views/checkout-view'
+    'views/checkout-view',
+    'text!tpl/SuccessfulUserFeedback.html'
   ],
   function (Backbone, 
             Braintree, 
             CreditCardDetailsHTML, 
-            CheckoutView) 
+            CheckoutView,
+            SuccessfulUserFeedbackHTML) 
   {
 
   var CreditCardDetailsView = Backbone.View.extend({
@@ -180,6 +182,14 @@ define([
 
       var self = this;
 
+      var $successful_user_feedback = self.$('#vault_cc > .successful_user_feedback');
+
+      //also close the successful update div if it is showing
+      if ($successful_user_feedback.css('display') == 'block') {
+        $successful_user_feedback.css('display', 'none');
+      }
+
+
       $.ajax({
         url: '/api/users/change_cc_details/',
         type: 'POST',
@@ -198,9 +208,9 @@ define([
           self.$('#vault_cc > #cc_expiration_date').html(data.result.expiration_date);
           self.$('#submit_order').css('display', 'block');
 
-          //do we need to add braintree_customer_id to the model before saving model?
- 
-
+          //show the successful user feedback UI
+          self.$('#vault_cc')
+            .prepend(_.template(SuccessfulUserFeedbackHTML)({'success': 'Updated credit card'}))
 
         },
         error: function (jqXHR, textStatus, errorThrown ) {

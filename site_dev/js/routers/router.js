@@ -101,6 +101,7 @@ define([
 
        this.check_authentication_set_links();
 
+       this.is_bootstrap_btn_navbar_visible();
        /*
        if (!this.theRegisterView) {
         this.theRegisterView = new RegisterView();
@@ -119,6 +120,7 @@ define([
         this.thePrivacyPolicyView = new PrivacyPolicyView();
        }
        this.show_view('#featureContent', this.thePrivacyPolicyView);
+       window.scrollTo(0, 350);
      },     
      
      returns_policy: function () {
@@ -127,6 +129,7 @@ define([
         this.theReturnsPolicyView = new ReturnsPolicyView();
        }
        this.show_view('#featureContent', this.theReturnsPolicyView);
+       window.scrollTo(0, 350);
      },     
 
      ticket_types: function () {
@@ -136,6 +139,7 @@ define([
         this.theTicketTypesView = new TicketTypesView();
        }
        this.show_view('#featureContent', this.theTicketTypesView);
+       window.scrollTo(0, 350);
      },     
 
      newsletter: function () {
@@ -145,6 +149,7 @@ define([
         this.theNewsletterView = new NewsletterView();
        }
        this.show_view('#featureContent', this.theNewsletterView);
+       window.scrollTo(0, 350);
      },     
 
      faq: function () {
@@ -153,6 +158,7 @@ define([
         this.theFaqView = new FaqView();
        }
        this.show_view('#featureContent', this.theFaqView);
+       window.scrollTo(0, 350);
      },     
 
      search: function () {
@@ -161,32 +167,10 @@ define([
         this.theSearchView = new SearchView();
        }
        this.show_view('#featureContent', this.theSearchView);
+       window.scrollTo(0, 350);
      },     
 
 
-      check_authentication_set_links: function () {
-        console.log('in check_authentication_set_links handler');
-
-        var self = this;
-
-        $.ajax({
-          url: '/api/users/session',
-          type: 'GET',
-          success: function( data, textStatus, jqXHR ) {
-            if (data.user_authenticated === true) {
-              console.dir(data);
-              console.log('Get response: yuppupupup');
-              console.log(textStatus);
-              console.dir(jqXHR);
-
-              //toggle login -> to -> logout in header view 
-              self.switch_log_button('#logout_header', '#login_header');
-              self.display_account_tab(true);
-            }
-          }
-        });
-
-      },
 
 
       account: function () {
@@ -556,11 +540,36 @@ define([
       },
 
 
+      check_authentication_set_links: function () {
+        console.log('in check_authentication_set_links handler');
+
+        var self = this;
+
+        $.ajax({
+          url: '/api/users/session',
+          type: 'GET',
+          success: function( data, textStatus, jqXHR ) {
+            if (data.user_authenticated === true) {
+              console.dir(data);
+              console.log('Get response: yuppupupup');
+              console.log(textStatus);
+              console.dir(jqXHR);
+
+              //toggle login -> to -> logout in header view 
+              self.switch_log_button('#logout_header', '#login_header');
+              self.display_account_tab(true);
+            }
+          }
+        });
+
+      },
+
 
       switch_log_button: function (elementToShow, elementToHide) {
         $(elementToHide).css('display', 'none');
         $(elementToShow).css('display', 'block');
       },
+
 
       display_account_tab: function (logic) {
         if (logic) {

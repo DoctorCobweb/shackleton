@@ -39,9 +39,9 @@ js/lib/braintree.js
 text!tpl/CreditCardDetailsView.html
 text!tpl/CheckoutView.html
 js/views/checkout-view.js
+text!tpl/SuccessfulUserFeedback.html
 js/views/credit-card-details-view.js
 text!tpl/PurchaseWithCreditCardFromVaultView.html
-text!tpl/SuccessfulUserFeedback.html
 js/views/purchase-with-credit-card-from-vault-view.js
 text!tpl/NegativeUserFeedback.html
 js/views/number-of-tickets-view.js
