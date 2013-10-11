@@ -22,7 +22,7 @@ define([
         'keypress #password':      'beta_password_update',
         'blur #username':          'beta_username_blur',
         'blur #password':          'beta_password_blur',
-       //'click #login':            'login'
+        'click #login':            'login'
       },
 
       initialize: function () {

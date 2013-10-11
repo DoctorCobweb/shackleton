@@ -323,6 +323,9 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       //braintree customer id or not
       if (the_user.braintree_customer_id === 'default_braintree_customer_id') {
 
+
+        
+
         // *** IMPORTANT *** eventually get rid of this function chain...
         // i dont think this function chain is ever called. because the ui flow has
         //changed so only purchases are made after cc has been verified & hence there is
