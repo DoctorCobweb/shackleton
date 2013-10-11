@@ -293,7 +293,7 @@ define([
         //then un comment the above code in this handler.
         //then revert back to original index.html and delete out the #the_overbearer div
         if (!this.private_beta) {
-          console.log('NOT in PUBLIC BETA, in index() of router.js');
+          console.log('NOT in PRIVATE BETA, in index() of router.js');
 
           if (!this.theRealFrontPageView) {
             console.log('creating the real front page view');
@@ -584,6 +584,11 @@ define([
              console.dir( jqXHR );
 
              self.goodbye(data); 
+
+             //this is used ONLY for beta testing. comment out when out of beta.
+             self.private_beta = true;
+             self.beta_login_view = null;
+             self.navigate('#/', {trigger:true});
            }
         });
         //toggle logout -> to -> login in header view 
