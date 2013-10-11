@@ -215,22 +215,41 @@
   float: left;
   margin: 20px;
 }
+#gig_list_item a {
+  color: #ccc;
+}
+#gig_list_item_a_el {
+  float: left;
+  width: 100%;
+  background-color: #000;
+}
 #gig_list_item_pic {
   float: left;
+  margin-top: 15px;
+}
+#gig_list_item_pic img {
+  padding-bottom: 10px;
+  padding-right: 10px;
 }
 #gig_list_item_details {
   float: left;
 }
+#gig_list_item_details ul {
+  margin-top: 15px;
+}
 #gig_list_item_get_tickets{
   float: left;
 }
+#gig_list_item_get_tickets h2 {
+  margin-top: 25px;
+  margin-bottom: 0px;
+}
 .gig_list_item {
   background-color: #42414B;
-  min-height: 150px;
   padding: 10px;
-  margin: 5px;
   float: left;
   width: 100%;
+  
 }
 .gigDetails img {
   max-width: 300px;
@@ -387,7 +406,8 @@ h3 {
 .footer_sections .section ul li a:active {
 }
 body {
-  color: #EE9433;
+   
+  color: #979797 
   background-color: #3A3939;
 }
 #account {
