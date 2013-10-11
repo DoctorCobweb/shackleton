@@ -1,0 +1,1 @@
+define(["backbone","text!tpl/RealFrontPageView.html"],function(e,t){var n=e.View.extend({el:"#the_overbearer",template:_.template(t),events:{},initialize:function(){console.log("in initialize() of real-front-page-view.js")},render:function(){return console.log("in real-front-page-view.js and render()"),this.$el.html(this.template()),this}});return n});

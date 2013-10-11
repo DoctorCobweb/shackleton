@@ -98,6 +98,10 @@ text!tpl/SearchView.html
 js/views/search-view.js
 text!tpl/FooterView.html
 js/views/footer-view.js
+text!tpl/BetaLoginView.html
+text!tpl/RealFrontPageView.html
+js/views/real-front-page-view.js
+js/views/beta-login-view.js
 js/routers/router.js
 js/lib/jquery-dateFormat-1.0.js
 js/lib/bootstrap-collapse.js

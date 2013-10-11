@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!-- this version of index.html is used _only_ for private beta testing mode 
-     you must revert back to the origin index.html file which is called
-     index.html.REAL_MAIN_PAGE
--->
 <html lang="en">
   <head>
     <meta charset="utf-8">
