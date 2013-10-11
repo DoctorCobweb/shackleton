@@ -99,6 +99,9 @@
 .view_number_of_tickets {
   overflow: auto;
 }
+#during_checkout_credit_card_details {
+  width: 100%;
+}
 #during_checkout_credit_card_details > #submit_order {
   display: none;
   float: left;

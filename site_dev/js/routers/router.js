@@ -87,7 +87,8 @@ define([
         'faq':                       'faq',
         'search' :                   'search',
         'register':                  'register',
-        'footer':                    'footer'
+        'footer':                    'footer',
+        //'.*':                         'bucket'
 
       },
 
@@ -249,7 +250,8 @@ define([
        console.log('checking if we are in private beta mode...');
        if (this.private_beta) {
          console.log('YES');
-         this.index();
+         this.navigate('#/', {trigger: true});
+         //this.index();
          return true;
        } else {
          console.log('NO');
@@ -325,7 +327,7 @@ define([
           return;
         } else {
           console.log('beta login view already made');
-          this.show_view('#the_overbearer', this.beta_login_view);
+          this.beta_login_view.render();
 
           return; 
         }
@@ -666,6 +668,14 @@ define([
            }
         });
       },
+
+     
+      /*
+      bucket: function () {
+        console.log('in BUCKET');
+        this.navigate('#/', {trigger: true});
+      },
+      */
 
 
       //quick hack: query DOM to see if the nav-collapse div and the btn-navbar
