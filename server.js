@@ -151,6 +151,10 @@ var Order = new mongoose.Schema({
 });
 
 
+var BetaUser = new mongoose.Schema({
+  username:                   {type: String, required: true},
+  password:                   {type: String, required: true},
+});
 
 
 //create the express application. express() returns a Function designed to 
@@ -180,10 +184,10 @@ app.configure(function () {
   //app.use call is uncommented it will use that & ignore site_dev static folder even 
   //when it is uncommented also (!)
   //uncomment this to use production, optimized, code from r.js process
-  app.use(express.static(path.join(application_root, 'site_prod')));
+  //app.use(express.static(path.join(application_root, 'site_prod')));
 
   //this sets the app to serve development code which is _not_ optimized 
-  //app.use(express.static(path.join(application_root, 'site_dev')));
+  app.use(express.static(path.join(application_root, 'site_dev')));
 
   app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
@@ -230,7 +234,8 @@ require('./server-routes/gig-guide-routes')(mongoose, shackleton_conn, app, Gig)
 
 
 //users routes are in a different file, 'users-routes.js'
-require('./server-routes/users-routes')(mongoose, shackleton_conn, app, User, Password);
+require('./server-routes/users-routes')(mongoose, shackleton_conn, app, User, Password,
+                                        BetaUser);
 
 //order routes are in a different file, 'orders-routes.js'
 require('./server-routes/orders-routes')(mongoose, shackleton_conn, app, Order, Gig, User);

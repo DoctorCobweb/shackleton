@@ -2,6 +2,39 @@
 /* @import url(css/bootstrap-responsive.css); */
 
 
+
+
+#the_overbearer {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  /* background-color: #000; */
+  background-color: #EE680B;
+}
+
+
+.view_beta_login_details {
+  float: left;
+}
+
+#beta_login_details {
+  
+  background-color: #000;
+  padding: 20px;
+  margin: 20px;
+
+}
+
+/*
+html, body {
+  margin: 0px;
+  padding: 0px;
+  height: 100%;
+  width: 100%;
+}
+*/
+
+
 .gigs_container {
   overflow: auto;
 }
@@ -91,6 +124,7 @@
   padding: 25px;
   margin-bottom: 20px;
   margin-top: 20px;
+  width: 100%;
 }
 
 
@@ -146,6 +180,7 @@
   padding: 25px;
   margin-bottom: 20px;
   margin-top: 20px;
+  width: 100%;
 }
 
 
@@ -341,6 +376,7 @@
   margin-left: 10px;
   margin-right: 10px;
   float: left;
+  width: 100%;
 }
 
 
@@ -606,9 +642,9 @@ li > b {
   background-color: #161516;
   padding-top: 10px;
   padding-bottom: 10px;
+  margin-bottom: 20px;
   /* padding-left: 0px; */
   /* padding-right: 0px; */
-  /* margin-bottom: 20px; */
   /*margin-top: 10px; */
  
 }
@@ -622,6 +658,11 @@ li > b {
 .btn-success:hover {
   background-color: #2BBB53;
   color: #000;
+}
+
+
+.navbar {
+  margin-bottom: 0px;
 }
 
 

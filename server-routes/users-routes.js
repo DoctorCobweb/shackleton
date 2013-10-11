@@ -77,7 +77,7 @@ var MONGODB_DUPLICATE_KEY_ERROR = 11000;
 
 
 //start the module implementation
-module.exports = function (mongoose, shackleton_conn, app, User, Password) {
+module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaUser) {
 
 
   //you can also do this to ensure unique fields and index emailAddress.
@@ -89,6 +89,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
   //models
   var UserModel = shackleton_conn.model('User', User);
   var PasswordModel = shackleton_conn.model('Password', Password);
+  var BetaUserModel = shackleton_conn.model('BetaUser', BetaUser);
 
 
 //---------BEGIN ROUTE HANDLERS-------------
@@ -1532,6 +1533,105 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password) {
 
 
   //----------start: NEW FEATURE TESTING SECTION-------------------
+
+
+
+  //demoing a private beta functionality!
+  app.post('/api/users/beta_login', function (req, res) {
+    console.log('in POST /api/users/beta_login');
+    console.log('req.body: ');
+    console.log(req.body);
+
+    req.checkBody('username', 'Empty username entered').notEmpty();
+    req.checkBody('password', 'Empty password entered').notEmpty();
+    
+    req.sanitize('username').xss();
+    req.sanitize('password').xss();
+
+
+
+    //NOTE ON HOW ERRORS ARE HANDLED:
+    //types of errors returned clientside & where they are generated in this order: 
+    //1. the first errors possible are input validation errors.
+    //2.the second source of an error is mongoDB throwing a duplicate key error. this
+    //  happens when user tries to use an email_address which is already in users &
+    //  passwords collection
+
+    //errors is an Array of Objects. One obj for each validation check
+    var _validation_errors = req.validationErrors();
+
+    if (_validation_errors) {
+      return res.send({'errors': {validation_errors: _validation_errors,
+                                  internal_errors: {}
+                                 }, 
+                        beta_user_authenticated: false
+                      });
+    }
+
+
+
+    log_the_beta_user_in(req, res, function (err) {
+      console.log('in login error call back handler');
+      if (err) {
+        return res.send({'errors': {validation_errors: [],
+                                    internal_errors: err
+                                   },
+                         beta_user_authenticated: false
+                        }); 
+
+      }
+    });
+  });
+
+  function log_the_beta_user_in(req, res, callback) {
+    console.log('=> log_the_beta_user_in =>');
+    console.log('req.body: ');
+    console.log(req.body);
+
+    function find_the_beta_user () {
+      console.log('=> log_the_beta_user_in => find_the_beta_user');
+      BetaUserModel.findOne({username: req.body.username}, the_beta_user_callback);
+    }
+
+    function the_beta_user_callback (err, user) {
+      console.log('=> log_the_beta_user_in => the_beta_user_callback');
+      if (err) {
+        return callback(err);
+      }
+      if (!user) {
+        return res.send({'errors': { validation_errors: [],
+                                     internal_errors: {'error': 'no_beta_user_found'}  
+                                   },
+                          beta_user_authenticated: false
+                        }); 
+      }
+
+      if (user.password === req.body.password) {
+        console.log('BETA USER AUTHENTICATED');
+        //valid beta user
+        return res.send({'errors': {validation_errors: [], 
+                                    internal_errors: {}
+                                   },
+                           beta_user_authenticated: true
+                        });
+      } else {
+        console.log('INVALID BETA USER CREDENTIALS');
+        //invalid login details
+        return res.send({'errors': { validation_errors: [],
+                                     internal_errors: {'error': 'invalid_password'}  
+                                   },
+                          beta_user_authenticated: false
+                        }); 
+
+      }
+    }
+
+
+    //START: start the function calls 
+    find_the_beta_user();
+  }
+
+
 
   //----------finish: NEW FEATURE TESTING SECTION-------------------
 

@@ -38,7 +38,11 @@ define([
     'views/newsletter-view',
     'views/faq-view',
     'views/search-view',
-    'views/footer-view'
+    'views/footer-view',
+    'views/beta-login-view',
+    'views/real-front-page-view',
+    'views/header-view',
+    'views/banner-view'
 
   ], 
   function (Backbone, GigsView, AboutView, ContactView, LoginView,
@@ -49,28 +53,18 @@ define([
     AccountView, RegisterView,
     PrivacyPolicyView, ReturnsPolicyView,
     TicketTypesView, NewsletterView,
-    FaqView, SearchView, FooterView) {
+    FaqView, SearchView, FooterView, BetaLoginView,
+    RealFrontPageView, HeaderView, BannerView) {
 
     var AppRouter = Backbone.Router.extend({
     
       initialize: function () {
         console.log('in initialize() of router.js');
+        
+        //set this to true to put app in private mode i.e. private beta
+        this.private_beta = true;
+        //this.private_beta = false;
        
-        /*
-        //TODO - get callback handler functioning properly from gig list item
-        Backbone.on('gig-item-clicked', function () {
-          console.log('***EVENT: gig-item-clicked event occurred.***');
-        });
-        */
-
-
-        //add in dropdown toggle functionality for the overflow button which appears 
-        //only on small devices.
-
-        //$.('#gigs_li')
-
-
-
       },
  
 
@@ -97,10 +91,19 @@ define([
 
       },
 
+  
+
      footer: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
        //this route is only available for .col-xs devices (mobiles) and appears only 
        //in the collapsed navbar
        console.log('in footer() of router.js');
+
 
        this.check_authentication_set_links();
        this.is_bootstrap_btn_navbar_visible();
@@ -109,6 +112,12 @@ define([
      },
 
      register: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
        console.log('in register() of router.js');
 
        this.check_authentication_set_links();
@@ -125,6 +134,11 @@ define([
 
 
      privacy_policy: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
        console.log('in privacy_policy handler');
 
        if (!this.thePrivacyPolicyView) {
@@ -135,6 +149,11 @@ define([
      },     
      
      returns_policy: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
        console.log('in returns_policy handler');
        if (!this.theReturnsPolicyView) {
         this.theReturnsPolicyView = new ReturnsPolicyView();
@@ -144,6 +163,12 @@ define([
      },     
 
      ticket_types: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
        console.log('in ticket_types handler');
 
        if (!this.theTicketTypesView) {
@@ -154,6 +179,11 @@ define([
      },     
 
      newsletter: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
        console.log('in newsletter handler');
 
        if (!this.theNewsletterView) {
@@ -164,6 +194,12 @@ define([
      },     
 
      faq: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
        console.log('in faq handler');
        if (!this.theFaqView) {
         this.theFaqView = new FaqView();
@@ -173,6 +209,12 @@ define([
      },     
 
      search: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
        console.log('in search handler');
        if (!this.theSearchView) {
         this.theSearchView = new SearchView();
@@ -185,6 +227,12 @@ define([
 
 
       account: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
         console.log('in account handler');
         //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
         this.is_bootstrap_btn_navbar_visible();
@@ -197,9 +245,34 @@ define([
       },
 
 
+     check_if_in_private_beta: function () {
+       console.log('checking if we are in private beta mode...');
+       if (this.private_beta) {
+         console.log('YES');
+         this.index();
+         return true;
+       } else {
+         console.log('NO');
+         return false;
+       }
+     },
      
 
+     test_router_ref: function () {
+       console.log('CALLED ROUTER REF');
+     },
+
+     change_private_beta: function (logic) {
+       console.log('setting this.private_beta to: ' + logic);
+       this.private_beta = logic
+     },
+
       index: function () {
+        console.log('in INDEX of router.js');
+        var self = this;
+
+        /*
+        //this was used prior to implementing the beta login version of app
         console.log('in index() of router.js');
         //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
         this.is_bootstrap_btn_navbar_visible();
@@ -210,12 +283,66 @@ define([
          this.theHomeLandingView = new HomeLandingView();
         }
         this.show_view('#featureContent', this.theHomeLandingView);
+        */
+
+
+
+        //comment out is if and else busines when REALLY going public (after privatebeta)
+        //then un comment the above code in this handler.
+        //then revert back to original index.html and delete out the #the_overbearer div
+        if (!this.private_beta) {
+          console.log('NOT in PUBLIC BETA, in index() of router.js');
+
+          if (!this.theRealFrontPageView) {
+            console.log('creating the real front page view');
+            this.theRealFrontPageView = new RealFrontPageView();
+          }
+
+          $('body').html(this.theRealFrontPageView.render().el);
+  
+          if (!this.theHomeLandingView) {
+            console.log('creating the home landing  view');
+            this.theHomeLandingView = new HomeLandingView();
+          }
+          
+          this.show_view('#featureContent', this.theHomeLandingView);
+          new BannerView();
+          new HeaderView(); //instantiating this everytime causes UI glitch. bad.
+
+
+          //HACK:this toggles the dropdown nav-collapse menu visibility for mobile devices
+          this.is_bootstrap_btn_navbar_visible();
+          this.check_authentication_set_links();
+
+          return; 
+        } else if (!this.beta_login_view) {
+          console.log('make beta login view');
+
+          //make beta login screen
+          this.beta_login_view = new BetaLoginView({router_ref: self});
+          this.show_view('#the_overbearer', this.beta_login_view);
+
+          return;
+        } else {
+          console.log('beta login view already made');
+          this.show_view('#the_overbearer', this.beta_login_view);
+
+          return; 
+        }
+
+
+
       },
 
 
 
 
       about: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
         console.log('in about() of router.js');
 
         //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
@@ -234,6 +361,12 @@ define([
 
 
       login: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
         console.log('in login() of router.js');
         //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
         this.is_bootstrap_btn_navbar_visible();
@@ -247,6 +380,12 @@ define([
 
 
       contact: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
         console.log('in contact() of router.js');
         //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
         this.is_bootstrap_btn_navbar_visible();
@@ -262,6 +401,12 @@ define([
 
 
       gig_guide: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
         console.log('in gigGuide() of router.js');
         //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
         this.is_bootstrap_btn_navbar_visible();
@@ -305,6 +450,12 @@ define([
 
 
       gig_details: function (id) {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
         console.log('in getDetails() of router.js, with id = ' + id);
 
         this.check_authentication_set_links();
@@ -352,6 +503,12 @@ define([
 
 
       session: function (id) {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
         console.log('USER AUTHENTICATED: in session() in router.js');
         console.log('USER AUTHENTICATED:id: ' + id 
           + ' in session() in router.js');
@@ -395,6 +552,12 @@ define([
 
 
       logout: function () {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
         console.log('in logout() route.');
         //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
         this.is_bootstrap_btn_navbar_visible();
@@ -429,6 +592,12 @@ define([
 
 
       goodbye: function (first_name) {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
          if (!this.loggedOutView) {
            this.loggedOutView = new LoggedOutView();
          } 
@@ -439,6 +608,12 @@ define([
 
 
       delete_user_account: function (id) {
+        //used for private beta testing
+        if (this.check_if_in_private_beta()) {
+          return;
+        }
+
+
         console.log("and this.userModel.get('id'): " +  this.userModel.get('_id'));
 
         var self = this;
@@ -499,6 +674,7 @@ define([
       //had to do this because by default the collapsed navbar _wont_ collapse after 
       //user clicks a link.
       is_bootstrap_btn_navbar_visible: function () {
+
         console.log('in is_bootstrap_btn_navbar_visible handler');
 
         //var display_attr = $('a.btn-navbar').css('display');
@@ -519,6 +695,7 @@ define([
       },
 
       is_bootstrap_nav_collapse_visible: function () {
+
         console.log('in is_bootstrap_nav_collapse_visible handler');
 
         var display_attr = $('div.navbar-collapse.in').css('display');
@@ -552,6 +729,7 @@ define([
 
 
       check_authentication_set_links: function () {
+
         console.log('in check_authentication_set_links handler');
 
         var self = this;
@@ -577,12 +755,14 @@ define([
 
 
       switch_log_button: function (elementToShow, elementToHide) {
+
         $(elementToHide).css('display', 'none');
         $(elementToShow).css('display', 'block');
       },
 
 
       display_account_tab: function (logic) {
+
         if (logic) {
           $('#account').css('display', 'block');
         } else {
@@ -591,6 +771,7 @@ define([
       },
 
       show_view: function (selector, view) {
+
         console.log('in showView()');
         console.log('in showView(), this.currentView: ');
         console.log(this.currentView);
