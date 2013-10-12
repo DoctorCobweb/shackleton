@@ -20,7 +20,7 @@
   </head>
   <body>
   <!-- comment out this div when out of public beta mode-->
-  <!-- <div id="the_overbearer"> --> 
+  <div id="the_overbearer">
  
     <div id="container-fluid"></div>
     <div id="header"></div>
@@ -94,7 +94,7 @@
 
     </div> <!-- end footer div-->
 
-    <!-- </div> --> <!-- end the overbearer div -->
+    </div> <!-- end the overbearer div -->
     <script data-main="js/app.js" src="js/lib/require.js"></script>
   </body>
 </html>

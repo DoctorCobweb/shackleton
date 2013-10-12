@@ -273,7 +273,7 @@ define([
         console.log('in INDEX of router.js');
         var self = this;
 
-        /*
+        /*   
         //this was used prior to implementing the beta login version of app
         console.log('in index() of router.js');
         //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
@@ -286,6 +286,7 @@ define([
         }
         this.show_view('#featureContent', this.theHomeLandingView);
         */
+        
 
 
 
@@ -331,7 +332,7 @@ define([
 
           return; 
         }
-
+        
 
 
       },
@@ -439,7 +440,7 @@ define([
             //self.showView('#featureList', self.theGigsView); 
             if (self.requestedId) {
               self.navigate('//gigs/' + self.requestedId);
-      	      self.gigDetails(self.requestedId);
+      	      self.gig_details(self.requestedId);
               self.requestedId = null;
             }
           },
@@ -498,7 +499,7 @@ define([
           //enables a 'bookmarking' of the current gig viewed for the user should
           //they click on another tab then back to the previously viewed gig guide item.
           this.requestedId = id;
-          this.gigGuide();
+          this.gig_guide();
         }
       },
 
