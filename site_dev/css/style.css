@@ -28,15 +28,6 @@ h4 {
 
 }
 
-/*
-html, body {
-  margin: 0px;
-  padding: 0px;
-  height: 100%;
-  width: 100%;
-}
-*/
-
 
 .gigs_container {
   overflow: auto;
@@ -50,6 +41,7 @@ html, body {
   padding-bottom: 5px;
   text-align: center;
 }
+
 
 .successful_user_feedback {
   background-color: #ECA336;
@@ -322,6 +314,7 @@ html, body {
   margin-top: 15px;
 }
 
+
 #gig_list_item_pic img {
   padding-bottom: 10px;
   padding-right: 10px;
@@ -348,6 +341,7 @@ html, body {
   margin-bottom: 0px;
 
 }
+
 
 .gig_list_item {
   background-color: #42414B;
@@ -611,8 +605,6 @@ h3 {
 
 
 .footer_sections .section ul li a {
-  /* green-brown */
-  /* background-color: #272916; */
   background-color: #42414B;
   color: #888888;
   padding-top: 5px;
@@ -636,14 +628,6 @@ h3 {
 
 .footer_sections .section ul li a:active {
 }
-
-
-/* not used, i think */
-/*
-#change_cc_details {
-  display: none;
-}
-*/
 
 
 body {
@@ -718,13 +702,6 @@ ul {
 }
 
 
-/*
-li {
-  color: #ffffff;
-}
-*/
-
-
 li > b {
   color: #EE9433;
 }
@@ -735,10 +712,6 @@ li > b {
   padding-top: 10px;
   padding-bottom: 10px;
   margin-bottom: 20px;
-  /* padding-left: 0px; */
-  /* padding-right: 0px; */
-  /*margin-top: 10px; */
- 
 }
 
 
