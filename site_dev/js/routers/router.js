@@ -62,8 +62,8 @@ define([
         console.log('in initialize() of router.js');
         
         //set this to true to put app in private mode i.e. private beta
-        this.private_beta = true;
-        //this.private_beta = false;
+        //this.private_beta = true;
+        this.private_beta = false;
        
       },
  
@@ -87,9 +87,7 @@ define([
         'faq':                       'faq',
         'search' :                   'search',
         'register':                  'register',
-        'footer':                    'footer',
-        //'.*':                         'bucket'
-
+        'footer':                    'footer'
       },
 
   
@@ -676,13 +674,6 @@ define([
       },
 
      
-      /*
-      bucket: function () {
-        console.log('in BUCKET');
-        this.navigate('#/', {trigger: true});
-      },
-      */
-
 
       //quick hack: query DOM to see if the nav-collapse div and the btn-navbar
       //elements are visible. if they are then we are viewing the app from a small screen

@@ -71,25 +71,21 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
   //######  ROUTE HANDLER ######################################################
 
+
+  app.get('/api/get_cookies/', function (req, res) {
+    console.log('in GET /api/get_cookies');
+    console.log('req.cookies: ')
+    console.log(req.cookies);
+    console.log('req.signedCookies: ')
+    console.log(req.signedCookies);
+
+    return res.send(req.cookies);
+
+  });
+
+
   app.post('/api/orders/', function (req, res) {
     console.log('POST /api/orders/ handler... Creating the order.');
-
-    //TODO: flesh this cookie ticket reservation process out more.
-    //set a cookie with a timeout corresponding to how long the tix are reserved
-    //had to get rid of the httpOnly flag in order to use clientside setInterval
-    //function to see if the reserve_tickets cookie exists. there must be a better way.
-    res.cookie(
-      'reserve_tickets', 
-      req.body.number_of_tickets.toString(10),
-
-      //nb: httpOnly:true will not let the client site app poll the cookie. 
-      //=> no ticket reservation is available given the current implementation
-      //e.g. {maxAge: 60 * 1000, httpOnly: true, signed: true} will NOT WORK
-
-      {maxAge: 15 * 60 * 1000, signed: true} //reserve tix for 15mins
-      //{maxAge: 10 * 1000, signed: true} //reserve tix for 10s
-
-    );
 
 
     //TESTING/MUCKING AROUND WITH COOKIES
@@ -223,7 +219,41 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         if (err) {
           return callback(err);
         }
-        //console.log(order);
+
+
+        //SET THE reserve_tickets cookie
+        //TODO: flesh this cookie ticket reservation process out more.
+        //set a cookie with a timeout corresponding to how long the tix are reserved
+        //had to get rid of the httpOnly flag in order to use clientside setInterval
+        //function to see if the reserve_tickets cookie exists.
+
+        //nb: httpOnly:true will not let the client site app poll the cookie. 
+        //=> no ticket reservation is available given the current implementation
+        //e.g. {maxAge: 60 * 1000, httpOnly: true, signed: true} will NOT WORK
+        res.cookie(
+          'reserve_tickets', {
+            'number_of_tickets': req.body.number_of_tickets.toString(10),
+            'gig_id': req.body.gig_id,
+            'order_id': order._id
+          }, 
+          {maxAge: 15 * 60 * 1000, signed: true, secure: true} //reserve tix for 15mins
+          //{maxAge: 1 * 10 * 1000, signed: true, secure: true} //reserve tix for 10s
+        );
+   
+        /* 
+        res.cookie('mucking_around', {
+          'cape': 'water_1',
+          'brook': 'water_2',
+          'shoal': 'water_3', 
+          'marina': 'water_4',
+          'creek': 'water_5',
+          'gig_id': req.body.gig_id
+          },
+          {maxAge: 10 * 60 * 1000, signed:true, secure: true}
+        );
+        */
+
+        //finally return the order
         return res.send(order);
       });
     }
@@ -690,6 +720,11 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     console.log('in POST api/orders/ticket_reserve_timeout');
     console.log(req.body);
 
+    console.log('req.signedCookies');
+    console.log(req.signedCookies);
+    console.log('req.signedCookies.reserve_tickets: ');
+    console.log(req.signedCookies.reserve_tickets);
+
     expired_ticket_reserve(req, res, function (err) {
       if (err) throw err;
     });
@@ -767,6 +802,112 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     find_the_gig();
   }
 
+
+
+
+
+
+  //called when reserved tickets have timed out => add back the reserved tix to general
+  //pool
+  app.get('/api/orders/ticket_reserve_release_from_navigation', function (req, res) {
+    console.log('in GET api/orders/ticket_reserve_release_from_navigation');
+    console.log('req.signedCookies');
+    console.log(req.signedCookies);
+    console.log('req.signedCookies.reserve_tickets: ');
+    console.log(req.signedCookies.reserve_tickets);
+
+
+
+    ticket_reserve_release(req, res, function (err) {
+      if (err) throw err;
+    });
+
+  });
+
+
+  function ticket_reserve_release(req, res, callback) {
+    var the_order;
+    var the_gig;
+    var reserved_gig_id = req.signedCookies.reserve_tickets.gig_id; 
+    var reserved_order_id = req.signedCookies.reserve_tickets.order_id; 
+    var reserved_number_of_tickets = req.signedCookies.reserve_tickets.number_of_tickets;
+
+    console.log('reserved_gig_id: ' + reserved_gig_id);
+    console.log('reserved_order_id: ' + reserved_order_id);
+
+    function find_the_gig() {
+      console.log('=> ticket_reserve_release => find_the_gig');
+      GigModel.findById(reserved_gig_id, the_found_gig);
+    }
+
+    function the_found_gig(err, gig) {
+      console.log('=> ticket_reserve_release => the_found_gig');
+      if (err) {
+        return callback(err);
+      }
+      if (!gig) {
+        return res.send({'error': 'gig_is_null'});
+      }
+      the_gig = gig;
+      find_the_order();
+    }
+
+    function find_the_order() {
+      console.log('=> ticket_reserve_release => find_the_order');
+      OrderModel.findById(reserved_order_id, the_found_order);
+    }
+
+    function the_found_order(err, order) {
+      console.log('=> ticket_reserve_release => the_found_order');
+      console.log(order);
+      if (err) { 
+        return callback(err);
+      } 
+      if (!order) {
+        return res.send({'error':'order_is_null'});
+      }
+      the_order = order;
+      do_the_updating();
+    }
+
+    function do_the_updating() {
+      //update the gig capacity
+      //update the order collection -> delete the past order
+      //delete the reserve_tickets cookie
+
+
+      console.log('=> ticket_reserve_release => do_the_updating');
+      the_gig.capacity += parseInt(reserved_number_of_tickets);
+
+      the_gig.save(function (err, gig) {
+        if (err) {
+          return callback(err);
+        }
+        console.log('the gig capacity has been successfully altered: ');
+        console.log('gig');
+        console.log(gig);
+      });
+
+
+      //now delete the order
+      the_order.remove(function (err) {
+        if (err) {
+          return callback(err);
+        }
+        console.log('the order has been successfully deleted');
+      });
+
+      //make browser delete the cookie
+      res.clearCookie('reserve_tickets', { signed: true, secure: true});
+
+      //finally return the outcome
+      return res.send({'SUCCESS': 'released ticket reservation due to previous nav'});
+    }
+
+
+    //start the process off 
+    find_the_gig();
+  }
 
 
 

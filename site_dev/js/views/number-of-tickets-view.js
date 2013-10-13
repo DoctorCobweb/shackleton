@@ -43,7 +43,10 @@ define([
 
       initialize: function () {
         console.log('in initialize() of number-of-tickets-view.js');
-        console.log('this.model: ' + JSON.stringify(this.model));
+
+        //BUG: when navigating back to another gig after selecting some ticke
+        //a gig, this throws a Converting circular structure to JSON TypeError
+        //console.log('this.model: ' + JSON.stringify(this.model));
   
         this.number_of_tickets = 0;
         this.total_amount = 0;

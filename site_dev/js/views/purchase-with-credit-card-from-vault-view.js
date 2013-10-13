@@ -389,7 +389,6 @@ define([
     start_reserve_tickets_countdown: function () {
       console.log('in start_reserve_tickets_coundown()');
       console.log('document.cookie: ' + document.cookie);
-      //console.log(this);
 
 
       this.poll = 0;
@@ -405,6 +404,9 @@ define([
       
       this.cookies_obj = {};
       this.cookies_array = document.cookie.split(';');
+
+      console.log('this.cookies_array:');
+      console.dir(this.cookies_array);
 
       for (var key in this.cookies_array) {
         var name = this.cookies_array[key].substring(0, 
@@ -429,7 +431,6 @@ define([
       if (this.cookies_obj.reserve_tickets) {
         this.poll++;
         this.$('#ticker').html(this.poll);
-        //$('.odometer').html(this.poll);
 
       } else {
         console.log('ALONGSIDE YOUR HORSE, YOUR TICKET RESERVATION BOLTED OUT THE GATE.');

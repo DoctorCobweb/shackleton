@@ -310,6 +310,9 @@ define([
 
       this.cookies_obj = {};
       this.cookies_array = document.cookie.split(';');
+
+      console.log('this.cookies_array:');
+      console.log(this.cookies_array);
  
       for (var key in this.cookies_array) {
         var name = this.cookies_array[key].substring(0,

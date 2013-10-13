@@ -25,6 +25,13 @@ define([
 
       initialize: function () {
         console.log('in initialize() of gig-detail-view.js');
+
+        //used in procedure to clear out old reserved tickets; may be around if user
+        //has bailed on a gig purchase midway thru then tried to purchase some others
+        this.is_reserve_tickets_cookie_present = this.parse_cookie_string();
+
+        console.log('this.is_reserve_tickets_cookie_present: ' + 
+                    this.is_reserve_tickets_cookie_present);
    
         //cache the elements referenced using jQuery
         //ERROR: querying for #number_of_tickets results in an empty object!!!
@@ -32,12 +39,14 @@ define([
         //put this call into render()....
         //this.$number_of_tickets = this.$('#number_of_tickets');
         //console.dir(this.$('#number_of_tickets'));
+  
         
 
         console.log('this.options: ');
         for (var key in this.options) {
           console.log(this.options[key]);
         }
+
       },
 
       render: function () {
@@ -81,13 +90,26 @@ define([
               //user has a session => are logged in
               //display the number of tickets view with gig_id sent in
 
+              //before showing number of tickets, see if there are already tickets 
+              //reserved for another gig. if there is, delete cookie and give back
+              //reserved tickets to general pool available.
 
-	      var numberOfTicketsView = new NumberOfTicketsView({model: self.model});
-	      self.showView('#featureContent', numberOfTicketsView); 
-              window.scrollTo(0,350);
+              console.log('self.is_reserve_tickets_cookie_present: ' +
+                          self.is_reserve_tickets_cookie_present);
+
+              if (self.is_reserve_tickets_cookie_present) {
+                //the reserve_cookie is hanging around from a previous attempt at buying
+                //tickets
+                self.reserve_tickets_release();
+
+              } else {
+                //no reserve_tickets cookie present
+	        var numberOfTicketsView = new NumberOfTicketsView({model: self.model});
+	        self.showView('#featureContent', numberOfTicketsView); 
+                window.scrollTo(0, 350);
+              }
+
             }
-
-
           },
           error: function (jqXHR, textStatus, errorThrown) {
             console.log('ERROR: tried to $.ajax GET /api/users/session');
@@ -97,36 +119,84 @@ define([
 
             //there was an error. redirect back to the gig guide and get them
             //to start order process again
-            
-
+            alert('Internal Error: try again');
           } 
-
         });
-
-
-
-
-        /*
-        tmp_gig_id = this.model.get('_id');
-        tmp_ticket_price = this.model.get('price');
-        //console.log('this : ' + this); //this refers to this View 
-
-        if (!this.newOrder) {
-          this.newOrder = new OrderModel();
-        }
-        this.newOrder.set({gig_id: tmp_gig_id, ticket_price: tmp_ticket_price});
-
-
-        if (!this.newOrdersCollection) {
-          this.newOrdersCollection = new OrdersCollection();
-        }
-        this.newOrdersCollection.add(this.newOrder);
-
-
-        numberOfTicketsView = new NumberOfTicketsView({model: this.newOrder});
-        this.showView('#featureContent', numberOfTicketsView); 
-        */
       },
+
+
+      parse_cookie_string: function () {
+        //console.log('in parse_cookie_string()');
+   
+        this.cookies_obj = {};
+        this.cookies_array = document.cookie.split(';');
+        console.log('this.cookies_array:');
+        console.dir(this.cookies_array);
+   
+        for (var key in this.cookies_array) {
+          var name = this.cookies_array[key].substring(0,
+                       this.cookies_array[key].indexOf('='));
+          var value= this.cookies_array[key].substring(
+                       this.cookies_array[key].indexOf('=') + 1 );
+   
+          //get rid of any whitespace at start or end
+          name = name.replace(/^\s+|\s+$/g,"");
+          this.cookies_obj[name] = value;
+        }
+        
+        if (this.cookies_obj.reserve_tickets) {
+          return true;
+        } else {
+          return false;
+        }
+
+      },
+
+      
+      reserve_tickets_release: function () {
+        var self = this;
+        console.log('this.is_reserve_tickets_cookie_present: ' +
+                     this.is_reserve_tickets_cookie_present);
+
+
+        console.log('checking for reserve_tickets cookie presence...');
+          //give up the reserved tickets
+          //and delete the cookie
+          $.ajax({
+            'url': '/api/orders/ticket_reserve_release_from_navigation',
+            'type': 'GET',
+             success: function (data, textStatus, jqXHR) {
+               console.log('SUCCESS: released tickets due to navigating away');
+               console.dir(data);
+               console.log('textStatus: ' + textStatus);
+               console.dir(jqXHR);
+
+
+               //TODO: implement error handling from backend, if else stuff 
+
+               self.is_reserve_tickets_cookie_present = false;
+               console.log('successful release of reserved tix. go onto to next view');
+
+	       var numberOfTicketsView = new NumberOfTicketsView({model: self.model});
+	       self.showView('#featureContent', numberOfTicketsView); 
+               window.scrollTo(0,350);
+             },
+             error: function (jqXHR, textStatus, errorThrown) {
+               console.log('ERROR: in releasing tickets dut to navigating away');
+               console.dir(jqXHR);
+               console.log('textStatus: ' + textStatus);
+               console.dir(errorThrown);
+
+               alert('internal error: try again later');
+             },
+          });          
+     },
+
+      
+
+
+
+
 
       showView: function (selector, view) {
         console.log('in showView in gig-detail-view.js');
