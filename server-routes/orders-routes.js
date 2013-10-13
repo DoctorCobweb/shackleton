@@ -61,6 +61,7 @@ gateway = braintree.connect({
 
 module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
+
   //models
   var OrderModel = shackleton_conn.model('Order', Order);
   var GigModel = shackleton_conn.model('Gig', Gig);

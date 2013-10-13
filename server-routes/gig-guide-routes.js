@@ -4,6 +4,8 @@
  *
  */
 
+
+
 //begin module implementation
 module.exports = function (mongoose, shackleton_conn, app, Gig) {
 
@@ -40,6 +42,7 @@ module.exports = function (mongoose, shackleton_conn, app, Gig) {
   app.post('/api/gigs/', function (req, res) {
   
     console.log('POST /api/gigs/ => creating a gig');
+    console.dir(req.body.tag_names);
 
     var gig = new GigModel({
      main_event:   req.body.main_event,
@@ -50,7 +53,7 @@ module.exports = function (mongoose, shackleton_conn, app, Gig) {
      supports:     req.body.supports,
      age_group:    req.body.age_group,
      description:  req.body.description,
-     tag_names:    req.body.tag_tames,
+     tag_names:    req.body.tag_names,
      image_url:    req.body.image_url,
      capacity:     req.body.capacity
     });

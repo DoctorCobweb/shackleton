@@ -22,31 +22,39 @@ jQuery.get( '/api/gigs/51a405e7088b125d08000002', function( data, textStatus, jq
     console.dir( jqXHR );
 });
 
+IMAGE URL
+---------------
+
+https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/banner_1280x300.gif
+https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/body_surfing_sunshine_beach.jpg
+https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/de+casanova.jpg
+
+
+
 CREATE A GIG 
 ---------------
 
 jQuery.post( '/api/gigs/', {
-    'main_event': 'Perfect Mexican Circle',
-    'event_date': new Date( 2008, 3, 12 ).getTime(),
+    'main_event': 'Green Tea Expert 2',
+    'event_date': new Date( 2013, 10, 13 ).getTime(),
     'opening_time': '8:00pm',
     'venue': 'The Wool Exchange',
-    'price': 30,
-    'capacity': 5,
-    'supports': 'Taco & the Burritos',
+    'price': 15,
+    'capacity': 800,
+    'supports': 'Black and White Tea',
     'age_group': '18+',
-    'description': 'mexican folk for all, Jesus.',
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',
     'tag_names':[
-        { 'tag': 'Mexican' },
-        { 'tag': 'Folk' }
+        { 'tag': 'Relxing' },
+        { 'tag': 'Digestive' }
     ],
-   'image_url': 'http://d11x7re0mdurt0.cloudfront.net/img/placekitten_500x300.jpg'
+   'image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/backbone.jpg'
 }, function( data, textStatus, jqXHR ) {
     console.log( 'Post response:' );
     console.dir( data );
     console.log( textStatus );
     console.dir( jqXHR );
 });
-
 
 
 

@@ -14,7 +14,8 @@ define([
             PurchaseWithCreditCardFromVaultHTML, 
             CheckoutView,
             CreditCardDetailsView,
-            SuccessfulUserFeedbackHTML) 
+            SuccessfulUserFeedbackHTML
+           ) 
   {
 
   var PurchaseWithCreditCardFromVaultView = Backbone.View.extend({
@@ -57,7 +58,6 @@ define([
       //*** START THE RESERVE TICKETS PROCESS ***
       this.start_reserve_tickets_countdown();
       
-
     },
 
     render: function () {
@@ -429,6 +429,7 @@ define([
       if (this.cookies_obj.reserve_tickets) {
         this.poll++;
         this.$('#ticker').html(this.poll);
+        //$('.odometer').html(this.poll);
 
       } else {
         console.log('ALONGSIDE YOUR HORSE, YOUR TICKET RESERVATION BOLTED OUT THE GATE.');
