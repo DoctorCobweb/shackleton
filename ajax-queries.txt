@@ -45,10 +45,11 @@ jQuery.post( '/api/gigs/', {
     'age_group': '18+',
     'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',
     'tag_names':[
-        { 'tag': 'Relxing' },
+        { 'tag': 'Relaxing' },
         { 'tag': 'Digestive' }
     ],
-   'image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/backbone.jpg'
+    'main_image_url': '',
+    'thumbnail_url': ''
 }, function( data, textStatus, jqXHR ) {
     console.log( 'Post response:' );
     console.dir( data );

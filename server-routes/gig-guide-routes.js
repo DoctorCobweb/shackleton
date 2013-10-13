@@ -45,17 +45,19 @@ module.exports = function (mongoose, shackleton_conn, app, Gig) {
     console.dir(req.body.tag_names);
 
     var gig = new GigModel({
-     main_event:   req.body.main_event,
-     event_date:   req.body.event_date,
-     opening_time: req.body.opening_time,
-     venue:        req.body.venue,
-     price:        req.body.price,
-     supports:     req.body.supports,
-     age_group:    req.body.age_group,
-     description:  req.body.description,
-     tag_names:    req.body.tag_names,
-     image_url:    req.body.image_url,
-     capacity:     req.body.capacity
+     main_event:         req.body.main_event,
+     event_date:         req.body.event_date,
+     opening_time:       req.body.opening_time,
+     venue:              req.body.venue,
+     price:              req.body.price,
+     supports:           req.body.supports,
+     age_group:          req.body.age_group,
+     description:        req.body.description,
+     tag_names:          req.body.tag_names,
+     main_image_url:     req.body.main_image_url,
+     thumbnail_url:      req.body.thumbnail_url,
+     capacity:           req.body.capacity
+     //image_url:        req.body.image_url
     });
   
     gig.save(function (err){
@@ -94,17 +96,18 @@ module.exports = function (mongoose, shackleton_conn, app, Gig) {
   
     return GigModel.findById(req.params.id, function (err, gig) {
       if(!err) {
-          gig.main_event =   req.body.main_event;
-          gig.event_date =   req.body.event_date;
-          gig.opening_time = req.body.opening_time;
-          gig.venue =        req.body.venue;
-          gig.price =        req.body.price;
-          gig.supports =     req.body.supports;
-          gig.age_group =    req.body.age_group;
-          gig.description =  req.body.description;
-          gig.tag_names =    req.body.tag_tames;
-          gig.image_url =    req.body.image_url;
-          gig.capacity =     req.body.capacity;
+          gig.main_event =        req.body.main_event;
+          gig.event_date =        req.body.event_date;
+          gig.opening_time =      req.body.opening_time;
+          gig.venue =             req.body.venue;
+          gig.price =             req.body.price;
+          gig.supports =          req.body.supports;
+          gig.age_group =         req.body.age_group;
+          gig.description =       req.body.description;
+          gig.tag_names =         req.body.tag_tames;
+          gig.main_image_url =    req.body.image_url;
+          gig.thumbnail_url =     req.body.thumbnail_url;
+          gig.capacity =          req.body.capacity;
   
           return gig.save(function (err) {
             if (!err) {

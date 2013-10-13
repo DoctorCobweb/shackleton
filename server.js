@@ -82,17 +82,19 @@ var TagNames = new mongoose.Schema({
 
 
 var Gig = new mongoose.Schema({
-  main_event:   String,
-  event_date:   Date,
-  opening_time: String,
-  venue:       String,
-  price:       Number,
-  supports:    String,
-  age_group:    String,
-  description: String,
-  tag_names:    [TagNames],
-  image_url:    String,
-  capacity:    Number
+  main_event:        String,
+  event_date:        Date,
+  opening_time:      String,
+  venue:             String,
+  price:             Number,
+  supports:          String,
+  age_group:         String,
+  description:       String,
+  tag_names:         [TagNames],
+  main_image_url:    String,
+  thumbnail_url:     String,
+  capacity:          Number
+  //image_url:       String
 });
 
 
@@ -184,10 +186,10 @@ app.configure(function () {
   //app.use call is uncommented it will use that & ignore site_dev static folder even 
   //when it is uncommented also (!)
   //uncomment this to use production, optimized, code from r.js process
-  app.use(express.static(path.join(application_root, 'site_prod')));
+  //app.use(express.static(path.join(application_root, 'site_prod')));
 
   //this sets the app to serve development code which is _not_ optimized 
-  //app.use(express.static(path.join(application_root, 'site_dev')));
+  app.use(express.static(path.join(application_root, 'site_dev')));
 
   app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
