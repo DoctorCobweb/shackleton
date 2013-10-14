@@ -202,7 +202,10 @@ define([
       console.log('submitting cc details');
       console.log('this.model: ');
       console.dir(this.model);
-      $(this.el).find('#submit').off('click');
+
+      //TODO: stop click event from registering this function handler.
+      //so user doesnt resend an order whilst the previous ajax call is pending
+      //$(this.el).find('#submit').off('click');
 
       //unbind the listener to stop resending order
       //this.$('#submit').off('click');
