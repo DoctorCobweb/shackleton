@@ -62,8 +62,8 @@ define([
         console.log('in initialize() of router.js');
         
         //set this to true to put app in private mode i.e. private beta
-        this.private_beta = true;
-        //this.private_beta = false;
+        //this.private_beta = true;
+        this.private_beta = false;
        
       },
  

@@ -44,6 +44,8 @@ define([
       initialize: function () {
         console.log('in initialize() of number-of-tickets-view.js');
 
+        this.BT_DEFAULT_CUS = 'default_braintree_customer_id';
+
         //BUG: when navigating back to another gig after selecting some ticke
         //a gig, this throws a Converting circular structure to JSON TypeError
         //console.log('this.model: ' + JSON.stringify(this.model));
@@ -134,8 +136,6 @@ define([
           this.$('#number_of_tickets')
             .prepend(_.template(NegativeUserFeedbackHTML)({'error': 'No tickets selected'}));
 
-          
-
           return;
         }
 
@@ -165,63 +165,92 @@ define([
             console.dir(model);
             console.dir(response);
 
-            
-            if (response.error) {
-              console.log('response.first_time_purchaser returned NOT as expected');
-              alert('ERROR: ' + response.error);
-              console.log(self.new_order);
-              self.render();
- 
-            } else if (response.braintree_customer_id === 
-                       'default_braintree_customer_id') {
+            //when using backbone model sync, it expects that ONLY the model is 
+            //returned to the client. if you dont, and say, return an obj with other field
+            //in it as well as the model, backbone wont be able to find the id parameter
+            //to sync with. here it is the _id param of a mongodb document.  
+            //
+            //so, if there are errors, there will be response.success === false and other
+            //fields. if there were NO errors, backend just returns the model. nothing
+            //else. => for a successful operation, response.success === undefined !!!!
+            //because response === model // in this case, the new_order model. 
+            if (response.success === false) {
+              //we have errors
 
-              console.dir(self.new_order);
-              var cc_details_view = new CreditCardDetailsView({model: self.new_order});
-              self.show_view('#featureContent', cc_details_view);
-              window.scrollTo(0, 350);
-              
-            } else if (response.braintree_customer_id !== 
-                       'default_braintree_customer_id') {
+     
+              if (!_.isEmpty(response.errors.validation_errors)) {
+                //there are validation errors
+                console.log('VALIDATION_ERRORS:');
+                alert('VALIDATION_ERRORS');
+                console.dir(response.errors.validation_errors);
 
-              /*
-              //save the order again to hit the PUT /api/orders/:id handler
-              //bad for performance as we are making 2 https requests. should short cut
-              //this in the backend by calling PUT handler from POST handler somehow
-              self.new_order.save({}, {
-                success: function (model, response) {
-                console.log('SUCCESS: resaved this.new_order');
-                  var checkout_view = new CheckoutView({model: self.new_order});
-                  self.show_view('#featureContent', checkout_view);
-                },
-                error: function (model, xhr) {
-                  console.log('ERROR: tried to resave this.new_order');
-                
+                //loop through the Array of validation errors and log them to console
+                for (var key in response.errors.validation_errors) {
+                  console.log('validation_errors[' + key + ']: ' +
+                              response.errors.validation_errors[key]);
+
+                  //var id_of_bad_input = '#' + data.errors.validation_errors[key].param;
+                  //console.log(id_of_bad_input);
+                  //$(id_of_bad_input).parent('.form-group').addClass('has-error');
                 }
 
-              });
-              */
+                return;
 
-              var purchase_with_vault_cc = new PurchaseWithCreditCardFromVaultView({
-                model: self.new_order
-              });
-              self.show_view('#featureContent', purchase_with_vault_cc);
-              window.scrollTo(0, 350);
+              } else if (!_.isEmpty(response.errors.internal_errors)) {
+                //there are internal errors
+                console.log('INTERNAL_ERRORS:');
+                alert('INTERNAL_ERRORS: try again');
 
-
+                //loop through the Array of validation errors and log them to console
+                for (var key in response.errors.internal_errors) {
+                  console.log('internal_errors[' + key + ']: ' +
+                              response.errors.internal_errors[key]);
+                }
+ 
+                return;
+              } 
             } else {
-              console.log('hit the bottom of if logic, uh oh');
-              self.render();
+              //successful order creation
+              //check to see if the user is a first time purchaser or returning one.
+              //show them different views depending on this answer.
+
+              if (response.braintree_customer_id === self.BT_DEFAULT_CUS) {
+
+                //first time purchaser
+                console.log('SUCCESSful order creation, FIRST TIME PURCHASER.');
+                console.log('self.new_order:');
+                console.dir(self.new_order);
+                console.log('model:');
+                console.dir(model);
+
+                var cc_details_view = new CreditCardDetailsView({model: self.new_order});
+                self.show_view('#featureContent', cc_details_view);
+                window.scrollTo(0, 350);
+              
+              } else if (response.braintree_customer_id !== self.BT_DEFAULT_CUS) {
+
+                //returning purchaser
+                console.log('SUCCESSful order creation, RETURNING PURCHASER.');
+                console.log('self.new_order:');
+                console.dir(self.new_order);
+                console.log('model:');
+                console.dir(model);
+  
+                var purchase_with_vault_cc = new PurchaseWithCreditCardFromVaultView({
+                  model: self.new_order});
+
+                self.show_view('#featureContent', purchase_with_vault_cc);
+                window.scrollTo(0, 350);
+              } 
             }
-
-
           },
           error: function (model, xhr) {
             console.log('ERROR: could not save the new_order for the first time.');
             console.dir(model);
             console.dir(xhr);
 
-            alert('ERROR: could not save the new_order model.');
-            self.render();
+            alert('ERROR: ajax callback: could not save the new_order model.');
+            //self.render();
           }
         }); 
 

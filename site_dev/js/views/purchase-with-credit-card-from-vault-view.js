@@ -62,6 +62,8 @@ define([
 
     render: function () {
       console.log('in purchase-with-credit-card-from-vault-view.js and render()');
+      console.log('this.model:');
+      console.dir(this.model);
 
       this.$el.html(this.template(this.model.toJSON()));
 
@@ -200,6 +202,10 @@ define([
       console.log('submitting cc details');
       console.log('this.model: ');
       console.dir(this.model);
+      $(this.el).find('#submit').off('click');
+
+      //unbind the listener to stop resending order
+      //this.$('#submit').off('click');
 
       var self = this;
       
@@ -218,12 +224,12 @@ define([
         this.model.save({}, 
           {
             error: function (model, xhr) {
-              console.log('ERROR in saving/updating the model');
+              console.log('ERROR in ajax call to save/update the model/order');
               console.dir(model);
               console.dir(xhr);
             },
             success: function (model,response) {
-              console.log('SUCCESS in saving/updating the model');
+              console.log('SUCCESS in ajax call to save/update the model/order');
               console.dir(model);
               console.dir(response);
   

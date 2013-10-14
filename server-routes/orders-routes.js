@@ -84,38 +84,98 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
   });
 
 
-  app.post('/api/orders/', function (req, res) {
+  app.post('/api/orders/', logged_in_required, function (req, res) {
+    console.log('*************** CREATING ORDER *************');
     console.log('POST /api/orders/ handler... Creating the order.');
+    console.log(req.body);
+    console.log('typeof(req.body.number_of_tickets: ' +
+                 typeof(req.body.number_of_tickets));
+    console.log('typeof(req.body.ticket_price: ' +
+                 typeof(req.body.ticket_price));
+    console.log('typeof(req.body.transaction_amount: ' +
+                 typeof(req.body.transaction_amount));
+    console.log('typeof(req.body.event_date: ' +
+                 typeof(req.body.event_date));
+    
+
+    //TODO
+    //sanitized the input
+
+    req.checkBody('cc_number', 'Empty cc_number').notEmpty();
+    req.checkBody('cc_cvv', 'Empty cc_cvv').notEmpty();
+    req.checkBody('cc_month','Empty cc_month').notEmpty();
+    req.checkBody('cc_year','Empty cc_year').notEmpty();
+    req.checkBody('gig_id','Empty gig_id').notEmpty();
+    req.checkBody('user_id','Empty user_id').notEmpty();
+    req.checkBody('braintree_customer_id','Empty braintree_customer_id').notEmpty();
+    req.checkBody('user_authenticated','Empty user_authenticated').notEmpty();
+    req.checkBody('number_of_tickets','number_of_tickets must be numeric').isNumeric();
+    req.checkBody('number_of_tickets','number_of_tickets').notEmpty();
+    req.checkBody('ticket_price', 'Empty ticket_price').notEmpty();
+    req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
+    req.checkBody('transaction_amount','Empty transaction_amount').notEmpty();
+    req.checkBody('transaction_amount','transaction_amount must be numeric').isNumeric();
+    req.checkBody('transaction_id','Empty transaction_id').notEmpty();
+    req.checkBody('transaction_status','Empty transaction_status').notEmpty();
+    req.checkBody('main_event','Empty main_event').notEmpty();
+
+    req.checkBody('event_date','Empty event_date').notEmpty();
+    //add in date checking??
+
+    req.checkBody('venue','Empty venue').notEmpty();
+    req.checkBody('opening_time','Empty opening_time').notEmpty();
+    req.checkBody('age_group','Empty age_group').notEmpty();
+    req.checkBody('first_name','Empty first_name').notEmpty();
+    req.checkBody('last_name','Empty last_name').notEmpty();
+    req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
 
 
-    //TESTING/MUCKING AROUND WITH COOKIES
-    /*
-    //test cookies
-    res.cookie(
-      'test_cookie_1', 
-      '1',
-      {maxAge: 3 * 60 * 1000, signed: true}
-      //{maxAge: 3 * 60 * 1000, httpOnly: true, signed: true}
-    );
+    req.sanitize('cc_number').xss();
+    req.sanitize('cc_cvv').xss();
+    req.sanitize('cc_month').xss();
+    req.sanitize('cc_year').xss();
+    req.sanitize('gig_id').xss();
+    req.sanitize('user_id').xss();
+    req.sanitize('braintree_customer_id').xss();
+    req.sanitize('user_authenticated').xss();
+    req.sanitize('number_of_tickets').xss();
+    req.sanitize('ticket_price').xss();
+    req.sanitize('transaction_amount').xss();
+    req.sanitize('transaction_id').xss();
+    req.sanitize('transaction_status').xss();
+    req.sanitize('main_event').xss();
+    req.sanitize('event_date').xss();
+    req.sanitize('venue').xss();
+    req.sanitize('opening_time').xss();
+    req.sanitize('age_group').xss();
+    req.sanitize('first_name').xss();
+    req.sanitize('last_name').xss();
 
-    res.cookie(
-      'test_cookie_2', 
-      '2',
-      {maxAge: 3 * 60 * 1000, signed: true}
-      //{maxAge: 3 * 60 * 1000, httpOnly: true, signed: true}
-    );
-    */
+
+    //errors is an Array of Objects. One obj for each validation check
+    var _validation_errors = req.validationErrors();
+
+    if (_validation_errors) {
+      console.log('VALIDATION_ERROR: in POST /api/orders/ :');
+      console.log(_validation_errors);
+      return res.send({'errors': {validation_errors: _validation_errors,
+                                  internal_errors: {}
+                                 },
+                        success: false
+                      });
+    }
 
 
     //start the order creation process
     initial_order_saved_from_clientside(req, res, function (err) {
       if (err) {
-        throw err;
+        console.log('INTERNAL_ERROR: in POST /api/orders/ : ' + err);
+        return res.send({'errors': {validation_errors: [],
+                                    internal_errors: err
+                                   }, 
+                         success: false});
       }
     });
-
-
-
   });
 
   //NEED TO CHECK IF CAPACITY OF GIG CAN HANDLE THE NUMBER OF TICKETS REQUESTD
@@ -141,19 +201,23 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         return callback(err);
       }
       if (!gig) {
-        return res.send({'error': 'gig_is_null'});
+        return callback({'error': 'gig_is_null'});
       }
-
       the_gig = gig;
-      console.log('GIG PRE-RESERVATION: ');
-      console.log(gig);
-      var delta_tickets = the_gig.capacity - parseInt(req.body.number_of_tickets);
+
+      console.log('GIG PRE-RESERVATION (no tickets deducted from capacity yet): ' + 
+                  + 'gig.capacity = ' + the_gig.capacity);
+      //console.log(gig);
+
+      var delta_tickets = the_gig.capacity - parseInt(req.body.number_of_tickets, 10);
 
       if (the_gig.capacity === 0) {
+        //gig is sold out even BEFORE we have tried to deduct tix
 
         //sold out 
         console.log('gig is SOLD OUT: gig._id: ' + the_gig._id);
-        return res.send({'error': 'gig_has_sold_out'});
+        return callback({'error': 'gig_has_sold_out'});
+        //return res.send({'error': 'gig_has_sold_out'});
 
       } else if ( delta_tickets < 0) {
 
@@ -162,8 +226,9 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
                       + the_gig._id
                       + ' delta_tickets: ' + delta_tickets);
 
-        return res.send({'error': 'not_enough_tickets_left', 
-                         amount_left:delta_tickets});
+        return callback({'error': 'not_enough_tickets_left'});
+        //return res.send({'error': 'not_enough_tickets_left', 
+        //                 amount_left:delta_tickets});
 
       } else {
         //there ARE enough tickets available, go on
@@ -184,7 +249,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         return callback(err);
       } 
       if (!user) {
-        return res.send({'error':'user_is_null'});
+        return callback({'error':'user_is_null'});
       }
       the_user = user;
       create_the_order();
@@ -192,13 +257,14 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
    
     function create_the_order() {
       console.log('=> initial_order_save_from_clientside => create_the_order');
+
+      //calculate the total $ to charge
       var the_total_amount = req.body.number_of_tickets * the_gig.price;
 
       the_order = new OrderModel({
         user_authenticated: true,
         user_id: the_user._id,
         gig_id: the_gig._id,
-
         main_event: the_gig.main_event,
         event_date: the_gig.event_date,
         opening_time: the_gig.opening_time,
@@ -206,27 +272,28 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         age_group: the_gig.age_group,
         first_name: the_user.first_name,
         last_name: the_user.last_name,
-
         ticket_price: the_gig.price,
         number_of_tickets: req.body.number_of_tickets,
         transaction_amount: the_total_amount,
         braintree_customer_id: the_user.braintree_customer_id
       });
      
-      deduct_the_tickets_reserved_from_capacity();
+      //deduct_the_tickets_reserved_from_capacity();
 
       the_order.save(function (err, order) {
         if (err) {
           return callback(err);
         }
 
+        //set the order variable to the saved order      
+        the_order = order;
 
-        //SET THE reserve_tickets cookie
+        //****** SET THE reserve_tickets cookie *******
+
         //TODO: flesh this cookie ticket reservation process out more.
         //set a cookie with a timeout corresponding to how long the tix are reserved
         //had to get rid of the httpOnly flag in order to use clientside setInterval
         //function to see if the reserve_tickets cookie exists.
-
         //nb: httpOnly:true will not let the client site app poll the cookie. 
         //=> no ticket reservation is available given the current implementation
         //e.g. {maxAge: 60 * 1000, httpOnly: true, signed: true} will NOT WORK
@@ -237,38 +304,45 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
             'order_id': order._id
           }, 
           {maxAge: 15 * 60 * 1000, signed: true, secure: true} //reserve tix for 15mins
-          //{maxAge: 1 * 10 * 1000, signed: true, secure: true} //reserve tix for 10s
         );
-   
-        /* 
-        res.cookie('mucking_around', {
-          'cape': 'water_1',
-          'brook': 'water_2',
-          'shoal': 'water_3', 
-          'marina': 'water_4',
-          'creek': 'water_5',
-          'gig_id': req.body.gig_id
-          },
-          {maxAge: 10 * 60 * 1000, signed:true, secure: true}
-        );
-        */
+
+        //before returning the order you must make sure the gig capacity is successfully
+        //updated.
+        deduct_the_tickets_reserved_from_capacity(the_order);
 
         //finally return the order
-        return res.send(order);
+        //return res.send({'errors': { validation_errors: [],
+        //                             internal_errors: {}
+        //                           }, 
+        //                 'order': order, 
+        //                  success: true
+        //                });
+
+        //return res.send(order);
       });
     }
 
-    function deduct_the_tickets_reserved_from_capacity() {
-      the_gig.capacity -= req.body.number_of_tickets;
+    function deduct_the_tickets_reserved_from_capacity(order) {
+
+      the_gig.capacity = the_gig.capacity - req.body.number_of_tickets;
 
       the_gig.save(function (err, gig) {
         if (err) {
           return callback(err);
         }
-        console.log('GIG POST-RESERVATION: ');
-        console.log(gig);
+        console.log('GIG POST-RESERVATION ' +  
+                    '(should have reserved tix subtracted from capacity: ' + 
+                    'gig.capacity = ' + gig.capacity);
+
+        //finally return the order
+        //return res.send({'errors': { validation_errors: [],
+        //                             internal_errors: {}
+        //                           }, 
+        //                 'order': order, 
+        //                  success: true
+        //                });
+        return res.send(order);
       });
-      
     }
 
 
@@ -574,6 +648,13 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
           return callback({'error':'saved_order_is_null'});
         } 
         console.log('order updates saved');
+
+        //make browser delete the cookie
+        //NB. if you dont delete the cookie after a succssful purchase & user tries
+        //to buy another gig, the purchased tickets number will be added back to the
+        //gig capacity. resulting in a successful monetery transaction but the gig
+        //capacity will show NO CHANGE!!!
+        res.clearCookie('reserve_tickets', { signed: true, secure: true});
         
         //SUCCESSFUL ORDER PURCHASE. 
         // *** IMPORTANT *** : this is the response to say order is SUCCESSFUL
@@ -715,6 +796,10 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
   //called when reserved tickets have timed out => add back the reserved tix to general
   //pool
+  //it does:
+  //-delete incomplete order
+  //-add reserved tickets back to gig capacity for relevant gig
+  //-deletes the reserve_tickets cookie (important to reset the state)
   app.post('/api/orders/ticket_reserve_timeout', function (req, res) {
     console.log('ATTEMPTING TO DELETE THE RESERVED TICKETS & ORDER...');
     console.log('in POST api/orders/ticket_reserve_timeout');
@@ -793,6 +878,14 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         }
         console.log('the order has been successfully deleted');
       });
+
+
+      //make browser delete the cookie
+      //NB. if you dont delete the cookie after a succssful purchase & user tries
+      //to buy another gig, the purchased tickets number will be added back to the
+      //gig capacity. resulting in a successful monetery transaction but the gig
+      //capacity will show NO CHANGE!!!
+      res.clearCookie('reserve_tickets', { signed: true, secure: true});
 
       return res.send({'OCCURRANCE': 'put ticket reserve back into the general pool.'});
     }

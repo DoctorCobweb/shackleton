@@ -743,6 +743,19 @@ li > b {
 }
 
 
+#brand_formatting {
+  display: inline;
+  float: left;
+}
+
+
+.navbar-default .navbar-header a:hover,
+.navbar-default .navbar-header a:focus {
+  background-color: #CA703D; 
+  color: #000;
+}
+
+
 .navbar-default {
   background-color: #EE6D08;
   border-color: #EE6D08;
@@ -758,8 +771,16 @@ li > b {
 .navbar-default .navbar-nav>li>a:hover, 
 .navbar-default .navbar-nav>li>a:focus {
   color: #000;
-  background-color: #fff; 
+  background-color: #CA703D; 
 }
+
+
+/*
+.navbar-default .navbar-nav>li>a:active {
+  color: #fff;
+  background-color: #000; 
+}
+*/
 
 
 .navbar-default .navbar-toggle:hover, 

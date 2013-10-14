@@ -1,0 +1,430 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1187\cocoasubrtf340
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red36\green43\blue51;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww13940\viewh14520\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\fs24 \cf0 GIG GUIDE AJAX \
+---------------------------\
+\
+\
+\pard\pardeftab720
+
+\f1\fs22 \cf2 \cb3 jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Green Tea Expert',\
+    'event_date': new Date( 2013, 10, 13 ).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 15,\
+    'capacity': 800,\
+    'supports': 'Black and White Tea',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Relaxing' \},\
+        \{ 'tag': 'Digestive' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/744808main_pia14944-full_full.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/744808main_pia14944-full_full_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Mountain Climbers',\
+    'event_date': new Date( 2014, 9, 11 ).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 20,\
+    'capacity': 800,\
+    'supports': 'Axes and Laces',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Worldly' \},\
+        \{ 'tag': 'Static' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/9443908614_5b726775e5_o.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/9443908614_5b726775e5_o_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Simbas dad',\
+    'event_date': new Date( 2013, 9, 8  ).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 200,\
+    'capacity': 800,\
+    'supports': 'Fur and Paws',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Worldly' \},\
+        \{ 'tag': 'Static' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/TTb0GsE.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/TTb0GsE_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Wet Pussy',\
+    'event_date': new Date( 2013, 29, 10).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 10,\
+    'capacity': 800,\
+    'supports': 'Meowingtons',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Angry' \},\
+        \{ 'tag': 'Silky' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/Xj6SKKB.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/Xj6SKKB_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'XRAYS',\
+    'event_date': new Date( 2013, 7, 3).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 30,\
+    'capacity': 800,\
+    'supports': 'Doctor and Nurse',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'High radiation' \},\
+        \{ 'tag': 'Energy' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/backbone.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/backbone_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Propery Bum',\
+    'event_date': new Date( 2014, 3, 21).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 7,\
+    'capacity': 800,\
+    'supports': 'Dolphns and Seaweed',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Bodysurfing' \},\
+        \{ 'tag': 'Sunshine' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/body_surfing_sunshine_beach.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/body_surfing_sunshine_beach_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Chemotoxic Death',\
+    'event_date': new Date( 2014, 0, 20).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 14,\
+    'capacity': 800,\
+    'supports': 'Stuff n That',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Pysche' \},\
+        \{ 'tag': 'Black n White' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/chemotoxic_death.jpeg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/chemotoxic_death_thumbnail.jpeg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Casa Real Burger',\
+    'event_date': new Date( 2014, 8, 13).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 121,\
+    'capacity': 800,\
+    'supports': 'Chips and Sald',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Eatery' \},\
+        \{ 'tag': 'Avery' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/de+casanova.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/de+casanova_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Underwater Spacettes',\
+    'event_date': new Date( 2013, 2, 15).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 18,\
+    'capacity': 800,\
+    'supports': 'Whales and Fishermen',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Moonrise' \},\
+        \{ 'tag': 'Bioluminescence' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/marcus-brain-lights.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/marcus-brain-lights_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Vulcan the Volly Vulcano',\
+    'event_date': new Date( 2016, 5, 11).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 51,\
+    'capacity': 800,\
+    'supports': 'Ashes and dirty',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Omo' \},\
+        \{ 'tag': 'Gasmasks' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/miTs6v8.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/miTs6v8_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Spinning Dervish',\
+    'event_date': new Date( 2013, 4, 30).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 99,\
+    'capacity': 800,\
+    'supports': 'Religious Beliefs',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Dizzy' \},\
+        \{ 'tag': 'Gyromancers' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/original_spinning_half_avatar.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/original_spinning_half_avatar_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Some Crosseyed Spastic',\
+    'event_date': new Date( 2013, 11, 31).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 1,\
+    'capacity': 800,\
+    'supports': 'Hangover donut exchange',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Spewin' \},\
+        \{ 'tag': 'Holy molly' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/restirred.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/restirred_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Set Thoeretic',\
+    'event_date': new Date( 2013, 2, 27).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 13,\
+    'capacity': 800,\
+    'supports': 'Waxing and Lyrical',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Winkipop' \},\
+        \{ 'tag': 'Magnetictron Plasma Sushi' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/saltmotion_IMG_0866_2013_08_12.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/saltmotion_IMG_0866_2013_08_12_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Bouncer',\
+    'event_date': new Date( 2013, 2, 27).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 16,\
+    'capacity': 800,\
+    'supports': 'Empty Stomach',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Biong' \},\
+        \{ 'tag': 'Bongo boom' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/trampoline_lorne_2013.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/trampoline_lorne_2013_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Gtroit CBD',\
+    'event_date': new Date( 2013, 2, 27).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 5,\
+    'capacity': 800,\
+    'supports': 'Not the mayor',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Gentrification' \},\
+        \{ 'tag': 'Commercialize or Bust' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/tumbleweed2.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/tumbleweed2_thumbnail.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});\
+\
+\
+\
+\
+\
+jQuery.post( '/api/gigs/', \{\
+    'main_event': 'Green Tea Expert',\
+    'event_date': new Date( 2013, 10, 13 ).getTime(),\
+    'opening_time': '8:00pm',\
+    'venue': 'The Wool Exchange',\
+    'price': 15,\
+    'capacity': 800,\
+    'supports': 'Black and White Tea',\
+    'age_group': '18+',\
+    'description': 'yadd yaada yaaaaa ey yea yea yea blah blah blah blah blah ',\
+    'tag_names':[\
+        \{ 'tag': 'Relaxing' \},\
+        \{ 'tag': 'Digestive' \}\
+    ],\
+    'main_image_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/744808main_pia14944-full_full.jpg',\
+    'thumbnail_url': 'https://s3-ap-southeast-2.amazonaws.com/biz.spintix.bucket1/img/thumbnails/744808main_pia14944-full_full_thumbnails.jpg'\
+\}, function( data, textStatus, jqXHR ) \{\
+    console.log( 'Post response:' );\
+    console.dir( data );\
+    console.log( textStatus );\
+    console.dir( jqXHR );\
+\});}

@@ -134,7 +134,10 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     console.log('in /api/users/account/billing_info');
 
     start_the_get_billing_info(req, res, function (err) {
-      if (err) throw err;
+      if (err) {
+        console.log('ERROR: ' + err);
+        throw err;
+      }
     });
 
   });
@@ -273,6 +276,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     register_a_new_user(req, res, function (err) {
       //these areas come from the chain of function calls below.
       if (err) {
+        console.log('INTERNAL_ERROR: ' + err);
         console.log('in POST /api/users/register and error has been thrown: ');
         console.log(err);
         console.log('error code is: ' + err.code);
@@ -448,6 +452,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     log_the_user_in(req, res, function (err) {
       console.log('in login error call back handler');
       if (err) {
+        console.log('INTERNAL_ERROR: ' + err);
         return res.send({'errors': {validation_errors: [],
                                     internal_errors: err
                                    },
@@ -596,6 +601,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     start_password_change(req, res, function (err) {
       console.log('in password_change error callback');
       if (err) {
+        console.log('INTERNAL_ERROR: ' + err);
         return res.send({'errors': {validation_errors: [],
                                     internal_errors: err
                                    },
@@ -752,6 +758,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
     change_cc_in_vault_for_user(req, res, function (err) {
       if (err) {
+        console.log('INTERNAL_ERROR: ' + err);
         return res.send({'errors': {validation_errors: [],
                                     internal_errors: err,
                                     braintree_errors: {}
@@ -997,6 +1004,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
       console.log('in PUT /api/users/reset_the_customer_id/:id');
       update_user_braintree_customer_id(req, res, function (err) {
         if (err) {
+          console.log('INTERNAL_ERROR: ' + err);
           throw err;
         }
       });
@@ -1109,6 +1117,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
     UserModel.findById(req.session.user_id, function (err, user) {
       if (err) {
+        console.log('INTERNAL_ERROR: ' + err);
         return res.send({'errors': { validation_errors: [],
                                      internal_errors: err
                                    }, 
@@ -1573,6 +1582,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     log_the_beta_user_in(req, res, function (err) {
       console.log('in login error call back handler');
       if (err) {
+        console.log('INTERNAL_ERROR: ' + err);
         return res.send({'errors': {validation_errors: [],
                                     internal_errors: err
                                    },
