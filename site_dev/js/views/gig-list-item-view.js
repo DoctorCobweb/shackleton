@@ -52,13 +52,13 @@ define([
         this.model.on("change", this.render, this);
         this.model.on("destroy", this.close, this);
 
-        console.log('this.options.count: ');
-        console.log('this.options.count: ' + this.options.count);
+        //console.log('this.options.count: ');
+        //console.log('this.options.count: ' + this.options.count);
 
       },
 
       render: function () {
-        console.log('in GigListItemView render()');
+        //console.log('in GigListItemView render()');
            
         this.$el.html(this.template(this.model.toJSON()));
 

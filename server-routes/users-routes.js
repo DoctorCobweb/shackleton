@@ -188,6 +188,29 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
 
 
+  /* 
+  //start playing around api's 
+
+  app.get('/api/users/beforeunload_event_called', function (req, res) {
+    console.log('in GET /api/users/beforeunload_event_called handler');
+    return res.send('beforeunload_event api');
+  });
+
+
+  app.get('/api/users/close_event_called', function (req, res) {
+    console.log('in GET /api/users/close_event_called handler');
+    return res.send('close_event api');
+  });
+
+  //end playing around apis
+
+  */
+
+
+
+
+
+
   //get a single authenticated user, via backbone fetching a user model 
   //passing in the _id to find the user
   app.get('/api/users/:id', logged_in_required, function (req, res) {
@@ -1542,6 +1565,8 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
 
   //----------start: NEW FEATURE TESTING SECTION-------------------
+
+
 
 
 

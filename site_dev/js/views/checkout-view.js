@@ -19,7 +19,7 @@ define([
 
       initialize: function () {
         console.log('in initialize() of checkout-view.js');
-        console.log('is newOrder present? : ' + JSON.stringify(this.model, null, 4));
+        //console.log('is newOrder present? : ' + JSON.stringify(this.model, null, 4));
 
         //find the user-agent in order to customize the display based on which
         //device/browser the user is ...using...

@@ -214,6 +214,9 @@ define([
               //check to see if the user is a first time purchaser or returning one.
               //show them different views depending on this answer.
 
+              console.log('CUSTOM_EVENT(order:start, trigger)');
+              Backbone.trigger('order:start', 'a', 'b', 'c', 'd');
+
               if (response.braintree_customer_id === self.BT_DEFAULT_CUS) {
 
                 //first time purchaser

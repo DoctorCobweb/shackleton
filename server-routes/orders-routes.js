@@ -109,8 +109,10 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     req.checkBody('user_id','Empty user_id').notEmpty();
     req.checkBody('braintree_customer_id','Empty braintree_customer_id').notEmpty();
     req.checkBody('user_authenticated','Empty user_authenticated').notEmpty();
-    req.checkBody('number_of_tickets','number_of_tickets must be numeric').isNumeric();
     req.checkBody('number_of_tickets','number_of_tickets').notEmpty();
+    req.checkBody('number_of_tickets','number_of_tickets must be numeric').isNumeric();
+    req.checkBody('number_of_tickets','number_of_tickets min is 1').min(1);
+    req.checkBody('number_of_tickets','number_of_tickets max is 8').max(8);
     req.checkBody('ticket_price', 'Empty ticket_price').notEmpty();
     req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
     req.checkBody('transaction_amount','Empty transaction_amount').notEmpty();
@@ -354,6 +356,8 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
   //######  ROUTE HANDLER ######################################################
 
+
+  //TODO: validate, sanitize, error handling
   //UPDATE THE ORDER
   app.put('/api/orders/:id', function (req, res) {
     console.log('in PUT /api/orders/:id handler');

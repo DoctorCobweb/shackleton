@@ -277,6 +277,11 @@ define([
       if (status === 'submitted_for_settlement') {
         console.log('transaction_status: ' + status);
 
+
+        //emit the order:finished CUSTOM_EVENT
+        Backbone.trigger('order:finished');
+
+
         //stop the reserve_tickets counter which will stop order process if reached
         clearInterval(this.interval_id);
         var checkout_view = new CheckoutView({model: model});

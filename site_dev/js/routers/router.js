@@ -42,7 +42,8 @@ define([
     'views/beta-login-view',
     'views/real-front-page-view',
     'views/header-view',
-    'views/banner-view'
+    'views/banner-view',
+    'cookie_util'
 
   ], 
   function (Backbone, GigsView, AboutView, ContactView, LoginView,
@@ -54,7 +55,7 @@ define([
     PrivacyPolicyView, ReturnsPolicyView,
     TicketTypesView, NewsletterView,
     FaqView, SearchView, FooterView, BetaLoginView,
-    RealFrontPageView, HeaderView, BannerView) {
+    RealFrontPageView, HeaderView, BannerView, CookieUtil) {
 
     var AppRouter = Backbone.Router.extend({
     
@@ -62,10 +63,193 @@ define([
         console.log('in initialize() of router.js');
         
         //set this to true to put app in private mode i.e. private beta
-        this.private_beta = true;
-        //this.private_beta = false;
-       
+        //this.private_beta = true;
+        this.private_beta = false;
+
+
+        //START ------playing around with events-------------------------------
+    
+        /*
+        var ourObject = {};
+        _.extend(ourObject, Backbone.Events)
+        ourObject.on('dnb', function (msg) {
+          console.log('CUSTOM EVENT: ourObject and dnb msg: ' + msg);
+        });
+
+        var second_obj = {};
+        _.extend(second_obj, Backbone.Events);
+        second_obj.listenTo(ourObject, 'dnb', function (msg) {
+          console.log('CUSTOM EVENT: second_obj and dnb msg: ' + msg);
+        });
+
+        ourObject.trigger('dnb', 'this trigger this custom event');
+
+        Backbone.on('giving_in', function (smut) {
+          console.log('BACKBONE EVENT: giving_in: ' + smut);
+        });
+
+        Backbone.trigger('giving_in', 'NOPE');
+        */
+
+        //WORKS
+        //window.addEventListener('beforeunload', 
+        //                        this.delete_reserve_cookie_onbeforeunload, false);
+
+        //window.addEventListener('close', this.delete_reserve_cookie_onclose, false);
+        //window.onclose = this.delete_reserve_cookie_onclose;
+
+        console.log('CookieUtil');
+        console.dir(CookieUtil);
+
+
+        //need to send the reserve_tickets cookie fields when this event is triggered
+        Backbone.on('order:start', function (a, b, c, d) {
+          console.log('CUSTOM_EVENT(order:start, heard)');
+          console.log('CUSTOM_EVENT(order:start, heard): this variable: ');
+          console.dir(this);
+          console.log('a: ' + a);
+          console.log('b: ' + b);
+          console.log('c: ' + c);
+          console.log('d: ' + d);
+ 
+          //start setInterval and query for the reserve_tickets cookie
+          this.start_checking_for_cookie('reserve_tickets');
+
+        }, this);
+        
+ 
+        //need to send the reserve_tickets cookie fields when this event is triggered
+        //Backbone.on('order:start', this.order_start_event_handler, this);
+        
+        Backbone.on('order:finished', function () {
+          console.log('CUSTOM_EVENT(order:finished, heard)');
+          console.log('CUSTOM_EVENT(order:finished, heard): this variable: ');
+          console.dir(this);
+
+          //stop querying for the cookie because the order is complete and backend
+          //has cleared the cookie (by calling res.clearCookie() )
+          clearInterval(this.cookie_poller_id);
+
+        }, this);
+
+
+        Backbone.on('order:unset_cookie', function () {
+          //the reserve_tickets cookie has timeout out. user was loitering about the app
+          console.log('CUSTOM_EVENT(order:unset_cookie, heard)');
+          
+          //release the tickets held
+          this.release_the_tickets_held('reserve_tickets');
+
+        }, this);
+
       },
+
+
+      order_start_event_handler:  function (a, b, c, d) {
+        console.log('CUSTOM_EVENT(order:start, heard)');
+        console.log('CUSTOM_EVENT(order:start, heard): this variable: ');
+        console.dir(this);
+        console.log('a: ' + a);
+        console.log('b: ' + b);
+        console.log('c: ' + c);
+        console.log('d: ' + d);
+ 
+        //start setInterval and query for the reserve_tickets cookie
+        this.start_checking_for_cookie('reserve_tickets');
+      },
+
+
+
+
+
+      start_checking_for_cookie: function (cookie_name) {
+        console.log('in start_checking_for_cookie handler');
+        var self = this;
+
+        this.cookie_poller_id = setInterval(function () {
+          console.log('in setInterval callback for polling reserve_tickets cookie...'); 
+
+          if (!CookieUtil.get(cookie_name)) {
+            console.log('CookieUtil.get(' + cookie_name + ') returned null');
+            //no cookie found for name=cookie_name
+            //=> reservation timedout => need to release hold on tix
+           
+            //TODO 
+            //release ticket on backend
+            //self.release_the_tickets_held(cookie_name);
+
+            return;
+          }
+
+          //there is a cookie with name=cookie_name
+          console.log('CookieUtil: there is a cookie: ' + CookieUtil.get(cookie_name));
+
+
+        }, 1000);
+
+      },
+
+
+      release_the_tickets_held: function (cookie_name) {
+        console.log('in release_the_tickets_held handler');
+
+
+      },
+
+
+      /*
+      delete_reserve_cookie_onclose: function (e) {
+        var self = this; //this refers to Window obj
+
+
+        $.ajax({
+          url: '/api/users/close_event_called',
+          type: 'GET',
+          success: function( data, textStatus, jqXHR ) {
+              console.log('SUCCESS: Got response');
+              console.dir(data);
+              console.log(textStatus);
+              console.dir(jqXHR);
+
+              console.log('EVENT: close event was fired');
+              console.log('in delete_reserve_cookie_onclose');
+              console.log('this context in delect_reserve_cookie_onclose: ');
+              console.log(self);
+              console.log('is jQuery present: ');
+              console.dir($);
+          }
+        });
+
+        //return 'in delete_reserve_cookie hanlder';
+        return;
+      },
+
+      delete_reserve_cookie_onbeforeunload: function (e) {
+        var self = this; //this refers to Window obj
+
+
+        $.ajax({
+          url: '/api/users/beforeunload_event_called',
+          type: 'GET',
+          success: function( data, textStatus, jqXHR ) {
+              console.log('SUCCESS: Got response');
+              console.dir(data);
+              console.log(textStatus);
+              console.dir(jqXHR);
+
+              console.log('EVENT: beforeunload event was fired');
+              console.log('in delete_reserve_cookie_onbeforeunload');
+              console.log('this context in delect_reserve_cookie_onbeforeunload: ');
+              console.log(self);
+              console.log('is jQuery present: ');
+              console.dir($);
+          }
+        });
+
+        //return 'in delete_reserve_cookie hanlder';
+        return;
+      },
+      */
  
 
       routes: {
@@ -270,6 +454,10 @@ define([
       index: function () {
         console.log('in INDEX of router.js');
         var self = this;
+
+        console.log('using CookieUtil to get reserve_tickets cookie...');
+        console.log(CookieUtil.get('reserve_tickets'));
+
 
         /*   
         //this was used prior to implementing the beta login version of app
@@ -788,7 +976,128 @@ define([
         $(selector).html(view.render().el);
         this.currentView = view;
         return view;
+      },
+
+  
+
+
+      //start polling stuff
+      //start a polling system to look at reserve_tickets cookie existence
+      start_reserve_tickets_countdown: function () {
+        console.log('in start_reserve_tickets_coundown()');
+        console.log('document.cookie: ' + document.cookie);
+   
+   
+        this.poll = 0;
+        this.interval_id = setInterval(this.poller, 1000);
+   
+        //*** IMPORTANT ***
+        //set are_tickets_reserved to true
+        //this.are_tickets_reserved = true;
+      },
+
+
+
+      poller: function () {
+        //console.log('in poller');
+        //console.log(this);
+   
+        this.parse_cookie_string();
+   
+        if (this.cookies_obj.reserve_tickets) {
+          //still have the reserve_tickets cookie present
+
+          this.poll++;
+          console.log(this.poll); 
+
+        } else {
+          //reserve_tickets cookie has timedout
+
+          console.log('ALONGSIDE YOUR HORSE, TICKET RESERVATION BOLTED OUT THE GATE.');
+
+          //stop the cookie polling
+          clearInterval(this.interval_id);
+          var self = this;
+   
+          //only delete the reservation if user is NOT in the purchase proceedure.
+          //at start of purchase procedure the view emits an event telling the router
+          //to not delete any cookies.
+          //after completion, the router can go back to polling the cookie.
+    
+            
+          /*
+          //delete the ticket reservation i.e. add back the reserved tick no. back to
+          //the gig in gigs collection
+          $.ajax({
+            url: '/api/orders/ticket_reserve_timeout',
+            type: 'POST',
+            data: this.model.toJSON(),
+            success: function (data, textStatus, jqXHR) {
+              console.log('SUCCESS: deleted ticket reserve cookie');
+              console.dir(data);
+              console.log(textStatus);
+              console.dir(jqXHR);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.log('ERROR: trouble with deleting ticket reserve cookie');
+              console.dir(jqXHR);
+              console.log(textStatus);
+              console.dir(errorThrown);
+   
+            }
+          });
+          */  
+   
+          //*** IMPORTANT ***
+          //set are_tickets_reserved to false
+          //this.are_tickets_reserved = false;
+          alert('YOUR TICKET RESERVATION HAS EXPIRED');
+   
+   
+        }
+      },
+
+
+
+
+
+      parse_cookie_string: function () {
+        //console.log('in parse_cookie_string()');
+   
+        this.cookies_obj = {};
+        this.cookies_array = document.cookie.split(';');
+   
+        console.log('this.cookies_array:');
+        console.dir(this.cookies_array);
+   
+        for (var key in this.cookies_array) {
+          var name = this.cookies_array[key].substring(0,
+                       this.cookies_array[key].indexOf('='));
+          var value= this.cookies_array[key].substring(
+                       this.cookies_array[key].indexOf('=') + 1 );
+   
+          //get rid of any whitespace at start or end
+          name = name.replace(/^\s+|\s+$/g,"");
+   
+          this.cookies_obj[name] = value;
+        }
+
+        if (this.cookies_obj.reserve_tickets) {
+          return true; 
+        } else {
+          return false;
+        }
+
+      },
+
+      clear_reserve_tickets_cookie: function () {
+        //to clear the cookie, set the cookie again but with expiration in past
+
+
       }
+
+
+
     });
     return AppRouter;
   }

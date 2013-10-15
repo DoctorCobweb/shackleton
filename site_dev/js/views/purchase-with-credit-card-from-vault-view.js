@@ -7,15 +7,16 @@ define([
     'text!tpl/PurchaseWithCreditCardFromVaultView.html',
     'views/checkout-view',
     'views/credit-card-details-view',
-    'text!tpl/SuccessfulUserFeedback.html'
+    'text!tpl/SuccessfulUserFeedback.html',
+    'cookie_util'
   ],
   function (Backbone, 
             Braintree, 
             PurchaseWithCreditCardFromVaultHTML, 
             CheckoutView,
             CreditCardDetailsView,
-            SuccessfulUserFeedbackHTML
-           ) 
+            SuccessfulUserFeedbackHTML,
+            CookieUtil) 
   {
 
   var PurchaseWithCreditCardFromVaultView = Backbone.View.extend({
@@ -57,7 +58,11 @@ define([
  
       //*** START THE RESERVE TICKETS PROCESS ***
       this.start_reserve_tickets_countdown();
-      
+
+
+      //start the reserve_tickets cookie and the countdown
+      Backbone.trigger('order:start');      
+
     },
 
     render: function () {
@@ -186,7 +191,6 @@ define([
  
       //set the field in this.model 
       this.model.set(field_to_set);
-
       this.new_cc_details[model_attribute] = encrypted_value;
 
       console.log('value entered into field, ' + model_attribute + ' is ' 
@@ -254,11 +258,13 @@ define([
       if (status === 'submitted_for_settlement') {
         console.log('transaction_status: ' + status);
 
+
+        //emit the order:finished CUSTOM_EVENT
+        Backbone.trigger('order:finished');
+
+
         //stop the reserve_tickets counter which will stop order process if reached
         clearInterval(this.interval_id);  
-
-        //should you also DELETE the particular cookie for the reserved tickers??
-
         var checkout_view = new CheckoutView({model: model});
         this.show_view('#featureContent', checkout_view);
         window.scrollTo(0,350);
@@ -343,54 +349,6 @@ define([
         });
       }
     },
-
-
-    /*
-    //this process ends up changing the users braintree_customer_id along with the 
-    //new cc details.
-    //compare this to the changing of cc details in the user account page, where the 
-    //new cc details update does NOT change the users braintree_customer_id.
-    //a bit flaky, i know. 
-    edit_cc_details_OLD: function () {
-      var self = this;
-
-      $.ajax({
-        url: '/api/users/reset_the_customer_id/' + self.model.get('user_id'),
-        type: 'PUT',
-        data: {
-          'braintree_customer_id': 'default_braintree_customer_id',
-        },
-        success: function (data, textStatus, jqXHR) {
-          if (data.successful_reset) {
-            console.log('the braintree_customer_id field has been reset to default');
-            console.dir(data);
-            console.log(textStatus);
-            console.dir(jqXHR);
-   
-
-              //using 'this' does _not_ actually stopz the countdown
-              //clearInterval(this.interval_id); 
-              clearInterval(self.interval_id); 
-               
-              var cc_details_view = new CreditCardDetailsView({model: self.model});
-              self.show_view('#featureContent', cc_details_view);
-
-          } else {
-            console.log('ERROR: could not reset the braintree_customer_id_field');
-          }
-
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-          console.log('ERROR: could not reset the user braintree_customer_id field');
-          console.dir(jqXHR);
-          console.log(textStatus);
-          console.dir(errorThrown);
- 
-        },
-      });
-    },
-    */
-
 
 
 

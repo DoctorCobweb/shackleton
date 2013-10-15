@@ -87,7 +87,7 @@ define([
         var gigListItemView = new GigListItemView({model: item, count:self.count});
         
         this.count++; 
-        console.log(this.count);
+        //console.log(this.count);
         
     
         // call its render function, append its element to GigsView element, el
