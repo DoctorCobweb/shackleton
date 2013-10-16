@@ -44,10 +44,10 @@ text!tpl/CreditCardDetailsView.html
 text!tpl/CheckoutView.html
 js/views/checkout-view.js
 text!tpl/SuccessfulUserFeedback.html
+text!tpl/NegativeUserFeedback.html
+js/lib/cookie_util.js
 js/views/credit-card-details-view.js
 text!tpl/PurchaseWithCreditCardFromVaultView.html
-js/lib/cookie_util.js
-text!tpl/NegativeUserFeedback.html
 js/views/purchase-with-credit-card-from-vault-view.js
 js/views/number-of-tickets-view.js
 text!tpl/LoginWithGigDetailsView.html
