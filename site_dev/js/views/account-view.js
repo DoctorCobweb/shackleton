@@ -24,10 +24,31 @@ define([
       template: _.template(AccountViewHTML),
 
       events: {
-        'click #account_orders' :  'orders',
-        'click #account_billing':  'billing',
-        'click #account_settings': 'settings'
+        'click #account_orders' :       'orders',
+        'click #account_billing':       'billing',
+        'click #account_settings':      'settings',
+        'mouseover #account_orders':    'select_proceed',
+        'mouseout #account_orders':     'deselect_proceed',
+        'mouseover #account_billing':   'select_proceed',
+        'mouseout #account_billing':    'deselect_proceed',
+        'mouseover #account_settings':  'select_proceed',
+        'mouseout #account_settings':   'deselect_proceed'
+      },
 
+
+      select_proceed: function (e) {
+        console.log('in select_proceed');
+        console.dir(e);
+        console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
+      },
+   
+
+      deselect_proceed: function (e) {
+        console.log('in deselect_proceed');
+        console.dir(e);
+        console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
       },
 
 

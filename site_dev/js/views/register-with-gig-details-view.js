@@ -28,8 +28,27 @@ define([
         'blur #phone_number':      'phone_number_blur',
         'blur #email_address':     'email_address_blur',
         'blur #password':          'password_blur',
-        'click #register':         'register'
+        'click #register':         'register',
+        'mouseover #register':     'select_proceed',
+        'mouseout #register':      'deselect_proceed'
       },
+
+
+      select_proceed: function (e) {
+        console.log('in select_proceed');
+        console.dir(e);
+        console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
+      },
+
+
+      deselect_proceed: function (e) {
+        console.log('in deselect_proceed');
+        console.dir(e);
+        console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
+      },
+
 
       initialize: function () {
         console.log('in initialize() of register-with-gig-details-view.js');
@@ -43,7 +62,7 @@ define([
         this.current_view = this;
         this.ENTER_KEY = 13;
 
-      },
+       },
 
       render: function () {
         console.log('in register-with-gig-details-view.js and render()');

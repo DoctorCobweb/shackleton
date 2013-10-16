@@ -23,8 +23,30 @@ define([
         'blur #email_address' :    'email_address_blur',
         'blur #password':          'password_blur',
         'click #login':            'login',
-        'click #register':         'register'
+        'click #register':         'register',
+        'mouseover #login':        'select_proceed',
+        'mouseout #login':         'deselect_proceed',
+        'mouseover #register':     'select_proceed',
+        'mouseout #register':      'deselect_proceed'
       },
+
+
+      select_proceed: function (e) {
+        console.log('in select_proceed');
+        console.dir(e);
+        console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
+      },
+ 
+ 
+      deselect_proceed: function (e) {
+        console.log('in deselect_proceed');
+        console.dir(e);
+        console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
+      },
+
+
 
       initialize: function () {
         console.log('in initialize() of login-with-gig-details-view.js');

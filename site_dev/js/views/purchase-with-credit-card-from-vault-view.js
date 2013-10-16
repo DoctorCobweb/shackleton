@@ -29,18 +29,41 @@ define([
     template: _.template(PurchaseWithCreditCardFromVaultHTML),
 
     events: {
-      'keypress #cc_number':                       'cc_number_update',
-      'keypress #cc_cvv':                          'cc_cvv_update',
-      'keypress #cc_month':                        'cc_month_update',
-      'keypress #cc_year':                         'cc_year_update',
-      'blur #cc_number':                           'cc_number_blur',
-      'blur #cc_cvv':                              'cc_cvv_blur',
-      'blur #cc_month':                            'cc_month_blur',
-      'blur #cc_year':                             'cc_year_blur',
-      'click #submit':                             'submit',
-      'click #during_checkout_edit_cc_details':    'edit_cc_details',
-      'click #submit_updated_cc':                  'submit_updated_cc' 
+      'keypress #cc_number':                         'cc_number_update',
+      'keypress #cc_cvv':                            'cc_cvv_update',
+      'keypress #cc_month':                          'cc_month_update',
+      'keypress #cc_year':                           'cc_year_update',
+      'blur #cc_number':                             'cc_number_blur',
+      'blur #cc_cvv':                                'cc_cvv_blur',
+      'blur #cc_month':                              'cc_month_blur',
+      'blur #cc_year':                               'cc_year_blur',
+      'click #submit':                               'submit',
+      'click #during_checkout_edit_cc_details':      'edit_cc_details',
+      'click #submit_updated_cc':                    'submit_updated_cc',
+      'mouseover #submit':                           'select_proceed',
+      'mouseout #submit':                            'deselect_proceed',
+      'mouseover #during_checkout_edit_cc_details':  'select_proceed',
+      'mouseout #during_checkout_edit_cc_details':   'deselect_proceed',
+      'mouseover #submit_updated_cc':                'select_proceed',
+      'mouseout #submit_updated_cc':                 'deselect_proceed'
     },
+
+
+    select_proceed: function (e) {
+      console.log('in select_proceed');
+      console.dir(e);
+      console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+      this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
+    },
+
+    deselect_proceed: function (e) {
+      console.log('in deselect_proceed');
+      console.dir(e);
+      console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+      this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
+    },
+
+
 
     initialize: function () {
       console.log('in initialize() of purchase-with-credit-card-from-vault-view.js');

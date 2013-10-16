@@ -38,7 +38,11 @@ define([
         'click #ticket_amount_six':    'six_tickets',
         'click #ticket_amount_seven':  'seven_tickets',
         'click #ticket_amount_eight':  'eight_tickets',
-        'click #submit':               'submit'
+        'click #submit':               'submit',
+        'mouseover .ticket_select':    'select_ticket',
+        'mouseout .ticket_select':     'deselect_ticket',
+        'mouseover .proceed':          'select_proceed',
+        'mouseout .proceed':           'deselect_proceed'
       },
 
       initialize: function () {
@@ -63,8 +67,40 @@ define([
 
         this.$el.html(this.template(this.model.toJSON()));
         this.current_view = this;
+
+        //this.$().on('hover',);
+
         return this;
       },
+
+      select_ticket: function (e) {
+        console.log('in select_ticket');
+        console.dir(e);
+        console.log('select_ticket, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#AAB61D');
+      },
+
+      deselect_ticket: function (e) {
+        console.log('in deselect_ticket');
+        console.dir(e);
+        console.log('deselect_ticket, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#efff33');
+      },
+
+      select_proceed: function (e) {
+        console.log('in select_proceed');
+        console.dir(e);
+        console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
+      },
+
+      deselect_proceed: function (e) {
+        console.log('in deselect_proceed');
+        console.dir(e);
+        console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
+      },
+      
 
       one_ticket: function () {
         this.number_of_tickets = 1;

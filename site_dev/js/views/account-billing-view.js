@@ -16,18 +16,40 @@ define([
       template: _.template(AccountBillingHTML),
 
       events: {
-       'keypress #cc_number':       'cc_number_update',
-       'keypress #cc_cvv':          'cc_cvv_update',
-       'keypress #cc_month':        'cc_month_update',
-       'keypress #cc_year':         'cc_year_update',
-       'blur #cc_number':           'cc_number_blur',
-       'blur #cc_cvv':              'cc_cvv_blur',
-       'blur #cc_month':            'cc_month_blur',
-       'blur #cc_year':             'cc_year_blur',
-       'click #account_change_cc':  'change_cc',
-       'click #submit_new_cc':      'submit'
+       'keypress #cc_number':           'cc_number_update',
+       'keypress #cc_cvv':              'cc_cvv_update',
+       'keypress #cc_month':            'cc_month_update',
+       'keypress #cc_year':             'cc_year_update',
+       'blur #cc_number':               'cc_number_blur',
+       'blur #cc_cvv':                  'cc_cvv_blur',
+       'blur #cc_month':                'cc_month_blur',
+       'blur #cc_year':                 'cc_year_blur',
+       'click #account_change_cc':      'change_cc',
+       'click #submit_new_cc':          'submit',
+       'mouseover #account_change_cc':  'select_proceed',
+       'mouseout #account_change_cc':   'deselect_proceed',
+       'mouseover #submit_new_cc':      'select_proceed',
+       'mouseout #submit_new_cc':       'deselect_proceed'
 
       },
+
+
+      select_proceed: function (e) {
+        console.log('in select_proceed');
+        console.dir(e);
+        console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
+      },
+
+
+      deselect_proceed: function (e) {
+        console.log('in deselect_proceed');
+        console.dir(e);
+        console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
+      },
+
+
 
       initialize: function () {
         console.log('in initialize() of account-billing-view.js');

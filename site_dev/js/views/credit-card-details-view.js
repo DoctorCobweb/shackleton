@@ -38,8 +38,28 @@ define([
       'blur #cc_year':                              'cc_year_blur',
       'click #submit_new_cc':                       'submit_new_cc',
       'click #submit_order':                        'submit_order',
-      'click #during_checkout_edit_cc_details':     'edit_vault_cc'
+      'click #during_checkout_edit_cc_details':     'edit_vault_cc',
+      'mouseover #submit_new_cc' :                  'select_proceed',
+      'mouse  #submit_new_cc' :                     'deselect_proceed',
     },
+
+
+
+    select_proceed: function (e) {
+      console.log('in select_proceed');
+      console.dir(e);
+      console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+      this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
+    },
+
+    deselect_proceed: function (e) {
+      console.log('in deselect_proceed');
+      console.dir(e);
+      console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+      this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
+    },
+
+
 
     initialize: function () {
       console.log('in initialize() of credit-card-details-view.js');
@@ -231,6 +251,16 @@ define([
             self.$('#vault_cc')
               .prepend(_.template(SuccessfulUserFeedbackHTML)({'success': 
               'Updated credit card'}))
+      
+            //create the shading fx for mouse over/out events
+            self.$('#submit_order').on('mouseover', self.select_proceed);
+            self.$('#submit_order').on('mouseout', self.deselect_proceed);
+
+            self.$('#during_checkout_edit_cc_details')
+                .on('mouseover', self.select_proceed);
+            self.$('#during_checkout_edit_cc_details')
+                .on('mouseout', self.deselect_proceed);
+
 
           }
           

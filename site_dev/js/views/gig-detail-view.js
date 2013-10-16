@@ -23,7 +23,29 @@ define([
 
       template: _.template(GigDetailsHTML),
 
-      events: {'click #get_tickets': 'getTickets'},
+      events: {
+        'click #get_tickets':        'get_tickets',
+        'mouseover #get_tickets' :   'select_proceed',
+        'mouseout #get_tickets' :    'deselect_proceed'
+      },
+
+
+
+      select_proceed: function (e) {
+        console.log('in select_proceed');
+        console.dir(e);
+        console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
+      },
+  
+      deselect_proceed: function (e) {
+        console.log('in deselect_proceed');
+        console.dir(e);
+        console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
+      },
+
+
 
       initialize: function () {
         console.log('in initialize() of gig-detail-view.js');
@@ -93,8 +115,8 @@ define([
 
 
 
-      getTickets: function () {
-        console.log('in getTickets click handler.');
+      get_tickets: function () {
+        console.log('in get_tickets click handler.');
         var self = this;
 
         //tell router to stop polling for cookie existence because we're going to del

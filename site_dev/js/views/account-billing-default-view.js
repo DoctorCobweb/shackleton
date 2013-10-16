@@ -27,9 +27,29 @@ define([
        'blur #cc_month':            'cc_month_blur',
        'blur #cc_year':             'cc_year_blur',
        //'click #change_cc':          'change_cc',
-       'click #submit':             'submit'
+       'click #submit':             'submit',
+       'mouseover #submit':         'select_proceed',
+       'mouseout #submit':          'deselect_proceed'
 
       },
+
+
+      select_proceed: function (e) {
+        console.log('in select_proceed');
+        console.dir(e);
+        console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
+      },
+
+
+      deselect_proceed: function (e) {
+        console.log('in deselect_proceed');
+        console.dir(e);
+        console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
+      },
+
+
 
       initialize: function () {
         console.log('in initialize() of account-billing-default-view.js');
@@ -146,11 +166,6 @@ define([
         console.dir(this.field_to_set);
 
 
-
-
-
-
-
         $.ajax({
           url: '/api/users/change_cc_details/',
           type: 'POST',
@@ -160,10 +175,6 @@ define([
             console.dir(data);
             console.log(textStatus);
             console.dir(jqXHR);
-
-
-
-
 
 
             //if any elements have an 'has-error' class, remove the class
@@ -176,9 +187,9 @@ define([
               form_group_array.removeClass('has-error');
             }
 
+            var query = '#account_billing_new_cc_details > .successful_user_feedback'; 
+            var $successful_user_feedback = self.$(query);
 
-
-            var $successful_user_feedback = self.$('#account_billing_new_cc_details > .successful_user_feedback');
             //also close the successful update div if it is showing
             if ($successful_user_feedback.css('display') == 'block') {
               $successful_user_feedback.css('display', 'none');

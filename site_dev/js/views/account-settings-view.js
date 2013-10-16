@@ -21,23 +21,42 @@ define([
       template: _.template(AccountSettingsHTML),
 
       events: {
-        'keypress #new_password_1':       'new_password_1',
-        'keypress #new_password_2':       'new_password_2',
-        'keypress #first_name':           'first_name',
-        'keypress #last_name':            'last_name',
-        'keypress #email_address':        'email_address',
-        'keypress #phone_number':         'phone_number',
-        'blur #new_password_1':           'new_password_1_blur',
-        'blur #new_password_2':           'new_password_2_blur',
-        'blur #first_name':               'first_name_blur',
-        'blur #last_name':                'last_name_blur',
-        'blur #email_address':            'email_address_blur',
-        'blur #phone_number':             'phone_number_blur',
-        'click #submit_new_password':     'submit_new_password',
-        //'click #submit_new_user_details': 'submit_new_user_details'
-        'click #submit_new_user_details': 'update_user_details'
-
+        'keypress #new_password_1':            'new_password_1',
+        'keypress #new_password_2':            'new_password_2',
+        'keypress #first_name':                'first_name',
+        'keypress #last_name':                 'last_name',
+        'keypress #email_address':             'email_address',
+        'keypress #phone_number':              'phone_number',
+        'blur #new_password_1':                'new_password_1_blur',
+        'blur #new_password_2':                'new_password_2_blur',
+        'blur #first_name':                    'first_name_blur',
+        'blur #last_name':                     'last_name_blur',
+        'blur #email_address':                 'email_address_blur',
+        'blur #phone_number':                  'phone_number_blur',
+        'click #submit_new_password':          'submit_new_password',
+        //'click #submit_new_user_details':    'submit_new_user_details'
+        'click #submit_new_user_details':      'update_user_details',
+        'mouseover #submit_new_user_details':  'select_proceed',
+        'mouseout #submit_new_user_details':   'deselect_proceed',
+        'mouseover #submit_new_password':      'select_proceed',
+        'mouseout #submit_new_password':       'deselect_proceed'
       },
+
+      select_proceed: function (e) {
+        console.log('in select_proceed');
+        console.dir(e);
+        console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
+      },
+ 
+ 
+      deselect_proceed: function (e) {
+        console.log('in deselect_proceed');
+        console.dir(e);
+        console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
+        this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
+      },
+
 
       initialize: function () {
         console.log('in initialize() of account-settings-view.js');
