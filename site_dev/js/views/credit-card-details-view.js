@@ -6,13 +6,17 @@ define([
     'braintree',
     'text!tpl/CreditCardDetailsView.html',
     'views/checkout-view',
-    'text!tpl/SuccessfulUserFeedback.html'
+    'text!tpl/SuccessfulUserFeedback.html',
+    'text!tpl/NegativeUserFeedback.html',
+    'cookie_util'
   ],
   function (Backbone, 
             Braintree, 
             CreditCardDetailsHTML, 
             CheckoutView,
-            SuccessfulUserFeedbackHTML) 
+            SuccessfulUserFeedbackHTML,
+            NegativeUserFeedbackHTML,
+            CookieUtil) 
   {
 
   var CreditCardDetailsView = Backbone.View.extend({
@@ -180,6 +184,14 @@ define([
 
       var self = this;
 
+
+      if (!CookieUtil.get('reserve_tickets')) {
+        console.log('cannot submit order because cookie timedout'); 
+        //TODO implement further
+        alert('TICKET RESERVATION EXPIRED: Please start again.');
+        return;
+      }
+
       var $successful_user_feedback = self.$('#vault_cc > .successful_user_feedback');
 
       //also close the successful update div if it is showing
@@ -198,17 +210,30 @@ define([
           console.log(textStatus);
           console.dir(jqXHR);
 
-          //hide the cc details entry form, show vault_cc view, show the submit button
-          
-          self.$('#during_checkout_new_credit_card_details').css('display', 'none');
-          self.$('#vault_cc').css('display', 'block');
-          self.$('#vault_cc > #cc_masked_number').html(data.result.masked_number);
-          self.$('#vault_cc > #cc_expiration_date').html(data.result.expiration_date);
-          self.$('#submit_order').css('display', 'block');
 
-          //show the successful user feedback UI
-          self.$('#vault_cc')
-            .prepend(_.template(SuccessfulUserFeedbackHTML)({'success': 'Updated credit card'}))
+          if (!data.success) {
+            //there were errors          
+            //TODO: error handling
+            self.render();
+            self.$('#during_checkout_new_credit_card_details')
+              .prepend(_.template(NegativeUserFeedbackHTML)({'error': 
+              'could not save/verify credit card. Try again.'}))
+
+            return;
+          } else {
+            //successful cc update
+            //hide the cc details entry form, show vault_cc view, show the submit button
+            self.$('#during_checkout_new_credit_card_details').css('display', 'none');
+            self.$('#vault_cc').css('display', 'block');
+            self.$('#vault_cc > #cc_masked_number').html(data.result.masked_number);
+            self.$('#vault_cc > #cc_expiration_date').html(data.result.expiration_date);
+            self.$('#submit_order').css('display', 'block');
+            self.$('#vault_cc')
+              .prepend(_.template(SuccessfulUserFeedbackHTML)({'success': 
+              'Updated credit card'}))
+
+          }
+          
 
         },
         error: function (jqXHR, textStatus, errorThrown ) {
@@ -238,7 +263,7 @@ define([
         //reservation TIMEDOUT
 
         //TODO implement further
-        alert('YOUR TICKET RESERVATION HAS EXPIRED'); 
+        alert('YOUR TICKET RESERVATION HAS EXPIRED: Please start again.'); 
         return;
       } else {
         //reservation is still VALID

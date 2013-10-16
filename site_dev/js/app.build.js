@@ -11,7 +11,8 @@
     'text' : 'lib/text',
     'braintree': 'lib/braintree',
     'jquery-dateFormat-1.0': 'lib/jquery-dateFormat-1.0',
-    'bootstrap-collapse' : 'lib/bootstrap-collapse'
+    'bootstrap-collapse' : 'lib/bootstrap-collapse',
+    'cookie_util': 'lib/cookie_util'
   },
   modules: [
     {

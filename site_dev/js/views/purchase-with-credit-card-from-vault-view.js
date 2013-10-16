@@ -8,7 +8,8 @@ define([
     'views/checkout-view',
     'views/credit-card-details-view',
     'text!tpl/SuccessfulUserFeedback.html',
-    'cookie_util'
+    'cookie_util',
+    'text!tpl/NegativeUserFeedback.html'
   ],
   function (Backbone, 
             Braintree, 
@@ -16,7 +17,8 @@ define([
             CheckoutView,
             CreditCardDetailsView,
             SuccessfulUserFeedbackHTML,
-            CookieUtil) 
+            CookieUtil,
+            NegativeUserFeedbackHTML) 
   {
 
   var PurchaseWithCreditCardFromVaultView = Backbone.View.extend({
@@ -305,19 +307,32 @@ define([
               //you already have the user _id 
               //self.model.set({'braintree_customer_id': data.result.customer.id});
 
-              //display the vault_cc with the new cc details
-              self.$('#vault_cc').css('display','block');
-              self.$('#cc_masked_number').html(data.result.masked_number);     
-              self.$('#cc_expiration_date').html(data.result.expiration_date);     
-              self.$('#vault_cc')
-                .prepend(_.template(SuccessfulUserFeedbackHTML)({'success':'Updated credit card'}));
-              self.$('#during_checkout_update_cc_details').css('display', 'none');
-              self.$('#submit').css('display', 'block');
-              
+              if (!data.success) {
+                //there were errors
+ 
+                //TODO: error handling
+                self.render();
+                self.$('#vault_cc')
+                  .prepend(_.template(NegativeUserFeedbackHTML)({'error':
+                  'could not change credit card. Try again.'}));
+
+                return;
+              } else {
+                //successful cc update
+                //display the vault_cc with the new cc details
+                self.$('#vault_cc').css('display','block');
+                self.$('#cc_masked_number').html(data.result.masked_number);     
+                self.$('#cc_expiration_date').html(data.result.expiration_date);     
+                self.$('#during_checkout_update_cc_details').css('display', 'none');
+                self.$('#submit').css('display', 'block');
+                self.$('#vault_cc')
+                  .prepend(_.template(SuccessfulUserFeedbackHTML)({'success':
+                  'Updated credit card'}));
+
+              }
 
               //submit for payment
               //self.submit();
-  
   
           },
           error: function (jqXHR, textStatus, errorThrown) {
