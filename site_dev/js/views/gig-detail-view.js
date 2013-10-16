@@ -34,7 +34,38 @@ define([
         //put this call into render()....
         //this.$number_of_tickets = this.$('#number_of_tickets');
         //console.dir(this.$('#number_of_tickets'));
+
+        this.old_reserve_tickets_cookie = CookieUtil.get('reserve_tickets');
+
+
+
+        if (this.old_reserve_tickets_cookie) {
         
+          //TODO: make this more robust and clearer. shit at the mo.
+          //parse the old cookie for the order_id
+          //this.old_reserve_tickets_cookie_order_id = 
+          var left_brace = this.old_reserve_tickets_cookie.indexOf('{');
+          var right_brace = this.old_reserve_tickets_cookie.indexOf('}');
+
+          console.log('left_brace = ' + left_brace + ' right_brace = ' + right_brace);
+
+          var the_order = 'order_id\":\"';
+          console.log('the_order.length = ' + the_order.length);
+
+          var the_order_start = this.old_reserve_tickets_cookie.indexOf(the_order);
+          console.log(this.old_reserve_tickets_cookie.substring(the_order_start, right_brace + 1)); 
+
+          var order_value_start = the_order_start + the_order.length;
+          console.log('order_value_start: ' + order_value_start);
+
+          this.the_old_order_id = this.old_reserve_tickets_cookie.substring( order_value_start, right_brace - 1);
+
+          console.log('this.the_old_order_id: ' + this.the_old_order_id);
+
+          
+
+        }
+
 
         console.log('this.options: ');
         for (var key in this.options) {
@@ -66,6 +97,14 @@ define([
         console.log('in getTickets click handler.');
         var self = this;
 
+        //tell router to stop polling for cookie existence because we're going to del
+        //the old cookie here and dont want the router trying to do release 
+        //tickets in backend also.
+        if (self.old_reserve_tickets_cookie) {
+          Backbone.trigger('order:stop_polling');
+        } 
+
+
         // GET api/users/session
         $.ajax({
           url: '/api/users/session',
@@ -86,17 +125,15 @@ define([
               //user has a session => are logged in
               //display the number of tickets view with gig_id sent in
 
-              //before showing number of tickets, see if there are already tickets 
-              //reserved for another gig. if there is, delete cookie and give back
-              //reserved tickets to general pool available.
+              //only proceed if delete reserved tickets is successful. if not & you 
+              //navigate onwards to buy tickets, the reserve_tickets will get overwritten
+              //without releasing the old tickets reserved! BAD
+              if (self.old_reserve_tickets_cookie) {
+                console.log('there is an OLD reserve_tickets cookie, value: ');
+                //console.log(self.old_reserve_tickets_cookie);
+                console.log('...deleting by phoning home...');
 
-
-              if (CookieUtil.get('reserve_tickets')) {
-                console.log('there is an OLD reserve_tickets cookie....deleting');
-                //the reserve_cookie is hanging around from a previous attempt at buying
-                //tickets
                 self.reserve_tickets_release();
-                //Backbone.trigger('order:unset_cookie');
 
               } else {
                 //no reserve_tickets cookie present
@@ -128,33 +165,44 @@ define([
         console.log('checking for reserve_tickets cookie presence...');
           //give up the reserved tickets
           //and delete the cookie
+
+          //gotta find the order_id from cookie value, 
+          //or use cookie server side to get it (since it is not deleted yet..)
+          var post_data = {
+            'the_cookie': 'reserve_tickets',
+            'reserved_order_id': self.the_old_order_id
+          };
+       
+
           $.ajax({
-            'url': '/api/orders/ticket_reserve_release_from_navigation',
-            'type': 'GET',
-             success: function (data, textStatus, jqXHR) {
-               console.log('SUCCESS: released tickets due to navigating away');
-               console.dir(data);
-               console.log('textStatus: ' + textStatus);
-               console.dir(jqXHR);
+            url: '/api/orders/give_up_reserved_tickets',
+            type: 'POST',
+            data: post_data,
+            success: function (data, textStatus, jqXHR) {
+              console.log('SUCCESS: released tickets due to navigating away');
+              console.dir(data);
+              console.log('textStatus: ' + textStatus);
+              console.dir(jqXHR);
 
 
-               //TODO: implement error handling from backend, if else stuff 
-               console.log('successful release of reserved tix. go onto to next view');
+              //TODO: implement error handling from backend, if else stuff 
+              console.log('successful release of reserved tix. go onto to next view');
 
 
-	       var numberOfTicketsView = new NumberOfTicketsView({model: self.model});
-	       self.showView('#featureContent', numberOfTicketsView); 
-               window.scrollTo(0,350);
-             },
-             error: function (jqXHR, textStatus, errorThrown) {
-               console.log('ERROR: in releasing tickets dut to navigating away');
-               console.dir(jqXHR);
-               console.log('textStatus: ' + textStatus);
-               console.dir(errorThrown);
+             var numberOfTicketsView = new NumberOfTicketsView({model: self.model});
+              self.showView('#featureContent', numberOfTicketsView); 
+              window.scrollTo(0,350);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.log('ERROR: in releasing tickets dut to navigating away');
+              console.dir(jqXHR);
+              console.log('textStatus: ' + textStatus);
+              console.dir(errorThrown);
 
-               alert('internal error: try again later');
-             },
-          });          
+              alert('internal error: try again later');
+            },
+         });          
+
       },
 
 

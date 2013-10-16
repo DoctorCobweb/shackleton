@@ -305,7 +305,8 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
             'gig_id': req.body.gig_id,
             'order_id': order._id
           }, 
-          {maxAge: 15 * 60 * 1000, signed: true, secure: true} //reserve tix for 15mins
+          {maxAge: 30 * 1000, signed: true, secure: true} //reserve tix for 30s
+          //{maxAge: 15 * 60 * 1000, signed: true, secure: true} //reserve tix for 15mins
         );
 
         //before returning the order you must make sure the gig capacity is successfully
@@ -797,7 +798,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
 
   //######  ROUTE HANDLER ######################################################
-
+  /*
   //called when reserved tickets have timed out => add back the reserved tix to general
   //pool
   //it does:
@@ -898,12 +899,12 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     //start the process off 
     find_the_gig();
   }
+  */
 
 
 
 
-
-
+  /*
   //called when reserved tickets have timed out => add back the reserved tix to general
   //pool
   app.get('/api/orders/ticket_reserve_release_from_navigation', function (req, res) {
@@ -1005,6 +1006,120 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     //start the process off 
     find_the_gig();
   }
+  */
+
+
+
+
+
+  //######  ROUTE HANDLER ######################################################
+
+  app.post('/api/orders/give_up_reserved_tickets', function (req, res) {
+    console.log(' in POST /api/orders/give_up_reserved_tickets handler. req.body: ');
+    console.log(req.body);
+
+    //res.clearCookie('reserve_tickets', {signed: true, secure: true});
+    //return res.send({'i_gave_up_reserved_tickets': 'suck_it'});
+
+    console.log('req.signedCookies');
+    console.log(req.signedCookies);
+    console.log('req.signedCookies.reserve_tickets: ');
+    console.log(req.signedCookies.reserve_tickets);
+
+
+
+    give_up_reserved_tickets(req, res, function (err) {
+      if (err) throw err;
+    });
+  });
+
+
+  function give_up_reserved_tickets(req, res, callback) {
+    var the_order;
+    var the_gig;
+    
+    console.log('reserved_order_id: ' + req.body.reserved_order_id);
+
+    function find_the_order() {
+      console.log('=> give_up_reserved_tickets => find_the_order');
+      OrderModel.findById(req.body.reserved_order_id, the_found_order);
+    }
+
+    function the_found_order(err, order) {
+      console.log('=> give_up_reserved_tickets => the_found_order');
+      console.log(order);
+      if (err) { 
+        return callback(err);
+      } 
+      if (!order) {
+        return res.send({'error':'order_is_null'});
+      }
+      the_order = order;
+      find_the_gig();
+    }
+
+    function find_the_gig() {
+      console.log('=> give_up_reserved_tickets => find_the_gig');
+
+      GigModel.findById(the_order.gig_id, the_found_gig);
+    }
+
+    function the_found_gig(err, gig) {
+      console.log('=> give_up_reserved_tickets => the_found_gig');
+      if (err) {
+        return callback(err);
+      }
+      if (!gig) {
+        return res.send({'error': 'gig_is_null'});
+      }
+      the_gig = gig;
+      do_the_updating();
+    }
+
+
+    function do_the_updating() {
+      //update the gig capacity
+      //update the order collection -> delete the past order
+      //delete the reserve_tickets cookie
+
+
+      console.log('=> give_up_reserved_tickets => do_the_updating');
+      the_gig.capacity += parseInt(the_order.number_of_tickets);
+
+      the_gig.save(function (err, gig) {
+        if (err) {
+          return callback(err);
+        }
+        console.log('the gig capacity has been successfully altered: ');
+        console.log('gig');
+        console.log(gig);
+      });
+
+
+      //now delete the order
+      the_order.remove(function (err) {
+        if (err) {
+          return callback(err);
+        }
+        console.log('the order has been successfully deleted');
+      });
+
+      //make browser delete the cookie
+      res.clearCookie('reserve_tickets', { signed: true, secure: true});
+
+      //finally return the outcome
+      return res.send({'SUCCESS': 'gave up reserved tickets'});
+    }
+
+
+    //start the process off 
+    find_the_order();
+
+
+  }
+ 
+
+
 
 
 

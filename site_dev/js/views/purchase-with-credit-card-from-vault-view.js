@@ -45,7 +45,7 @@ define([
 
       this.current_view = this;
       this.new_cc_details = {};
-      this.are_tickets_reserved = false;
+      //this.are_tickets_reserved = false;
 
       //IMPORTANT: need to bind all methods to use the view instance as this variable
       _.bindAll(this);
@@ -56,13 +56,6 @@ define([
       console.log('braintree object:');
       console.dir(this.braintree);
  
-      //*** START THE RESERVE TICKETS PROCESS ***
-      this.start_reserve_tickets_countdown();
-
-
-      //start the reserve_tickets cookie and the countdown
-      Backbone.trigger('order:start');      
-
     },
 
     render: function () {
@@ -217,11 +210,11 @@ define([
       var self = this;
       
       //check to see if the cookie for reserving tickets has timed out
-      if (!this.are_tickets_reserved) {
+      if (!CookieUtil.get('reserve_tickets')) {
         //reservation TIMEDOUT
 
         //TODO implement further
-        alert('YOUR TICKET RESERVATION HAS EXPIRED');
+        alert('TICKET RESERVATION EXPIRED: Please start again.');
         return;
 
       } else {
@@ -282,17 +275,14 @@ define([
 
     edit_cc_details: function () {
 
-      //hide the old submit button
-      this.$('#submit').css('display', 'none');
- 
-      //show the update cc details UI
-      this.$('#during_checkout_update_cc_details').css('display', 'block'); 
-      
-      //this.$('#during_checkout_edit_cc_details').css('display', 'none');
-
-      //temporarily hide the vault cc UI
-      this.$('#vault_cc').css('display', 'none');
-
+        //hide the old submit button
+        this.$('#submit').css('display', 'none');
+   
+        //show the update cc details UI
+        this.$('#during_checkout_update_cc_details').css('display', 'block'); 
+        
+        //temporarily hide the vault cc UI
+        this.$('#vault_cc').css('display', 'none');
     },
   
 
@@ -300,15 +290,6 @@ define([
       console.log('you just clicked submit_updated_cc div');
  
       var self = this;
-
-      //check to see if the ticket reservatin has timeout before going ahead
-      if (!this.are_tickets_reserved) {
-        //NO ticket reservation. reservation timed out
-        //TODO implement further
-        alert('YOUR TICKET RESERVATION HAS EXPIRED');
-        return;
-      } else {
-        //ticket reservation is still VALID
 
         $.ajax({
           url: '/api/users/change_cc_details/',
@@ -347,12 +328,11 @@ define([
    
           },
         });
-      }
     },
 
 
 
-    
+    /*  
     start_reserve_tickets_countdown: function () {
       console.log('in start_reserve_tickets_coundown()');
       console.log('document.cookie: ' + document.cookie);
@@ -435,6 +415,7 @@ define([
 
       }
     },
+    */
 
 
 

@@ -41,7 +41,6 @@ define([
       console.log('in initialize() of credit-card-details-view.js');
 
       this.current_view = this;
-      this.are_tickets_reserved = false;
       this.field_to_set = {};
 
       //IMPORTANT: need to bind all methods to use the view instance as this variable
@@ -53,7 +52,6 @@ define([
       console.log('braintree object:');
       console.dir(this.braintree);
  
-      this.start_reserve_tickets_countdown(); 
     },
 
     render: function () {
@@ -236,7 +234,7 @@ define([
       console.log('in submit_order function');
       var self = this;    
 
-      if (!this.are_tickets_reserved) {
+      if (!CookieUtil.get('reserve_tickets')) {
         //reservation TIMEDOUT
 
         //TODO implement further
@@ -299,6 +297,7 @@ define([
 
 
 
+    /*
     start_reserve_tickets_countdown: function () {
       console.log('in start_reserve_tickets_coundown()');
 
@@ -374,7 +373,7 @@ define([
         alert('YOUR TICKET RESERVATION HAS EXPIRED');
       }
     },
-
+    */
 
 
     show_view: function (selector, view) {

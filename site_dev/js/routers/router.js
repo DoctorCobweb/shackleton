@@ -61,140 +61,144 @@ define([
     
       initialize: function () {
         console.log('in initialize() of router.js');
+
+        //TODO: release tickets on window close or navigate away to another domain
+        //WORKS
+        //window.addEventListener('beforeunload', 
+        //                        this.delete_reserve_cookie_onbeforeunload, false);
+        //window.addEventListener('close', this.delete_reserve_cookie_onclose, false);
+        //window.onclose = this.delete_reserve_cookie_onclose;
         
+
+
         //set this to true to put app in private mode i.e. private beta
         //this.private_beta = true;
         this.private_beta = false;
 
-
-        //START ------playing around with events-------------------------------
-    
-        /*
-        var ourObject = {};
-        _.extend(ourObject, Backbone.Events)
-        ourObject.on('dnb', function (msg) {
-          console.log('CUSTOM EVENT: ourObject and dnb msg: ' + msg);
-        });
-
-        var second_obj = {};
-        _.extend(second_obj, Backbone.Events);
-        second_obj.listenTo(ourObject, 'dnb', function (msg) {
-          console.log('CUSTOM EVENT: second_obj and dnb msg: ' + msg);
-        });
-
-        ourObject.trigger('dnb', 'this trigger this custom event');
-
-        Backbone.on('giving_in', function (smut) {
-          console.log('BACKBONE EVENT: giving_in: ' + smut);
-        });
-
-        Backbone.trigger('giving_in', 'NOPE');
-        */
-
-        //WORKS
-        //window.addEventListener('beforeunload', 
-        //                        this.delete_reserve_cookie_onbeforeunload, false);
-
-        //window.addEventListener('close', this.delete_reserve_cookie_onclose, false);
-        //window.onclose = this.delete_reserve_cookie_onclose;
-
-        console.log('CookieUtil');
-        console.dir(CookieUtil);
+        //used for releasing an old reserved order:
+        //1. reservation timedout OR
+        //2. user has tried to buy diff gig and already has a set resere_tickets cookie
+        this.reserved_order_id = null;
 
 
         //need to send the reserve_tickets cookie fields when this event is triggered
-        Backbone.on('order:start', function (a, b, c, d) {
+        Backbone.on('order:start', function (the_order_id) {
           console.log('CUSTOM_EVENT(order:start, heard)');
-          console.log('CUSTOM_EVENT(order:start, heard): this variable: ');
-          console.dir(this);
-          console.log('a: ' + a);
-          console.log('b: ' + b);
-          console.log('c: ' + c);
-          console.log('d: ' + d);
+          console.log('CUSTOM_EVENT(order:start, heard): parameter(the_order_id)' + 
+                       the_order_id);
  
+          //set the order_id received from trigger event. needed later to find the order
+          //for reservation
+          this.reserved_order_id = the_order_id
+
           //start setInterval and query for the reserve_tickets cookie
           this.start_checking_for_cookie('reserve_tickets');
+        }, this); //'this' refers to router instance
 
-        }, this);
         
  
         //need to send the reserve_tickets cookie fields when this event is triggered
         //Backbone.on('order:start', this.order_start_event_handler, this);
-        
         Backbone.on('order:finished', function () {
           console.log('CUSTOM_EVENT(order:finished, heard)');
           console.log('CUSTOM_EVENT(order:finished, heard): this variable: ');
-          console.dir(this);
 
-          //stop querying for the cookie because the order is complete and backend
-          //has cleared the cookie (by calling res.clearCookie() )
+          //stop querying for the cookie because the order is complete
           clearInterval(this.cookie_poller_id);
+          this.reserved_order_id = null;
+          CookieUtil.unset('reserve_tickets');
 
-        }, this);
+        }, this); //'this' refers to router instance
 
 
-        Backbone.on('order:unset_cookie', function () {
-          //the reserve_tickets cookie has timeout out. user was loitering about the app
-          console.log('CUSTOM_EVENT(order:unset_cookie, heard)');
+        //receive this event when gig-details-view is attempting to delete an old cookie
+        Backbone.on('order:stop_polling', function () {
+          console.log('CUSTOM_EVENT(order:stop_polling, heard)');
+
+          clearInterval(this.cookie_poller_id);
           
-          //release the tickets held
-          this.release_the_tickets_held('reserve_tickets');
-
-        }, this);
+        }, this); //'this' refers to router instance
 
       },
 
 
-      order_start_event_handler:  function (a, b, c, d) {
-        console.log('CUSTOM_EVENT(order:start, heard)');
-        console.log('CUSTOM_EVENT(order:start, heard): this variable: ');
-        console.dir(this);
-        console.log('a: ' + a);
-        console.log('b: ' + b);
-        console.log('c: ' + c);
-        console.log('d: ' + d);
- 
-        //start setInterval and query for the reserve_tickets cookie
-        this.start_checking_for_cookie('reserve_tickets');
-      },
 
-
-
-
-
+      //we only care for when the cookie disappears. that means its timeout out with
+      //reserved tickets which we absolutely MUST give back to the gig's capacity & del
+      //the incomplete order
       start_checking_for_cookie: function (cookie_name) {
         console.log('in start_checking_for_cookie handler');
+
         var self = this;
 
         this.cookie_poller_id = setInterval(function () {
-          console.log('in setInterval callback for polling reserve_tickets cookie...'); 
 
-          if (!CookieUtil.get(cookie_name)) {
-            console.log('CookieUtil.get(' + cookie_name + ') returned null');
-            //no cookie found for name=cookie_name
+          if (!CookieUtil.get(cookie_name) && !this.reserved_order_id) {
+            console.log('RESERVATION_TIMEOUT: releasing ticket holds...');
             //=> reservation timedout => need to release hold on tix
+
+            console.log('CookieUtil.get(' + cookie_name + ') returned null');
+            //no cookie found for name=cookie_name clientside
+            //req.signedCookie('reserve_tickets') will not be available to backend
+            //so send in the reserved_order obj which contains the order_id needed to be
+            //deleted.
            
-            //TODO 
             //release ticket on backend
-            //self.release_the_tickets_held(cookie_name);
+            self.give_up_reserved_tickets(cookie_name, self.reserved_order_id);
 
             return;
           }
 
-          //there is a cookie with name=cookie_name
-          console.log('CookieUtil: there is a cookie: ' + CookieUtil.get(cookie_name));
-
+          //there is a cookie with name=cookie_name, okay, do nothing but log it.
+          console.log('CookieUtil: a cookie called ' + cookie_name + 'present.');
+          return;
 
         }, 1000);
 
       },
 
 
-      release_the_tickets_held: function (cookie_name) {
-        console.log('in release_the_tickets_held handler');
 
+
+
+
+      give_up_reserved_tickets: function (the_cookie, the_reserved_order_id) {
+      //give_up_reserved_tickets: function (the_cookie, reserved_order) {
+        console.log('in clear_out_cookie function');
+
+        clearInterval(this.cookie_poller_id);
+        
+        //use this.reserved_order obj and its order_id to ajax call the release tickets
+        //api
+        $.ajax({
+          url:  '/api/orders/give_up_reserved_tickets',
+          type: 'POST',
+          data: {'the_cookie': the_cookie, 'reserved_order_id': the_reserved_order_id},
+          success: function (data, textStatus, jqXHR) {
+            console.log('SUCCESS: ajax callback handler');
+            console.dir(data);
+            console.log(textStatus);
+            console.dir(jqXHR);
+
+            //reset the reserved order obj
+            self.reserved_order_id = null;
+
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log('ERROR: ajax callback handler');
+            console.dir(jqXHR);
+            console.log(textStatus);
+            console.dir(errorThrown);
+
+
+          },
+        });
 
       },
+
+
+
+
 
 
       /*
