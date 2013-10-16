@@ -28,22 +28,24 @@ define([
     template: _.template(CreditCardDetailsHTML),
 
     events: {
-      'keypress #cc_number':                        'cc_number_update',
-      'keypress #cc_cvv':                           'cc_cvv_update',
-      'keypress #cc_month':                         'cc_month_update',
-      'keypress #cc_year':                          'cc_year_update',
-      'blur #cc_number':                            'cc_number_blur',
-      'blur #cc_cvv':                               'cc_cvv_blur',
-      'blur #cc_month':                             'cc_month_blur',
-      'blur #cc_year':                              'cc_year_blur',
-      'click #submit_new_cc':                       'submit_new_cc',
-      'click #submit_order':                        'submit_order',
-      'click #during_checkout_edit_cc_details':     'edit_vault_cc',
-      'mouseover #submit_new_cc' :                  'select_proceed',
-      'mouse  #submit_new_cc' :                     'deselect_proceed',
+      'keypress #cc_number':                         'cc_number_update',
+      'keypress #cc_cvv':                            'cc_cvv_update',
+      'keypress #cc_month':                          'cc_month_update',
+      'keypress #cc_year':                           'cc_year_update',
+      'blur #cc_number':                             'cc_number_blur',
+      'blur #cc_cvv':                                'cc_cvv_blur',
+      'blur #cc_month':                              'cc_month_blur',
+      'blur #cc_year':                               'cc_year_blur',
+      'click #submit_new_cc':                        'submit_new_cc',
+      'click #submit_order':                         'submit_order',
+      'click #during_checkout_edit_cc_details':      'edit_vault_cc',
+      'mouseover #submit_new_cc':                    'select_proceed',
+      'mouseout  #submit_new_cc':                    'deselect_proceed',
+      'mouseover #submit_order':                     'select_proceed',
+      'mouseout  #submit_order':                     'deselect_proceed',
+      'mouseover #during_checkout_edit_cc_details':  'select_proceed',
+      'mouseout  #during_checkout_edit_cc_details':  'deselect_proceed'
     },
-
-
 
     select_proceed: function (e) {
       console.log('in select_proceed');
@@ -252,16 +254,6 @@ define([
               .prepend(_.template(SuccessfulUserFeedbackHTML)({'success': 
               'Updated credit card'}))
       
-            //create the shading fx for mouse over/out events
-            self.$('#submit_order').on('mouseover', self.select_proceed);
-            self.$('#submit_order').on('mouseout', self.deselect_proceed);
-
-            self.$('#during_checkout_edit_cc_details')
-                .on('mouseover', self.select_proceed);
-            self.$('#during_checkout_edit_cc_details')
-                .on('mouseout', self.deselect_proceed);
-
-
           }
           
 

@@ -305,23 +305,14 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
             'gig_id': req.body.gig_id,
             'order_id': order._id
           }, 
-          {maxAge: 30 * 1000, signed: true, secure: true} //reserve tix for 30s
+          {maxAge: 1 * 60 * 1000, signed: true, secure: true} //reserve tix for 1mins
           //{maxAge: 15 * 60 * 1000, signed: true, secure: true} //reserve tix for 15mins
+          //{maxAge: 30 * 1000, signed: true, secure: true} //reserve tix for 30s
         );
 
         //before returning the order you must make sure the gig capacity is successfully
         //updated.
         deduct_the_tickets_reserved_from_capacity(the_order);
-
-        //finally return the order
-        //return res.send({'errors': { validation_errors: [],
-        //                             internal_errors: {}
-        //                           }, 
-        //                 'order': order, 
-        //                  success: true
-        //                });
-
-        //return res.send(order);
       });
     }
 
@@ -344,6 +335,9 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         //                 'order': order, 
         //                  success: true
         //                });
+
+        //Backbone does not like api returning a custom object because it expects an _id
+        //parameter 1-level deep (i think). out custom object has the _id 2 levels deep
         return res.send(order);
       });
     }
