@@ -62,14 +62,11 @@ define([
       initialize: function () {
         console.log('in initialize() of router.js');
 
-        //TODO: release tickets on window close or navigate away to another domain
-        //WORKS
-        //window.addEventListener('beforeunload', 
-        //                        this.delete_reserve_cookie_onbeforeunload, false);
-        //window.addEventListener('close', this.delete_reserve_cookie_onclose, false);
-        //window.onclose = this.delete_reserve_cookie_onclose;
-        
 
+
+        //why doesnt this work??? ... had to do the var self = this thing
+        //_.bindAll(this);
+        
 
         //set this to true to put app in private mode i.e. private beta
         this.private_beta = true;
@@ -80,11 +77,74 @@ define([
         //2. user has tried to buy diff gig and already has a set resere_tickets cookie
         this.reserved_order_id = null;
 
+        var self = this;
+
+
+        //TODO: release tickets on window close or navigate away to another domain
+        $(window).on('beforeunload', function () {
+
+          //stop polling for the cookie, we are going to handle release the reserve from
+          //from here on.
+          clearInterval(self.cookie_poller_id);
+
+          console.log('(window).beforeunload callback for \'beforeunload\' event');
+          console.log('this variable');
+          console.log(this); //window
+
+          var _data = {'reserved_order_id': self.reserved_order_id};
+
+          $.ajax({
+            url: '/api/orders/beforeunload_event_called',
+            type: 'POST',
+            data: _data,
+            success: function( data, textStatus, jqXHR ) {
+              console.log('SUCCESS: Got response');
+              console.dir(data);
+              console.log(textStatus);
+              console.dir(jqXHR);
+  
+              console.log('EVENT: beforeunload event was fired');
+              console.log(self);
+              console.log('is jQuery present: ');
+              console.dir($);
+
+              //for completeness also reset the order id
+              self.reserved_order_id = null;
+
+
+            },
+
+            error: function (jqXHR, textStatus, errorThrown) {
+              console.log('ERROR: ajax callback handler');
+              console.dir(jqXHR);
+              console.log(textStatus);
+              console.dir(errorThrown);
+            }
+          });
+
+          return 'Are you sure you want to leave this page?';
+
+        });
+
+
+
+        //views which are generated after ajax call in another view. ie. the new view
+        //does not have an associated route handler in router.js
+        Backbone.on('router:set_current_view', function (the_current_view) {
+          console.log('CUSTOM_EVENT(router:set_current_view), heard)');
+          console.log('CUSTOM_EVENT(router:set_current_view), heard): ' + 
+                       'parameter(the_current_view): ' + the_current_view);
+          console.log(the_current_view);
+
+          this.currentView = the_current_view;
+        }, this); //'this' refers to router instance
+
+
 
         //need to send the reserve_tickets cookie fields when this event is triggered
         Backbone.on('order:start', function (the_order_id) {
           console.log('CUSTOM_EVENT(order:start, heard)');
-          console.log('CUSTOM_EVENT(order:start, heard): parameter(the_order_id)' + 
+          console.log('CUSTOM_EVENT(order:start, heard): parameter(the_order_id): ' + 
                        the_order_id);
  
           //set the order_id received from trigger event. needed later to find the order
@@ -101,8 +161,6 @@ define([
         //Backbone.on('order:start', this.order_start_event_handler, this);
         Backbone.on('order:finished', function () {
           console.log('CUSTOM_EVENT(order:finished, heard)');
-          console.log('CUSTOM_EVENT(order:finished, heard): this variable: ');
-
           //stop querying for the cookie because the order is complete
           clearInterval(this.cookie_poller_id);
           this.reserved_order_id = null;
@@ -166,6 +224,8 @@ define([
       //give_up_reserved_tickets: function (the_cookie, reserved_order) {
         console.log('in clear_out_cookie function');
 
+        var self = this;
+
         clearInterval(this.cookie_poller_id);
         
         //use this.reserved_order obj and its order_id to ajax call the release tickets
@@ -191,7 +251,7 @@ define([
             console.dir(errorThrown);
 
 
-          },
+          }
         });
 
       },
@@ -460,7 +520,7 @@ define([
         var self = this;
 
         console.log('using CookieUtil to get reserve_tickets cookie...');
-        console.log(CookieUtil.get('reserve_tickets'));
+        console.log('reserve_tickets cookie: ' + CookieUtil.get('reserve_tickets'));
 
 
         /*   
@@ -984,7 +1044,7 @@ define([
 
   
 
-
+      /*
       //start polling stuff
       //start a polling system to look at reserve_tickets cookie existence
       start_reserve_tickets_countdown: function () {
@@ -1029,7 +1089,6 @@ define([
           //after completion, the router can go back to polling the cookie.
     
             
-          /*
           //delete the ticket reservation i.e. add back the reserved tick no. back to
           //the gig in gigs collection
           $.ajax({
@@ -1050,7 +1109,6 @@ define([
    
             }
           });
-          */  
    
           //*** IMPORTANT ***
           //set are_tickets_reserved to false
@@ -1060,10 +1118,6 @@ define([
    
         }
       },
-
-
-
-
 
       parse_cookie_string: function () {
         //console.log('in parse_cookie_string()');
@@ -1096,10 +1150,8 @@ define([
 
       clear_reserve_tickets_cookie: function () {
         //to clear the cookie, set the cookie again but with expiration in past
-
-
       }
-
+      */
 
 
     });

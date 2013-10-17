@@ -43,17 +43,11 @@ define([
       },
 
       select_proceed: function (e) {
-        console.log('in select_proceed');
-        console.dir(e);
-        console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
         this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
       },
  
  
       deselect_proceed: function (e) {
-        console.log('in deselect_proceed');
-        console.dir(e);
-        console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
         this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
       },
 

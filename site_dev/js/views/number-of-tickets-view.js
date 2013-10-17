@@ -45,10 +45,31 @@ define([
         'mouseout .proceed':           'deselect_proceed'
       },
 
+
+      select_ticket: function (e) {
+        this.$('#' + e.currentTarget.id).css('background-color', '#AAB61D');
+      },
+
+      deselect_ticket: function (e) {
+        this.$('#' + e.currentTarget.id).css('background-color', '#efff33');
+      },
+
+      select_proceed: function (e) {
+        this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
+      },
+
+      deselect_proceed: function (e) {
+        this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
+      },
+      
+
       initialize: function () {
         console.log('in initialize() of number-of-tickets-view.js');
 
         this.BT_DEFAULT_CUS = 'default_braintree_customer_id';
+
+        //make sure this always refers the the view
+        _.bindAll(this);
 
         //BUG: when navigating back to another gig after selecting some ticke
         //a gig, this throws a Converting circular structure to JSON TypeError
@@ -60,6 +81,10 @@ define([
        
         console.log('this.options');
         for (var key in this.options) console.log(this.options[key]);
+
+        //tell router to set its this.currentView variable to this view
+        Backbone.trigger('router:set_current_view', this);
+
       },
 
       render: function () {
@@ -73,34 +98,6 @@ define([
         return this;
       },
 
-      select_ticket: function (e) {
-        console.log('in select_ticket');
-        console.dir(e);
-        console.log('select_ticket, e.currentTarget.id: ' + e.currentTarget.id);
-        this.$('#' + e.currentTarget.id).css('background-color', '#AAB61D');
-      },
-
-      deselect_ticket: function (e) {
-        console.log('in deselect_ticket');
-        console.dir(e);
-        console.log('deselect_ticket, e.currentTarget.id: ' + e.currentTarget.id);
-        this.$('#' + e.currentTarget.id).css('background-color', '#efff33');
-      },
-
-      select_proceed: function (e) {
-        console.log('in select_proceed');
-        console.dir(e);
-        console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
-        this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
-      },
-
-      deselect_proceed: function (e) {
-        console.log('in deselect_proceed');
-        console.dir(e);
-        console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
-        this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
-      },
-      
 
       one_ticket: function () {
         this.number_of_tickets = 1;
@@ -297,6 +294,8 @@ define([
         }); 
 
       },
+
+
 
       show_view: function (selector, view) {
         console.log('in showView of number-of-tickets-view.js');

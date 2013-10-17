@@ -305,9 +305,9 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
             'gig_id': req.body.gig_id,
             'order_id': order._id
           }, 
-          {maxAge: 1 * 60 * 1000, signed: true, secure: true} //reserve tix for 1mins
+          //{maxAge: 1 * 60 * 1000, signed: true, secure: true} //reserve tix for 1mins
           //{maxAge: 15 * 60 * 1000, signed: true, secure: true} //reserve tix for 15mins
-          //{maxAge: 30 * 1000, signed: true, secure: true} //reserve tix for 30s
+          {maxAge: 30 * 1000, signed: true, secure: true} //reserve tix for 30s
         );
 
         //before returning the order you must make sure the gig capacity is successfully
@@ -1008,12 +1008,44 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
   //######  ROUTE HANDLER ######################################################
 
+  //TODO: implement the release better. error handling...
+  //called when user navigates away, closes tab, closes window. tries to clean up any
+  //reserved orders.
+
+  app.post('/api/orders/beforeunload_event_called', function (req, res) {
+    console.log('**************  POST /api/orders/beforeunload_event called');
+    console.log(req.body);
+
+
+    if (!req.body.reserved_order_id) {
+      //no reserved order
+      console.log('no reserved order seen, POST /api/orders/beforeunload_event_called');
+
+      return res.send({'beforeunload': 'no_order_to_release'});
+
+    } else {
+      //there is a reserved order, release it
+      console.log('there IS a reserved order,POST /api/orders/beforeunload_event_called');
+
+      give_up_reserved_tickets(req, res, function (err) {
+        if (err) {
+          throw err;
+        }
+      }); 
+    }
+
+  });
+
+
+
+
+
+
+  //######  ROUTE HANDLER ######################################################
+
   app.post('/api/orders/give_up_reserved_tickets', function (req, res) {
     console.log(' in POST /api/orders/give_up_reserved_tickets handler. req.body: ');
     console.log(req.body);
-
-    //res.clearCookie('reserve_tickets', {signed: true, secure: true});
-    //return res.send({'i_gave_up_reserved_tickets': 'suck_it'});
 
     console.log('req.signedCookies');
     console.log(req.signedCookies);
@@ -1021,10 +1053,10 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     console.log(req.signedCookies.reserve_tickets);
 
 
-
     give_up_reserved_tickets(req, res, function (err) {
       if (err) throw err;
     });
+
   });
 
 

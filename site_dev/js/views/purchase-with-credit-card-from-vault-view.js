@@ -50,16 +50,10 @@ define([
 
 
     select_proceed: function (e) {
-      console.log('in select_proceed');
-      console.dir(e);
-      console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
       this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
     },
 
     deselect_proceed: function (e) {
-      console.log('in deselect_proceed');
-      console.dir(e);
-      console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
       this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
     },
 
@@ -70,7 +64,6 @@ define([
 
       this.current_view = this;
       this.new_cc_details = {};
-      //this.are_tickets_reserved = false;
 
       //IMPORTANT: need to bind all methods to use the view instance as this variable
       _.bindAll(this);
@@ -80,6 +73,14 @@ define([
   
       console.log('braintree object:');
       console.dir(this.braintree);
+
+      //tell router to set its this.currentView variable to this view. need to do this so
+      //router cleans up this view if user so happens to stop the purchase process and
+      //clicks somewhere else (say a link in navbar)
+      Backbone.trigger('router:set_current_view', this);
+      
+      //this.are_tickets_reserved = false;
+      //this.start_reserve_tickets_countdown();
  
     },
 
@@ -369,8 +370,7 @@ define([
     },
 
 
-
-    /*  
+    /*
     start_reserve_tickets_countdown: function () {
       console.log('in start_reserve_tickets_coundown()');
       console.log('document.cookie: ' + document.cookie);
@@ -385,13 +385,13 @@ define([
     },
 
     parse_cookie_string: function () {
-      //console.log('in parse_cookie_string()');
+      console.log('====> in parse_cookie_string()');
       
       this.cookies_obj = {};
       this.cookies_array = document.cookie.split(';');
 
-      console.log('this.cookies_array:');
-      console.dir(this.cookies_array);
+      //console.log('this.cookies_array:');
+      //console.dir(this.cookies_array);
 
       for (var key in this.cookies_array) {
         var name = this.cookies_array[key].substring(0, 
@@ -422,7 +422,6 @@ define([
         clearInterval(this.interval_id);  
         var self = this;        
 
- 
         //delete the ticket reservation i.e. add back the reserved tick no. back to
         //the gig in gigs collection
         $.ajax({
@@ -454,6 +453,7 @@ define([
       }
     },
     */
+
 
 
 

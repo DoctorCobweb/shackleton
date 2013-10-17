@@ -48,16 +48,10 @@ define([
     },
 
     select_proceed: function (e) {
-      console.log('in select_proceed');
-      console.dir(e);
-      console.log('select_proceed, e.currentTarget.id: ' + e.currentTarget.id);
       this.$('#' + e.currentTarget.id).css('background-color', '#1D883B');
     },
 
     deselect_proceed: function (e) {
-      console.log('in deselect_proceed');
-      console.dir(e);
-      console.log('deselect_proceed, e.currentTarget.id: ' + e.currentTarget.id);
       this.$('#' + e.currentTarget.id).css('background-color', '#2BBB53');
     },
 
@@ -78,6 +72,11 @@ define([
       console.log('braintree object:');
       console.dir(this.braintree);
  
+      //tell router to set its this.currentView variable to this view. need to do this so
+      //router cleans up this view if user so happens to stop the purchase process and
+      //clicks somewhere else (say a link in navbar)
+      Backbone.on('router:set_current_view', this);
+
     },
 
     render: function () {

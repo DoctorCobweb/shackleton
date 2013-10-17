@@ -54,17 +54,7 @@ require.config({
 
 
 
-
-
-
-
-
-
-
-
-
-//start app
-
+//start the app
 require([
     'backbone',
     'views/banner-view',
