@@ -69,8 +69,8 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
  
   
 
-  //######  ROUTE HANDLER ######################################################
 
+  //######  ROUTE HANDLER ######################################################
 
   app.get('/api/get_cookies/', function (req, res) {
     console.log('in GET /api/get_cookies');
@@ -83,6 +83,10 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
   });
 
+
+
+
+  //######  ROUTE HANDLER ######################################################
 
   app.post('/api/orders/', logged_in_required, function (req, res) {
     console.log('*************** CREATING ORDER *************');
@@ -280,7 +284,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         braintree_customer_id: the_user.braintree_customer_id
       });
      
-      //deduct_the_tickets_reserved_from_capacity();
 
       the_order.save(function (err, order) {
         if (err) {
@@ -308,6 +311,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
           //{maxAge: 1 * 60 * 1000, signed: true, secure: true} //reserve tix for 1mins
           //{maxAge: 15 * 60 * 1000, signed: true, secure: true} //reserve tix for 15mins
           {maxAge: 30 * 1000, signed: true, secure: true} //reserve tix for 30s
+          //{maxAge: 20 * 1000, signed: true, secure: true} //reserve tix for 20s
         );
 
         //before returning the order you must make sure the gig capacity is successfully
@@ -327,6 +331,8 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         console.log('GIG POST-RESERVATION ' +  
                     '(should have reserved tix subtracted from capacity: ' + 
                     'gig.capacity = ' + gig.capacity);
+
+
 
         //finally return the order
         //return res.send({'errors': { validation_errors: [],
@@ -349,8 +355,12 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
 
 
-  //######  ROUTE HANDLER ######################################################
 
+
+
+
+
+  //######  ROUTE HANDLER ######################################################
 
   //TODO: validate, sanitize, error handling
   //UPDATE THE ORDER
@@ -423,81 +433,9 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     function start_braintree_procedure() {
       console.log('=> update_the_order => start_braintree_procedure');
 
-      //split checkout process into 2 parts based on whether user has a stored
-      //braintree customer id or not
-      if (the_user.braintree_customer_id === 'default_braintree_customer_id') {
-
-
-        
-
-        // *** IMPORTANT *** eventually get rid of this function chain...
-        // i dont think this function chain is ever called. because the ui flow has
-        //changed so only purchases are made after cc has been verified & hence there is
-        //a braintree customer id present.
-        //
-        // for now then comment the call out & see if any bugs result. => still hav a
-        // dependency on this function chain.
-        //
-        //STREAM 1: user_is_new_purchaser i.e. has _no_ braintree customer id 
-        //user_is_new_purchaser();
-
-      } else {
-
-        //STREAM 2: user_is_returning_purchaser i.e. they have a braintree customer id
-        user_is_returning_purchaser(); 
-
-      } 
+      user_is_returning_purchaser(); 
     }
-
-    /*
-    function user_is_new_purchaser() {
-      console.log('=> update_the_order => user_is_new_purchaser');
-
-      //create a new customer 
-      var customer_request = {
-        firstName: the_user.first_name,
-        lastName: the_user.last_name,
-        phone: the_user.phone_number,
-        email: the_user.email_address,
-        creditCard: {
-          number: req.body.cc_number,
-          cvv: req.body.cc_cvv,
-          expirationMonth: req.body.cc_month,
-          expirationYear: req.body.cc_year
-        }
-      };
-     
-      gateway.customer.create(customer_request, function (err, result) {
-        console.log('in gateway.customer.create callback.'
-                    + ' result obj: ');
-        console.log(result);
-        if (err) {
-          return callback(err);
-        }
-        if (!result) {
-          return res.send({'error': 'result_is_null'});
-        }
-        if (result.success) {
-          console.log('SUCCESS: created a braintree customer. braintree_customer_id: '
-                        + result.customer.id);
-          console.log('result: ');
-          console.log(result);
-
-          submit_for_settlement({
-            'method': 'submitted_cc_details',
-            'braintree_customer_id': result.customer.id}); 
-
-          the_user.braintree_customer_id = result.customer.id;
-          the_order.braintree_customer_id = result.customer.id;
-
-        } else {
-          //braintree send back result.success = false
-          return callback(result);
-        }
-      });
-
-    }
-    */
+    
 
     function user_is_returning_purchaser() {
       console.log('=> update_the_order => user_is_returning_purchaser');
@@ -521,10 +459,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
               console.log('gateway.transaction.sale returned in result object: ' +
                           'result.transaction.status: ' + result.transaction.status);
 
-              //the braintree_customer_id is authorized for use
-              submit_for_settlement({'method':'braintree_customer_id', 
-                'transaction_id': result.transaction.id
-              }); 
+              submit_for_settlement(result.transaction.id);
 
             } else {
 
@@ -539,59 +474,11 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     }
 
 
-    //options is an obj used to determine what to use for submitting for settlement 
-    //options = {'method': 'submitted_cc_details' or 'braintree_customer_id'
-    //           'transaction_id': pass in from authorizing an existing customer id
-    //          }
-    function submit_for_settlement(options) {
+    function submit_for_settlement(transaction_id) {
       console.log('=> update_the_order => submit_for_settlement');
-     
-      if (!options) {
-        return callback({'internal_backend_error': 'failed_to_supply_options_object'});
-      }
 
 
-      /* 
-      if (options.method === 'submitted_cc_details') {
-
-        console.log('in submit_for_settlement, options.method '
-                      + '=== \'submitted_cc_details\'');
-
-
-        gateway.transaction.sale({
-            customerId: options.braintree_customer_id,
-            amount: the_order.transaction_amount,
-            options: {
-              submitForSettlement: true 
-            } 
-          },
-          function (err, result) {
-            if (err) return callback(err);
-            if (!result) return res.send({'error': 'result_is_null'});
-            if (!result.success) handle_transaction_error(result);
-
-            console.log('SUCCESS: submitted for settlement. Result obj: ');
-            console.log(result);
-
-            the_order.transaction_status = result.transaction.status;
-            the_order.transaction_id = result.transaction.id;
-
-            save_the_order_changes();
-            save_the_user_changes();
-
-            return res.send(the_order);
-          }
-        );
-      }
-      */
-
-       if (options.method === 'braintree_customer_id') {
-
-        console.log('in submit_for_settlement, options.method ' 
-                      + '=== \'braintree_customer_id\'');
-
-
-        gateway.transaction.submitForSettlement(options.transaction_id,
+        gateway.transaction.submitForSettlement(transaction_id,
           function (err, result) {
             if (err) {
               return callback(err);
@@ -610,19 +497,14 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
               the_order.transaction_id = result.transaction.id;
 
               save_the_user_changes();
-
               save_the_order_changes();
-              //return res.send(the_order);
+
             } else {
               handle_transaction_error(result);
 
             }
           }
         );
-      } else {
-        return callback({'internal_backend_error': 'options.method_value_unexpected'});
-      }
-
     }
 
 
@@ -691,7 +573,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         console.log('info_in_qrcode: ' + info_in_qrcode);
 
      
-        QRCode.toDataURL(info_in_qrcode,function(err,url){
+        QRCode.toDataURL(info_in_qrcode, function(err,url){
             console.log('in QRCODE.toURL call, url: ');
             console.log(typeof(url));
        
@@ -791,219 +673,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
 
 
-  //######  ROUTE HANDLER ######################################################
-  /*
-  //called when reserved tickets have timed out => add back the reserved tix to general
-  //pool
-  //it does:
-  //-delete incomplete order
-  //-add reserved tickets back to gig capacity for relevant gig
-  //-deletes the reserve_tickets cookie (important to reset the state)
-  app.post('/api/orders/ticket_reserve_timeout', function (req, res) {
-    console.log('ATTEMPTING TO DELETE THE RESERVED TICKETS & ORDER...');
-    console.log('in POST api/orders/ticket_reserve_timeout');
-    console.log(req.body);
-
-    console.log('req.signedCookies');
-    console.log(req.signedCookies);
-    console.log('req.signedCookies.reserve_tickets: ');
-    console.log(req.signedCookies.reserve_tickets);
-
-    expired_ticket_reserve(req, res, function (err) {
-      if (err) throw err;
-    });
-
-  });
-
-
-  function expired_ticket_reserve(req, res, callback) {
-    var the_order;
-    var the_gig;
-
-    function find_the_gig() {
-      console.log('=> expired_ticket_reserve => find_the_gig');
-      GigModel.findById(req.body.gig_id, the_found_gig);
-    }
-
-    function the_found_gig(err, gig) {
-      console.log('=> expired_ticket_reserve => the_found_gig');
-      if (err) {
-        return callback(err);
-      }
-      if (!gig) {
-        return res.send({'error': 'gig_is_null'});
-      }
-      the_gig = gig;
-      find_the_order();
-    }
-
-    function find_the_order() {
-      console.log('=> expired_ticket_reserve => find_the_order');
-      OrderModel.findById(req.body._id, the_found_order);
-    }
-
-    function the_found_order(err, order) {
-      console.log('=> expired_ticket_reserve => the_found_order');
-      if (err) { 
-        return callback(err);
-      } 
-      if (!order) {
-        return res.send({'error':'order_is_null'});
-      }
-      the_order = order;
-      do_the_updating();
-    }
-
-    function do_the_updating() {
-      console.log('=> expired_ticket_reserve => do_the_updating');
-      the_gig.capacity += parseInt(req.body.number_of_tickets);
-      //console.log('the_gig');
-      //console.log(the_gig);
-
-      the_gig.save(function (err, gig) {
-        if (err) {
-          return callback(err);
-        }
-        console.log('the gig capacity has been successfully altered: ');
-        console.log('gig');
-        console.log(gig);
-      });
-
-
-      //now delete the order
-      the_order.remove(function (err) {
-        if (err) {
-          return callback(err);
-        }
-        console.log('the order has been successfully deleted');
-      });
-
-
-      //make browser delete the cookie
-      //NB. if you dont delete the cookie after a succssful purchase & user tries
-      //to buy another gig, the purchased tickets number will be added back to the
-      //gig capacity. resulting in a successful monetery transaction but the gig
-      //capacity will show NO CHANGE!!!
-      res.clearCookie('reserve_tickets', { signed: true, secure: true});
-
-      return res.send({'OCCURRANCE': 'put ticket reserve back into the general pool.'});
-    }
-
-
-    //start the process off 
-    find_the_gig();
-  }
-  */
-
-
-
-
-  /*
-  //called when reserved tickets have timed out => add back the reserved tix to general
-  //pool
-  app.get('/api/orders/ticket_reserve_release_from_navigation', function (req, res) {
-    console.log('in GET api/orders/ticket_reserve_release_from_navigation');
-    console.log('req.signedCookies');
-    console.log(req.signedCookies);
-    console.log('req.signedCookies.reserve_tickets: ');
-    console.log(req.signedCookies.reserve_tickets);
-
-
-
-    ticket_reserve_release(req, res, function (err) {
-      if (err) throw err;
-    });
-
-  });
-
-
-  function ticket_reserve_release(req, res, callback) {
-    var the_order;
-    var the_gig;
-    var reserved_gig_id = req.signedCookies.reserve_tickets.gig_id; 
-    var reserved_order_id = req.signedCookies.reserve_tickets.order_id; 
-    var reserved_number_of_tickets = req.signedCookies.reserve_tickets.number_of_tickets;
-
-    console.log('reserved_gig_id: ' + reserved_gig_id);
-    console.log('reserved_order_id: ' + reserved_order_id);
-
-    function find_the_gig() {
-      console.log('=> ticket_reserve_release => find_the_gig');
-      GigModel.findById(reserved_gig_id, the_found_gig);
-    }
-
-    function the_found_gig(err, gig) {
-      console.log('=> ticket_reserve_release => the_found_gig');
-      if (err) {
-        return callback(err);
-      }
-      if (!gig) {
-        return res.send({'error': 'gig_is_null'});
-      }
-      the_gig = gig;
-      find_the_order();
-    }
-
-    function find_the_order() {
-      console.log('=> ticket_reserve_release => find_the_order');
-      OrderModel.findById(reserved_order_id, the_found_order);
-    }
-
-    function the_found_order(err, order) {
-      console.log('=> ticket_reserve_release => the_found_order');
-      console.log(order);
-      if (err) { 
-        return callback(err);
-      } 
-      if (!order) {
-        return res.send({'error':'order_is_null'});
-      }
-      the_order = order;
-      do_the_updating();
-    }
-
-    function do_the_updating() {
-      //update the gig capacity
-      //update the order collection -> delete the past order
-      //delete the reserve_tickets cookie
-
-
-      console.log('=> ticket_reserve_release => do_the_updating');
-      the_gig.capacity += parseInt(reserved_number_of_tickets);
-
-      the_gig.save(function (err, gig) {
-        if (err) {
-          return callback(err);
-        }
-        console.log('the gig capacity has been successfully altered: ');
-        console.log('gig');
-        console.log(gig);
-      });
-
-
-      //now delete the order
-      the_order.remove(function (err) {
-        if (err) {
-          return callback(err);
-        }
-        console.log('the order has been successfully deleted');
-      });
-
-      //make browser delete the cookie
-      res.clearCookie('reserve_tickets', { signed: true, secure: true});
-
-      //finally return the outcome
-      return res.send({'SUCCESS': 'released ticket reservation due to previous nav'});
-    }
-
-
-    //start the process off 
-    find_the_gig();
-  }
-  */
-
-
-
+  
 
 
   //######  ROUTE HANDLER ######################################################
@@ -1144,9 +814,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
   }
  
-
-
-
 
 
   //######  ROUTE HANDLER ######################################################

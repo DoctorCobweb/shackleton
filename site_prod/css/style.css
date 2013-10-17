@@ -377,6 +377,7 @@ h3 {
 }
 .footer_sections {
   overflow: auto;
+  min-height: 190px
 }
 .footer .container .footer_sections .section {
   width: 100px;
@@ -396,7 +397,7 @@ h3 {
 }
 .elliott_smith a {
   background-color: #42414B;
-  color: #4B4B4B;
+  color: #474545;
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: 11px;
@@ -464,6 +465,7 @@ div.footer {
   
   background-color: #42414B; 
   clear: both;
+  min-height: 200px;
 }
 .creditCardDetails {
   margin: 10px

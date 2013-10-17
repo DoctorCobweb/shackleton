@@ -79,9 +79,6 @@ define([
       //clicks somewhere else (say a link in navbar)
       Backbone.trigger('router:set_current_view', this);
       
-      //this.are_tickets_reserved = false;
-      //this.start_reserve_tickets_countdown();
- 
     },
 
     render: function () {
@@ -368,92 +365,6 @@ define([
           },
         });
     },
-
-
-    /*
-    start_reserve_tickets_countdown: function () {
-      console.log('in start_reserve_tickets_coundown()');
-      console.log('document.cookie: ' + document.cookie);
-
-
-      this.poll = 0;
-      this.interval_id = setInterval(this.poller, 1000);
-      
-      //*** IMPORTANT ***
-      //set are_tickets_reserved to true
-      this.are_tickets_reserved = true;
-    },
-
-    parse_cookie_string: function () {
-      console.log('====> in parse_cookie_string()');
-      
-      this.cookies_obj = {};
-      this.cookies_array = document.cookie.split(';');
-
-      //console.log('this.cookies_array:');
-      //console.dir(this.cookies_array);
-
-      for (var key in this.cookies_array) {
-        var name = this.cookies_array[key].substring(0, 
-                     this.cookies_array[key].indexOf('='));
-        var value= this.cookies_array[key].substring(
-                     this.cookies_array[key].indexOf('=') + 1 );
-       
-        //get rid of any whitespace at start or end 
-        name = name.replace(/^\s+|\s+$/g,"");
-
-        this.cookies_obj[name] = value;
-      }
-    },
-
-
-    poller: function () {
-      //console.log('in poller');
-      //console.log(this);
-      
-      this.parse_cookie_string();
-
-      if (this.cookies_obj.reserve_tickets) {
-        this.poll++;
-        this.$('#ticker').html(this.poll);
-
-      } else {
-        console.log('ALONGSIDE YOUR HORSE, YOUR TICKET RESERVATION BOLTED OUT THE GATE.');
-        clearInterval(this.interval_id);  
-        var self = this;        
-
-        //delete the ticket reservation i.e. add back the reserved tick no. back to
-        //the gig in gigs collection
-        $.ajax({
-          url: '/api/orders/ticket_reserve_timeout',
-          type: 'POST',
-          data: this.model.toJSON(),
-          success: function (data, textStatus, jqXHR) {
-            console.log('SUCCESS: deleted ticket reserve cookie');
-            console.dir(data);
-            console.log(textStatus);
-            console.dir(jqXHR);
-          },
-          error: function (jqXHR, textStatus, errorThrown) {
-            console.log('ERROR: trouble with deleting ticket reserve cookie');
-            console.dir(jqXHR);
-            console.log(textStatus);
-            console.dir(errorThrown);
-
-          }
-        });
-
-
-        //*** IMPORTANT ***        
-        //set are_tickets_reserved to false
-        this.are_tickets_reserved = false;
-        alert('YOUR TICKET RESERVATION HAS EXPIRED');
-
-
-      }
-    },
-    */
-
 
 
 

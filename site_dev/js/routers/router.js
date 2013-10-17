@@ -69,8 +69,8 @@ define([
         
 
         //set this to true to put app in private mode i.e. private beta
-        this.private_beta = true;
-        //this.private_beta = false;
+        //this.private_beta = true;
+        this.private_beta = false;
 
         //used for releasing an old reserved order:
         //1. reservation timedout OR
@@ -257,63 +257,6 @@ define([
       },
 
 
-
-
-
-
-      /*
-      delete_reserve_cookie_onclose: function (e) {
-        var self = this; //this refers to Window obj
-
-
-        $.ajax({
-          url: '/api/users/close_event_called',
-          type: 'GET',
-          success: function( data, textStatus, jqXHR ) {
-              console.log('SUCCESS: Got response');
-              console.dir(data);
-              console.log(textStatus);
-              console.dir(jqXHR);
-
-              console.log('EVENT: close event was fired');
-              console.log('in delete_reserve_cookie_onclose');
-              console.log('this context in delect_reserve_cookie_onclose: ');
-              console.log(self);
-              console.log('is jQuery present: ');
-              console.dir($);
-          }
-        });
-
-        //return 'in delete_reserve_cookie hanlder';
-        return;
-      },
-
-      delete_reserve_cookie_onbeforeunload: function (e) {
-        var self = this; //this refers to Window obj
-
-
-        $.ajax({
-          url: '/api/users/beforeunload_event_called',
-          type: 'GET',
-          success: function( data, textStatus, jqXHR ) {
-              console.log('SUCCESS: Got response');
-              console.dir(data);
-              console.log(textStatus);
-              console.dir(jqXHR);
-
-              console.log('EVENT: beforeunload event was fired');
-              console.log('in delete_reserve_cookie_onbeforeunload');
-              console.log('this context in delect_reserve_cookie_onbeforeunload: ');
-              console.log(self);
-              console.log('is jQuery present: ');
-              console.dir($);
-          }
-        });
-
-        //return 'in delete_reserve_cookie hanlder';
-        return;
-      },
-      */
  
 
       routes: {
@@ -523,7 +466,6 @@ define([
         console.log('reserve_tickets cookie: ' + CookieUtil.get('reserve_tickets'));
 
 
-        /*   
         //this was used prior to implementing the beta login version of app
         console.log('in index() of router.js');
         //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
@@ -535,11 +477,10 @@ define([
          this.theHomeLandingView = new HomeLandingView();
         }
         this.show_view('#featureContent', this.theHomeLandingView);
-        */
         
 
 
-
+        /*
         //comment out is if and else busines when REALLY going public (after privatebeta)
         //then un comment the above code in this handler.
         //then revert back to original index.html and delete out the #the_overbearer div
@@ -582,6 +523,7 @@ define([
 
           return; 
         }
+        */
         
 
 
@@ -661,18 +603,11 @@ define([
 
 
         console.log('in gigGuide() of router.js');
-        //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
+        //HACK:this toggles the dropdown nav-collapse menu visibility for mobile devices
         this.is_bootstrap_btn_navbar_visible();
 
         this.check_authentication_set_links();
 
-        /*
-        if (!this.defaultLandingView) {
-          this.defaultLandingView = new GigGuideLandingView();
-        }
-        $('#featureContent').html(this.defaultLandingView.render().el);
-        //console.log('this.defaultLandingView is ' + this.defaultLandingView);
-        */
 
         //make sure we dont keep instantiating a collection everytime user
         //clicks on gigs tab in headerview
