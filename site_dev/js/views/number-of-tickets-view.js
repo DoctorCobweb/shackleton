@@ -66,6 +66,8 @@ define([
       initialize: function () {
         console.log('in initialize() of number-of-tickets-view.js');
 
+        this.current_view = this;
+
         this.BT_DEFAULT_CUS = 'default_braintree_customer_id';
 
         //make sure this always refers the the view
@@ -92,7 +94,6 @@ define([
         console.log('in number-of-tickets-view.js and render()');
 
         this.$el.html(this.template(this.model.toJSON()));
-        this.current_view = this;
 
         //this.$().on('hover',);
 

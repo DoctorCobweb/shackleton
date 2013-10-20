@@ -44,6 +44,8 @@ define([
       initialize: function () {
         console.log('in initialize() of gig-detail-view.js');
 
+        this.current_view = this;
+
         //cache the elements referenced using jQuery
         //ERROR: querying for #number_of_tickets results in an empty object!!!
         //WHY is this so? answer = model is not rendered.
@@ -103,7 +105,6 @@ define([
         console.log('this.model: ');
         console.dir(this.model);
 
-        this.currentView = this;
         return this;
       },
 
@@ -135,7 +136,7 @@ define([
               //there is no session set up for the user => not logged in.
               //display login form with gig_id sent in
               var loginWithGigDetails = new LoginWithGigDetails({model: self.model});
-              self.showView('#featureContent', loginWithGigDetails); 
+              self.show_view('#featureContent', loginWithGigDetails); 
 
             } else if (data.user_authenticated === true) {
               //user has a session => are logged in
@@ -154,7 +155,7 @@ define([
               } else {
                 //no reserve_tickets cookie present
 	        var numberOfTicketsView = new NumberOfTicketsView({model: self.model});
-	        self.showView('#featureContent', numberOfTicketsView); 
+	        self.show_view('#featureContent', numberOfTicketsView); 
                 window.scrollTo(0, 350);
               }
 
@@ -206,7 +207,7 @@ define([
 
 
              var numberOfTicketsView = new NumberOfTicketsView({model: self.model});
-              self.showView('#featureContent', numberOfTicketsView); 
+              self.show_view('#featureContent', numberOfTicketsView); 
               window.scrollTo(0,350);
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -222,13 +223,13 @@ define([
       },
 
 
-      showView: function (selector, view) {
+      show_view: function (selector, view) {
         console.log('in showView in gig-detail-view.js');
-        if (this.currentView) {
-          this.currentView.close();
+        if (this.current_view) {
+          this.current_view.close();
         }
         $(selector).html(view.render().el);
-        this.currentView = view;
+        this.current_view = view;
         return view; 
       } 
 

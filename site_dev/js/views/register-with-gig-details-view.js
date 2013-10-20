@@ -47,13 +47,14 @@ define([
       initialize: function () {
         console.log('in initialize() of register-with-gig-details-view.js');
 
+        this.current_view = this;
+
        /*
         *  this.model is still the gig details attributes
         */
         console.dir(this.model);
 
 
-        this.current_view = this;
         this.ENTER_KEY = 13;
 
        },

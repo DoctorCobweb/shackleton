@@ -35,6 +35,9 @@ define([
         //in the case below, our callback is the view's render function and the
         //context of the listening object is the view itself. tricky but vital to know
         this.listenTo(this.model, 'change', this.updateHandler);
+
+
+        this.current_view = this;
  
       },
 
@@ -200,7 +203,22 @@ define([
       importPassbookPass: function () {
         console.log('in importPassbookPass handler');
 
+      },
+
+
+      show_view: function (selector, view) {
+
+        console.log('in showView()');
+        console.log('in showView(), this.currentView: ');
+        console.log(this.current_view);
+        if (this.current_view) {
+          this.current_view.close();
+        }
+        $(selector).html(view.render().el);
+        this.current_view = view;
+        return view;
       }
+
 
     }); //end Backbone.View.extend
     return CheckoutView;

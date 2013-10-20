@@ -103,8 +103,10 @@ define([
         var theGig = new Gig({model: this.model});
         //$('#gig-guide-details').html(theGig.render().el);
         
-        //this.show_view('#featureContent', theGig);
-        $('#featureContent').html(theGig.render().el);
+        this.show_view('#featureContent', theGig);
+        //$('#featureContent').html(theGig.render().el);
+    
+        
 
         window.scrollTo(0, 350);
       },

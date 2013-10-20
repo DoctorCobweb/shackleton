@@ -44,6 +44,8 @@ define([
 
       initialize: function () {
         console.log('in initialize() of login-with-gig-details-view.js');
+  
+        this.current_view = this;
 
 
         /*

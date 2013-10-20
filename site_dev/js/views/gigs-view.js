@@ -70,7 +70,7 @@ define([
         this.$el.append(gigListItemView.render().el);
       },
 
-
+      //DONT BE SLOPPY, CLEANUP AFTER YOURSLEF.
       // you must properly close each gig view before closing the gigs-view (which is 
       // the parent view)
       beforeClose: function () {
