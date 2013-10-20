@@ -54,7 +54,8 @@ define([
 
         //console.log('this.options.count: ');
         //console.log('this.options.count: ' + this.options.count);
-
+      
+        this.current_view = this;
       },
 
       render: function () {
@@ -81,6 +82,11 @@ define([
       //with id="gig-guide-details"
       clickedGig: function (e) {
 
+        //console.log('in clickedGig, and this.parent = ');
+        //console.log(this.parent);
+        //this.parent.close();
+
+
         if (!this.$the_gig) {
           this.$the_gig = $('.gig_' + this.options.count);
         }
@@ -97,9 +103,27 @@ define([
         var theGig = new Gig({model: this.model});
         //$('#gig-guide-details').html(theGig.render().el);
         
+        //this.show_view('#featureContent', theGig);
         $('#featureContent').html(theGig.render().el);
+
         window.scrollTo(0, 350);
+      },
+
+
+      show_view: function (selector, view) {
+ 
+        console.log('in showView()');
+        console.log('in showView(), this.currentView: ');
+        console.log(this.current_view);
+        if (this.current_view) {
+          this.current_view.close();
+        }
+        $(selector).html(view.render().el);
+        this.current_view = view;
+        return view;
       }
+
+
     });
     return GigListItemView;
   }

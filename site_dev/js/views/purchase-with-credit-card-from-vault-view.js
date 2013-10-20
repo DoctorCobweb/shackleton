@@ -74,10 +74,11 @@ define([
       console.log('braintree object:');
       console.dir(this.braintree);
 
+      //CAUSES A BUG. see router.js Backbone.on('router:set_current_view')
       //tell router to set its this.currentView variable to this view. need to do this so
       //router cleans up this view if user so happens to stop the purchase process and
       //clicks somewhere else (say a link in navbar)
-      Backbone.trigger('router:set_current_view', this);
+      //Backbone.trigger('router:set_current_view', this);
       
     },
 

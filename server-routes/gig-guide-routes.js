@@ -6,6 +6,25 @@
 
 
 
+//____________________________ROUTES (in this order in the file)____________________
+//
+// key x = commented out handler. staging to see if it is needed or not.
+//
+//___METHOD____ROUTE_____________________________________MIDDLEWARE_________________
+//
+//   GET       '/api/'      
+//   GET       '/api/gigs'
+//   POST      '/api/gigs/'
+//   GET       '/api/gigs/:id'
+//   PUT       '/api/gigs/:id'
+//   DELETE    '/api/gigs/:id'
+//   POST      '/api/gigs/reserve/:id'
+
+
+
+
+
+
 //begin module implementation
 module.exports = function (mongoose, shackleton_conn, app, Gig) {
 
@@ -16,14 +35,20 @@ module.exports = function (mongoose, shackleton_conn, app, Gig) {
   var GigModel = shackleton_conn.model('Gig', Gig); 
   
 
-//-----BEGIN ROUTE HANDLERS-------------------
 
 
+  //******** ROUTE HANDLER ******************************
+
+  //USED???
   app.get('/api', function (req, res) {
     res.send('Gigs API is up and running.');
   });
   
   
+
+
+  //******** ROUTE HANDLER ******************************
+
   //get a list of all the gigs
   app.get('/api/gigs', function (req, res) {
   
@@ -38,6 +63,11 @@ module.exports = function (mongoose, shackleton_conn, app, Gig) {
     });
   });
   
+
+
+
+  //******** ROUTE HANDLER ******************************
+
   //create a gig
   app.post('/api/gigs/', function (req, res) {
   
@@ -73,7 +103,12 @@ module.exports = function (mongoose, shackleton_conn, app, Gig) {
     return res.send(gig);
   });
   
+
+
   
+
+  //******** ROUTE HANDLER ******************************
+
   //get a single gig using its id param passed in with the req
   app.get('/api/gigs/:id', function (req, res) {
   
@@ -89,6 +124,10 @@ module.exports = function (mongoose, shackleton_conn, app, Gig) {
   });
   
   
+
+
+  //******** ROUTE HANDLER ******************************
+
   //update a gig with id
   app.put('/api/gigs/:id', function (req, res) {
   
@@ -126,6 +165,10 @@ module.exports = function (mongoose, shackleton_conn, app, Gig) {
   });
   
   
+
+
+  //******** ROUTE HANDLER ******************************
+
   //delete the gig with id
   app.delete('/api/gigs/:id', function (req, res) {
   
@@ -146,6 +189,13 @@ module.exports = function (mongoose, shackleton_conn, app, Gig) {
     });
   });
 
+
+
+
+
+  //******** ROUTE HANDLER ******************************
+
+  //USED???
   //reserve a particular gig with a given number of tickets
   app.post('/api/gigs/reserve/:id', function (req, res) {
     console.log('in POST /api/gigs/reserve/:id handler ' 

@@ -82,8 +82,9 @@ define([
         console.log('this.options');
         for (var key in this.options) console.log(this.options[key]);
 
+        //CAUSES A BUG. see router.js Backbone.on('router:set_current_view')
         //tell router to set its this.currentView variable to this view
-        Backbone.trigger('router:set_current_view', this);
+        //Backbone.trigger('router:set_current_view', this);
 
       },
 

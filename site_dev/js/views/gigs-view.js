@@ -14,8 +14,7 @@ define([
   ], 
   function (Backbone, GigListItemView, GigGuide, GigGuideLandingView) {
 
-    GigsView = Backbone.View.extend({
-      //tagName: 'ul',
+    var GigsView = Backbone.View.extend({
       tagName: 'div',
 
       className: 'gigs_container',
@@ -27,49 +26,22 @@ define([
 
         this.count = 1;
 
-        /*
-        //create the default landing view for the guide guide
-        var theGigGuideLandingView = new GigGuideLandingView();
-        $('#featureContent').html(theGigGuideLandingView.render().el);
-        */
-
-        /*
-        // initialize gigGuide collection here
-        this.collection = new GigGuide();
-        var self = this;
-        this.collection.fetch({
-          reset: true,
-          success: function (collection, response) {
-            //console.log('successfully fetched the collection from server.');
-            //console.log('collection.length = ' + collection.length); 
-            //console.log(self.collection.get("51a405be30171f4508000002"));
-          },
-          error: function (collection, response) {
-            console.log('in initialize(), GigsView. error in fetching the collection.');
-          }
-        });
-        */
-
-        //this.render();
-        
         //this.listenTo(this.collection, 'add', this.);
         // fetch contents of collection too
         // set listeners for add, reset events on collection
         //this.listenTo(this.collection, 'add', this.renderGig);
         //this.listenTo(this.collection, 'reset', this.render);
+
+        //an array to keep hold all the refs to each gig.
+        //use this array to properly close each gig item if user navigates away or
+        //thru to next step. 
+        //used in beforeClose() (!important)
+        this.child_views = [];
       },
 
       render: function () {
         console.log('in render() of gigs-view.js');
      
-        /*
-        // render the GigsView by rendering each gig in collection
-        this.collection.each(function (item) {
-          //console.log('in collection.each() of render() in gigs-view.js');
-          this.renderGigListItem(item);
-        }, this);
-        */ 
-
 
         // render the GigsView by rendering each gig in collection
         _.each(this.model.models, function (item) {
@@ -81,10 +53,14 @@ define([
 
       renderGigListItem: function (item) {
         //console.log('in renderGigListItem() of gigs-view.js');
-
         var self = this;
+
         // instantiate a new gig
         var gigListItemView = new GigListItemView({model: item, count:self.count});
+
+        //gigListItemView.parent = this;
+
+        this.child_views.push(gigListItemView);
         
         this.count++; 
         //console.log(this.count);
@@ -92,7 +68,21 @@ define([
     
         // call its render function, append its element to GigsView element, el
         this.$el.append(gigListItemView.render().el);
+      },
+
+
+      // you must properly close each gig view before closing the gigs-view (which is 
+      // the parent view)
+      beforeClose: function () {
+        console.log('in beforeClose of gigs-view');
+
+        _.each(this.child_views, function (view) {
+          view.close();
+        }, this);
       }
+
+
+
     });
     return GigsView;
   }

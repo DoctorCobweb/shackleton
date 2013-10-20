@@ -62,15 +62,12 @@ var MONGODB_DUPLICATE_KEY_ERROR = 11000;
 // x   POST      '/api/users/change_user_details'
 //   POST      '/api/users/change_password/'             logged_in_required
 //   POST      '/api/users/change_cc_details/'
-//   PUT       '/api/users/reset_the_customer_id/:id' 
+//   PUT       '/api/users/reset_the_customer_id/:id'    restrict_user_to_user
 // x  POST      '/api/users/login_with_pending_order/'    not_logged_in_required 
 // x  POST      '/api/users/register_with_pending_order'  not_logged_in_required 
 //   DELETE    '/api/users/:id' 
-//   PUT       '/api/users/:id'                          logged_in_required
-
-
-
-
+//   PUT       '/api/users/:id'                          logged_in_required 
+//   POST         '/api/users/beta_login'
 
 
 
@@ -92,7 +89,8 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
   var BetaUserModel = shackleton_conn.model('BetaUser', BetaUser);
 
 
-//---------BEGIN ROUTE HANDLERS-------------
+
+  //*************** ROUTE HANDLERS ******************************
 
   //TODO:
   //MUST ADD ADMIN SECURITY CONSTRAINTS.
@@ -109,8 +107,12 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
         return console.log(err);
       }
     });
-  });
+  }); //end /api/users
 
+
+
+
+  //*************** ROUTE HANDLERS ******************************
 
   //respond with the req.session obj.
   //needed when app wants to check if there is a session already authenticated
@@ -126,9 +128,12 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
       JSON.stringify(req.signedCookies, null, 4));
 
     return res.send(req.session);
-  });
+  }); // GET /api/users/session
 
 
+
+
+  //*************** ROUTE HANDLERS ******************************
 
   app.get('/api/users/account/billing_info', logged_in_required, function (req, res) {
     console.log('in /api/users/account/billing_info');
@@ -140,7 +145,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
       }
     });
 
-  });
+  }); //end GET /api/users/account/billing_info
 
 
   function start_the_get_billing_info(req, res, callback) {
@@ -188,7 +193,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
 
 
-
+  //*************** ROUTE HANDLERS ******************************
 
   //get a single authenticated user, via backbone fetching a user model 
   //passing in the _id to find the user
@@ -204,9 +209,12 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
         return res.redirect('#/login');
       }
     }); 
-  });
+  }); //end GET /api/users/:id
 
 
+
+
+  //*************** ROUTE HANDLERS ******************************
 
   //get a single authenticated user. return the user id 
   app.get('/api/users/settings/user', logged_in_required, function (req, res) {
@@ -214,11 +222,11 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
     return res.send(req.session.user_id);
 
-  });
+  }); //end GET /api/users/settings/user
 
 
 
-
+  //*************** ROUTE HANDLERS ******************************
 
   //destroy the session i.e. log the user out of their account. 
   //THIS MUST BE BEFORE app.delete('/api/users/:id', ... ) handler. 
@@ -229,10 +237,11 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     req.session.destroy();
 
     return res.send(user_first_name);
-  });
+  }); //end DELETE /api/users/logout
 
 
-  //-------------------REGISTER--REFACTOR START--------------
+
+  //*************** ROUTE HANDLERS ******************************
 
   //called from register-view.js AND register-with-gig-details-view.js
   app.post('/api/users/register', not_logged_in_required, function (req, res) {
@@ -308,13 +317,11 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
                           success: false 
                          });
         }
- 
-
-
       }
     });
 
-  });
+  }); //end POST /api/users/register
+
 
   function register_a_new_user(req, res, callback) {
     console.log('=> register_a_new_user =>');
@@ -419,6 +426,9 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
   }
 
 
+
+  //*************** ROUTE HANDLERS ******************************
+
   app.post('/api/users/login', not_logged_in_required, function (req, res) {
     console.log('in POST /api/users/login');
 
@@ -450,7 +460,6 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     }
 
 
-
     log_the_user_in(req, res, function (err) {
       console.log('in login error call back handler');
       if (err) {
@@ -463,7 +472,8 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
       }
     });
-  });
+  }); //end POST /api/users/login 
+
 
   function log_the_user_in(req, res, callback) {
     console.log('=> log_the_user_in =>');
@@ -474,10 +484,12 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     var the_stored_pass; 
     var the_found_user;
 
+
     function find_the_user () {
       console.log('=> log_the_user_in => find_the_user');
       UserModel.findOne({email_address: req.body.email_address}, the_user_callback);
     }
+
 
     function the_user_callback (err, user) {
       console.log('=> log_the_user_in => the_user_callback');
@@ -495,11 +507,13 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
       find_password_model();
     }
 
+
     function find_password_model () {
       console.log('=> log_the_user_in => find_password_model');
       PasswordModel.findOne({email_address: req.body.email_address}, calculate_hash);
     }
        
+
     function calculate_hash(err, pass) {
       console.log('=> log_the_user_in => in calculate_hash');
       if (err) {
@@ -516,6 +530,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
       bcrypt.hash(req.body.password, pass.salt, authenticate_user);
     }
        
+
     function authenticate_user(err, submitted_hash) {
       console.log('=> log_the_user_in => authenticate_user');
       if (err) {
@@ -549,6 +564,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
       }
     }
       
+
     function set_more_session_variables(){
       console.log('=> log_the_user_in => set_some_variable');
       req.session.user_last_name = the_found_user.last_name;
@@ -570,10 +586,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
 
 
-
-
-
-
+  //*************** ROUTE HANDLERS ******************************
 
   app.post('/api/users/change_password/', logged_in_required, function (req, res) {
     console.log('in /api/users/change_password');
@@ -612,12 +625,14 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
       }
 
     });
-  });
+  }); //end POST /api/users/change_password/
+
 
   function start_password_change(req, res, callback) {
     var the_salt;
     var the_hash;
     var the_password_doc;
+
 
     function compare_the_passwords() {
      console.log('=> start_password_change => compare_the_passwords');
@@ -640,13 +655,13 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     }
 
 
-
    //generate a new salt
    function generate_the_salt() {
      console.log('=> start_password_change => generate_the_salt');
      bcrypt.genSalt(10, generate_the_hash);
 
    }
+
 
    function generate_the_hash(err, salt) {
      console.log('=> start_password_change => generate_the_hash');
@@ -661,6 +676,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
    }
 
+
    function the_hash_callback (err, hash) {
      console.log('=> start_the_password_change => the_hash_callback');
      if (err) {
@@ -673,6 +689,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
      find_the_password_doc();
    }
 
+
    function find_the_password_doc () {
      console.log('=> start_the_password_change => find_the_password_doc');
      PasswordModel.findOne(
@@ -681,6 +698,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
      );
    }
  
+
    function the_password_callback(err, password_doc) {
      console.log('=> start_the_password_change => the_password_callback');
      if (err) {
@@ -702,6 +720,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
      save_the_password_doc();
    }
  
+
    function save_the_password_doc() {
      console.log('=> start_the_password_change => save_the_password_doc');
      return the_password_doc.save(function (err) {
@@ -720,6 +739,8 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
   }
 
 
+
+  //*************** ROUTE HANDLERS ******************************
 
   //used in account 1. => billing => change cc 
   //                2. => billing default => submit cc
@@ -754,10 +775,6 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     }
 
 
-
-
-
-
     change_cc_in_vault_for_user(req, res, function (err) {
       if (err) {
         console.log('INTERNAL_ERROR: ' + err);
@@ -772,8 +789,8 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
       } 
     });
 
+  }); //end POST /api/users/change_cc_details
 
-  });
 
   function change_cc_in_vault_for_user(req, res, callback) {
     console.log('=> change_cc_in_vault_for_user =>');
@@ -995,6 +1012,8 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
 
 
+  //*************** ROUTE HANDLERS ******************************
+
   //sets the braintree_customer_id back to the default 'default_braintree_customer_id'
   //which is used in PUT /api/orders during checkout process for asking braintree
   //to issue a new customer_id. this happend when the cc details in the users vault
@@ -1010,7 +1029,9 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
           throw err;
         }
       });
-  });
+  }); //end PUT /api/users/reset_the_customer_id/:id
+
+
 
   function update_user_braintree_customer_id(req, res, callback) {
     var new_values = {};
@@ -1041,7 +1062,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
 
 
-
+  //*************** ROUTE HANDLERS ******************************
 
   //delete a user with id
   app.delete('/api/users/:id', 
@@ -1072,8 +1093,11 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
         return res.send('ERROR: in DEL /api/users/:id handler. Error msg: ' + err);
       }
     });
-  });
+  }); //end DELETE /api/users/:id
 
+
+
+  //*************** ROUTE HANDLERS ******************************
 
   //called when user updates their attributes in the account settings view
   app.put('/api/users/:id', logged_in_required, function (req, res) {
@@ -1154,19 +1178,11 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
         return res.send(saved_user);
       });
     }); 
-  });
+  }); //end PUT /api/users/:id
 
 
 
-//__________________REFACTOR FINISH___________________________
-
-
-
-  //----------start: NEW FEATURE TESTING SECTION-------------------
-
-
-
-
+  //*************** ROUTE HANDLERS ******************************
 
   //demoing a private beta functionality!
   app.post('/api/users/beta_login', function (req, res) {
@@ -1214,17 +1230,21 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
       }
     });
-  });
+
+  }); //end POST /api/users/beta_login 
+
 
   function log_the_beta_user_in(req, res, callback) {
     console.log('=> log_the_beta_user_in =>');
     console.log('req.body: ');
     console.log(req.body);
 
+
     function find_the_beta_user () {
       console.log('=> log_the_beta_user_in => find_the_beta_user');
       BetaUserModel.findOne({username: req.body.username}, the_beta_user_callback);
     }
+
 
     function the_beta_user_callback (err, user) {
       console.log('=> log_the_beta_user_in => the_beta_user_callback');
@@ -1264,9 +1284,5 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     find_the_beta_user();
   }
 
-
-
-
-  //----------finish: NEW FEATURE TESTING SECTION-------------------
 
 }; //end module.exports

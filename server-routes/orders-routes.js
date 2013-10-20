@@ -11,7 +11,6 @@ var email_services = require('../services/email_services');
 var PDFKit = require('pdfkit');
 var fs = require('fs');
 var QRCode = require('qrcode');
-
 var gateway;
 
 
@@ -59,6 +58,23 @@ gateway = braintree.connect({
   privateKey:  process.env.BRAINTREE_PRIVATE_KEY
 });
 
+
+
+//____________________________ROUTES (in this order in the file)____________________
+//
+// key x = commented out handler. staging to see if it is needed or not.
+//
+//___METHOD____ROUTE_____________________________________MIDDLEWARE_________________
+//
+//   GET       '/api/get_cookies'     
+//   POST      '/api/orders/                            logged_in_required
+//   PUT       '/api/orders/:id'                        logged_in_required
+//   POST      '/api/orders/beforeunload_event_called'
+//   POST      '/api/orders/give_up_reserved_tickets'
+//   GET       '/api/orders/'                           logged_in_required
+
+
+
 module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
 
@@ -66,7 +82,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
   var OrderModel = shackleton_conn.model('Order', Order);
   var GigModel = shackleton_conn.model('Gig', Gig);
   var UserModel = shackleton_conn.model('User', User);
- 
   
 
 
@@ -80,8 +95,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     console.log(req.signedCookies);
 
     return res.send(req.cookies);
-
-  });
+  }); //end GET /api/get_cookies/
 
 
 
@@ -182,23 +196,25 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
                          success: false});
       }
     });
-  });
+  }); //end POST /api/orders/
+
 
   //NEED TO CHECK IF CAPACITY OF GIG CAN HANDLE THE NUMBER OF TICKETS REQUESTD
   function initial_order_saved_from_clientside (req, res, callback) {
     console.log('=> initial_order_save_from_clientside');
-
 
     //some vars go here
     var the_gig;
     var the_user;
     var the_order;
 
+
     //STEPS 
     function find_the_gig() {
       console.log('=> initial_order_save_from_clientside => find_the_gig');
       GigModel.findById(req.body.gig_id, the_found_gig);
     }
+
 
     function the_found_gig(err, gig) {
       console.log('=> initial_order_save_from_clientside => the_found_gig');
@@ -244,10 +260,12 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
     }
  
+
     function find_the_user() {
       console.log('=> initial_order_save_from_clientside => find_the_user');
       UserModel.findById(req.session.user_id, the_found_user);
     }
+
 
     function the_found_user(err, user) {
       console.log('=> initial_order_save_from_clientside => the_found_user');
@@ -261,6 +279,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       create_the_order();
     }
    
+
     function create_the_order() {
       console.log('=> initial_order_save_from_clientside => create_the_order');
 
@@ -320,6 +339,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       });
     }
 
+
     function deduct_the_tickets_reserved_from_capacity(order) {
 
       the_gig.capacity = the_gig.capacity - req.body.number_of_tickets;
@@ -348,13 +368,9 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       });
     }
 
-
     //START the sequence of function calls
     find_the_gig();
   }
-
-
-
 
 
 
@@ -364,7 +380,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
   //TODO: validate, sanitize, error handling
   //UPDATE THE ORDER
-  app.put('/api/orders/:id', function (req, res) {
+  app.put('/api/orders/:id', logged_in_required, function (req, res) {
     console.log('in PUT /api/orders/:id handler');
     console.log('id param in url: ' + req.params.id);
 
@@ -375,8 +391,10 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       } 
     });
 
-  });
+  }); //end PUT /api/orders/:id
 
+
+  //TODO: check order_id matches that of the one in cookie
 
   function update_the_order(req, res, callback) {
     console.log('=> update_the_order');
@@ -410,10 +428,10 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
           the_gig = gig;
         });
 
-
       });
     }
  
+
     function find_the_user() {
       console.log('=> update_the_order => find_the_user');
 
@@ -429,6 +447,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         start_braintree_procedure();
       });
     }
+
 
     function start_braintree_procedure() {
       console.log('=> update_the_order => start_braintree_procedure');
@@ -477,7 +496,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     function submit_for_settlement(transaction_id) {
       console.log('=> update_the_order => submit_for_settlement');
 
-
         gateway.transaction.submitForSettlement(transaction_id,
           function (err, result) {
             if (err) {
@@ -508,7 +526,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     }
 
 
-
     function handle_transaction_error(result) {
       console.log('=> update_the_order => handle_transaction_error');
       console.log(result);
@@ -519,6 +536,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       return res.send(result.message);
 
     }
+
 
     function save_the_order_changes() {
       the_order.save(function (err, saved_order) {
@@ -656,6 +674,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       });
     }
 
+
     function save_the_user_changes() {
       the_user.save(function(err) {
         if (err) {
@@ -674,8 +693,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
 
   
-
-
   //######  ROUTE HANDLER ######################################################
 
   //TODO: implement the release better. error handling...
@@ -704,8 +721,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       }); 
     }
 
-  });
-
+  }); //end POST /api/orders/beforeunload_event_called
 
 
 
@@ -727,7 +743,8 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       if (err) throw err;
     });
 
-  });
+  }); //end POST /api/orders/give_up_reserved_tickets
+
 
 
   function give_up_reserved_tickets(req, res, callback) {
@@ -736,10 +753,12 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     
     console.log('reserved_order_id: ' + req.body.reserved_order_id);
 
+
     function find_the_order() {
       console.log('=> give_up_reserved_tickets => find_the_order');
       OrderModel.findById(req.body.reserved_order_id, the_found_order);
     }
+
 
     function the_found_order(err, order) {
       console.log('=> give_up_reserved_tickets => the_found_order');
@@ -754,11 +773,13 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       find_the_gig();
     }
 
+
     function find_the_gig() {
       console.log('=> give_up_reserved_tickets => find_the_gig');
 
       GigModel.findById(the_order.gig_id, the_found_gig);
     }
+
 
     function the_found_gig(err, gig) {
       console.log('=> give_up_reserved_tickets => the_found_gig');
@@ -777,7 +798,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       //update the gig capacity
       //update the order collection -> delete the past order
       //delete the reserve_tickets cookie
-
 
       console.log('=> give_up_reserved_tickets => do_the_updating');
       the_gig.capacity += parseInt(the_order.number_of_tickets);
@@ -810,8 +830,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
     //start the process off 
     find_the_order();
-
-
   }
  
 
@@ -836,7 +854,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
           return res.send(orders);
         }
       );
-  });
+  }); //end GET /api/orders/
 
 
 

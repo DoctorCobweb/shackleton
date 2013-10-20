@@ -62,11 +62,9 @@ define([
       initialize: function () {
         console.log('in initialize() of router.js');
 
-
-
+        var self = this;
         //why doesnt this work??? ... had to do the var self = this thing
         //_.bindAll(this);
-        
 
         //set this to true to put app in private mode i.e. private beta
         //this.private_beta = true;
@@ -77,10 +75,8 @@ define([
         //2. user has tried to buy diff gig and already has a set resere_tickets cookie
         this.reserved_order_id = null;
 
-        var self = this;
 
-
-        //TODO: release tickets on window close or navigate away to another domain
+        //release tickets on window close, tab close or navigate away to another domain
         $(window).on('beforeunload', function () {
 
           //stop polling for the cookie, we are going to handle release the reserve from
@@ -111,9 +107,7 @@ define([
               //for completeness also reset the order id
               self.reserved_order_id = null;
 
-
             },
-
             error: function (jqXHR, textStatus, errorThrown) {
               console.log('ERROR: ajax callback handler');
               console.dir(jqXHR);
@@ -126,7 +120,12 @@ define([
 
         });
 
-
+ 
+        /*
+         *
+         * GLOBAL EVENT HANDLERS
+         *
+         */
 
         //views which are generated after ajax call in another view. ie. the new view
         //does not have an associated route handler in router.js
@@ -136,7 +135,12 @@ define([
                        'parameter(the_current_view): ' + the_current_view);
           console.log(the_current_view);
 
-          this.currentView = the_current_view;
+          //this line causes a BUG when trying to select another gig after on has timed
+          //out. 
+          //ERROR MSG: TypeError: Object [object Object] has no method 'call'
+          //line backbone.js:204)
+          //????
+          //this.currentView = the_current_view;
         }, this); //'this' refers to router instance
 
 
@@ -216,12 +220,7 @@ define([
       },
 
 
-
-
-
-
       give_up_reserved_tickets: function (the_cookie, the_reserved_order_id) {
-      //give_up_reserved_tickets: function (the_cookie, reserved_order) {
         console.log('in clear_out_cookie function');
 
         var self = this;
@@ -250,12 +249,9 @@ define([
             console.log(textStatus);
             console.dir(errorThrown);
 
-
           }
         });
-
       },
-
 
  
 
@@ -600,7 +596,6 @@ define([
         if (this.check_if_in_private_beta()) {
           return;
         }
-
 
         console.log('in gigGuide() of router.js');
         //HACK:this toggles the dropdown nav-collapse menu visibility for mobile devices
@@ -975,118 +970,8 @@ define([
         $(selector).html(view.render().el);
         this.currentView = view;
         return view;
-      },
-
-  
-
-      /*
-      //start polling stuff
-      //start a polling system to look at reserve_tickets cookie existence
-      start_reserve_tickets_countdown: function () {
-        console.log('in start_reserve_tickets_coundown()');
-        console.log('document.cookie: ' + document.cookie);
-   
-   
-        this.poll = 0;
-        this.interval_id = setInterval(this.poller, 1000);
-   
-        //*** IMPORTANT ***
-        //set are_tickets_reserved to true
-        //this.are_tickets_reserved = true;
-      },
-
-
-
-      poller: function () {
-        //console.log('in poller');
-        //console.log(this);
-   
-        this.parse_cookie_string();
-   
-        if (this.cookies_obj.reserve_tickets) {
-          //still have the reserve_tickets cookie present
-
-          this.poll++;
-          console.log(this.poll); 
-
-        } else {
-          //reserve_tickets cookie has timedout
-
-          console.log('ALONGSIDE YOUR HORSE, TICKET RESERVATION BOLTED OUT THE GATE.');
-
-          //stop the cookie polling
-          clearInterval(this.interval_id);
-          var self = this;
-   
-          //only delete the reservation if user is NOT in the purchase proceedure.
-          //at start of purchase procedure the view emits an event telling the router
-          //to not delete any cookies.
-          //after completion, the router can go back to polling the cookie.
-    
-            
-          //delete the ticket reservation i.e. add back the reserved tick no. back to
-          //the gig in gigs collection
-          $.ajax({
-            url: '/api/orders/ticket_reserve_timeout',
-            type: 'POST',
-            data: this.model.toJSON(),
-            success: function (data, textStatus, jqXHR) {
-              console.log('SUCCESS: deleted ticket reserve cookie');
-              console.dir(data);
-              console.log(textStatus);
-              console.dir(jqXHR);
-            },
-            error: function (jqXHR, textStatus, errorThrown) {
-              console.log('ERROR: trouble with deleting ticket reserve cookie');
-              console.dir(jqXHR);
-              console.log(textStatus);
-              console.dir(errorThrown);
-   
-            }
-          });
-   
-          //*** IMPORTANT ***
-          //set are_tickets_reserved to false
-          //this.are_tickets_reserved = false;
-          alert('YOUR TICKET RESERVATION HAS EXPIRED');
-   
-   
-        }
-      },
-
-      parse_cookie_string: function () {
-        //console.log('in parse_cookie_string()');
-   
-        this.cookies_obj = {};
-        this.cookies_array = document.cookie.split(';');
-   
-        console.log('this.cookies_array:');
-        console.dir(this.cookies_array);
-   
-        for (var key in this.cookies_array) {
-          var name = this.cookies_array[key].substring(0,
-                       this.cookies_array[key].indexOf('='));
-          var value= this.cookies_array[key].substring(
-                       this.cookies_array[key].indexOf('=') + 1 );
-   
-          //get rid of any whitespace at start or end
-          name = name.replace(/^\s+|\s+$/g,"");
-   
-          this.cookies_obj[name] = value;
-        }
-
-        if (this.cookies_obj.reserve_tickets) {
-          return true; 
-        } else {
-          return false;
-        }
-
-      },
-
-      clear_reserve_tickets_cookie: function () {
-        //to clear the cookie, set the cookie again but with expiration in past
       }
-      */
+
 
 
     });
