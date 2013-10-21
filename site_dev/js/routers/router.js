@@ -68,7 +68,7 @@ define([
 
         //set this to true to put app in private mode i.e. private beta
         //this.private_beta = true;
-        this.private_beta = false;
+        //this.private_beta = false;
 
         //used for releasing an old reserved order:
         //1. reservation timedout OR
@@ -104,8 +104,37 @@ define([
               console.log('is jQuery present: ');
               console.dir($);
 
-              //for completeness also reset the order id
-              self.reserved_order_id = null;
+
+
+              if (data.success === false) {
+                //we have errors
+  
+                if (!_.isEmpty(data.errors.validation_errors)) {
+                  //we have validation errors
+                  console.log('VALIDATION_ERRORS: we have validation errors when ' +
+                              'releasing tickets');
+                  
+                  //try releasing the tickets again
+                  return;
+  
+                } else if (!_.isEmpty(data.errors.internal_errors)) {
+                  //we have internal errors
+                  console.log('INTERNAL_ERRORS: we have internal errors when ' +
+                              'releasing tickets');
+                  
+                  //try releasing the tickets again
+                  return;
+  
+                }
+  
+              } else {
+                console.log('SUCCESS: released the tickets, resetting the ' +
+                             'reserved_order_id...');
+                //reset the reserved order obj
+                self.reserved_order_id = null;
+  
+              }
+
 
             },
             error: function (jqXHR, textStatus, errorThrown) {
@@ -154,6 +183,8 @@ define([
           //set the order_id received from trigger event. needed later to find the order
           //for reservation
           this.reserved_order_id = the_order_id
+          console.log(' in order:start and this.reserved_order_id: ' 
+                      + this.reserved_order_id);
 
           //start setInterval and query for the reserve_tickets cookie
           this.start_checking_for_cookie('reserve_tickets');
@@ -195,7 +226,11 @@ define([
 
         this.cookie_poller_id = setInterval(function () {
 
-          if (!CookieUtil.get(cookie_name) && !this.reserved_order_id) {
+          console.log('this.reserved_order_id: ' + self.reserved_order_id);
+
+          //check to see if cookie is there and if the reserved order id is non null.
+          //note: if u use 'this' and not self, you will refer to the window context.
+          if (!CookieUtil.get(cookie_name) && self.reserved_order_id) {
             console.log('RESERVATION_TIMEOUT: releasing ticket holds...');
             //=> reservation timedout => need to release hold on tix
 
@@ -227,6 +262,10 @@ define([
 
         clearInterval(this.cookie_poller_id);
         
+
+
+        //BUG?: check to see if re calling this api after failed attempt should be
+        //throttled or not...currently it _immediately_ re calls the api.
         //use this.reserved_order obj and its order_id to ajax call the release tickets
         //api
         $.ajax({
@@ -239,8 +278,37 @@ define([
             console.log(textStatus);
             console.dir(jqXHR);
 
-            //reset the reserved order obj
-            self.reserved_order_id = null;
+
+            if (data.success === false) {
+              //we have errors
+
+              if (!_.isEmpty(data.errors.validation_errors)) {
+                //we have validation errors
+                console.log('VALIDATION_ERRORS: we have validation errors when ' +
+                            'releasing tickets');
+                
+                //try releasing the tickets again
+                return self.give_up_reserved_tickets();
+
+              } else if (!_.isEmpty(data.errors.internal_errors)) {
+                //we have internal errors
+                console.log('INTERNAL_ERRORS: we have internal errors when ' +
+                            'releasing tickets');
+                
+                //try releasing the tickets again
+                return self.give_up_reserved_tickets();
+
+              }
+
+            } else {
+              console.log('SUCCESS: released the tickets, resetting the ' +
+                           'reserved_order_id...');
+              //reset the reserved order obj
+              self.reserved_order_id = null;
+
+            }
+   
+
 
           },
           error: function (jqXHR, textStatus, errorThrown) {
@@ -281,9 +349,9 @@ define([
 
      footer: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
        //this route is only available for .col-xs devices (mobiles) and appears only 
@@ -299,9 +367,9 @@ define([
 
      register: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
        console.log('in register() of router.js');
@@ -321,9 +389,9 @@ define([
 
      privacy_policy: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
        console.log('in privacy_policy handler');
 
@@ -336,9 +404,9 @@ define([
      
      returns_policy: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
        console.log('in returns_policy handler');
        if (!this.theReturnsPolicyView) {
@@ -350,9 +418,9 @@ define([
 
      ticket_types: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
        console.log('in ticket_types handler');
@@ -366,9 +434,9 @@ define([
 
      newsletter: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
        console.log('in newsletter handler');
 
@@ -381,9 +449,9 @@ define([
 
      faq: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
        console.log('in faq handler');
@@ -396,9 +464,9 @@ define([
 
      search: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
        console.log('in search handler');
@@ -414,9 +482,9 @@ define([
 
       account: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
         console.log('in account handler');
@@ -430,7 +498,8 @@ define([
 
       },
 
-
+ 
+     /*
      check_if_in_private_beta: function () {
        console.log('checking if we are in private beta mode...');
        if (this.private_beta) {
@@ -443,16 +512,21 @@ define([
          return false;
        }
      },
+     */
      
 
      test_router_ref: function () {
        console.log('CALLED ROUTER REF');
      },
 
+     /*
      change_private_beta: function (logic) {
        console.log('setting this.private_beta to: ' + logic);
-       this.private_beta = logic
+       this.private_beta = logic;
      },
+     */
+
+
 
       index: function () {
         console.log('in INDEX of router.js');
@@ -530,9 +604,9 @@ define([
 
       about: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
         console.log('in about() of router.js');
 
@@ -553,9 +627,9 @@ define([
 
       login: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
         console.log('in login() of router.js');
@@ -572,9 +646,9 @@ define([
 
       contact: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
         console.log('in contact() of router.js');
@@ -593,9 +667,9 @@ define([
 
       gig_guide: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
         console.log('in gigGuide() of router.js');
         //HACK:this toggles the dropdown nav-collapse menu visibility for mobile devices
@@ -634,9 +708,9 @@ define([
 
       gig_details: function (id) {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
         console.log('in getDetails() of router.js, with id = ' + id);
@@ -687,9 +761,9 @@ define([
 
       session: function (id) {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
         console.log('USER AUTHENTICATED: in session() in router.js');
@@ -736,9 +810,9 @@ define([
 
       logout: function () {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
         console.log('in logout() route.');
@@ -767,9 +841,9 @@ define([
              self.goodbye(data); 
 
              //this is used ONLY for beta testing. comment out when out of beta.
-             self.private_beta = true;
-             self.beta_login_view = null;
-             self.navigate('#/', {trigger:true});
+             //self.private_beta = true;
+             //self.beta_login_view = null;
+             //self.navigate('#/', {trigger:true});
            }
         });
         //toggle logout -> to -> login in header view 
@@ -781,9 +855,9 @@ define([
 
       goodbye: function (first_name) {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
          if (!this.loggedOutView) {
@@ -797,9 +871,9 @@ define([
 
       delete_user_account: function (id) {
         //used for private beta testing
-        if (this.check_if_in_private_beta()) {
-          return;
-        }
+        //if (this.check_if_in_private_beta()) {
+        //  return;
+        //}
 
 
         console.log("and this.userModel.get('id'): " +  this.userModel.get('_id'));

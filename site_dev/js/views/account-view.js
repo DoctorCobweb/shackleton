@@ -48,7 +48,8 @@ define([
 
       initialize: function () {
         console.log('in initialize() of account-view.js');
-
+        
+        this.BT_DEFAULT_CUS = 'default_braintree_customer_id';
 
       },
 
@@ -71,14 +72,31 @@ define([
           this.orders_collection = new OrdersCollection();
         }
 
+        //GET /api/orders/
         this.orders_collection.fetch({
           success: function (collection, response) {
             console.log('SUCCESS in fetching the orders collection');
             console.dir(collection);
             console.log(response);
+
+            //error handling
+            if (response.errors) {
+              //we have errors when trying to fetch the collection
+
+              if (!_.isEmpty(response.errors.validation_errors)) {
+                console.log('VALIDATION_ERRORS: we have validation errors');
+                self.render();
+                return;
+              } else if (!_.isEmpty(response.errors.internal_errors)) {
+                console.log('INTERNAL_ERRORS: we have internal errors');
+                self.render();
+                return;
+              }
+            } else {
+              var _view = new AccountOrdersView({model: collection});
+              self.show_view('#account_main', _view);
+            }
         
-            var _view = new AccountOrdersView({model: collection});
-            self.show_view('#account_main', _view);
           },
           error: function (collection, response) {
             console.log('ERROR in fetching the orders collection');
@@ -104,19 +122,28 @@ define([
             console.log(textStatus);
             console.dir(jqXHR);
 
-            if (data.error) {
-              //user does not have a stored cc in vault => have not made a purchase yet
-              //flesh out more later...
-              //alert('no braintree_customer_id present. error: ' + data.error);
+            if (data.errors) {
+              //either have validation/internal errors or user has no cc details yet.
+              if (!_.isEmpty(data.errors.validation_errors)) {
+                console.log('VALIDATION_ERRORS: we have validation errors');
+                self.render();
+                return; 
+              } else if (!_.isEmpty(data.errors.internal_errors)) {
+                console.log('INTERNAL_ERRORS: we have internal errors');
 
-              var account_billing_default = new AccountBillingDefaultView();
-              self.show_view('#account_main', account_billing_default); 
-
-              
+                if (data.errors.internal_errors.error === self.BT_DEFAULT_CUS) {
+                  console.log('user has not yet submitted any cc details...');
+                  var account_billing_default = new AccountBillingDefaultView();
+                  self.show_view('#account_main', account_billing_default); 
+                } else {
+                  console.log('we have other internal errors');
+                  self.render();
+                  return; 
+                }
+              }
             } else {
               var account_billing_view = new AccountBillingView({billing_data: data});
               self.show_view('#account_main', account_billing_view);
-  
             }
           },
           error: function (jqXHR, textStatus, errorThrown) {
@@ -150,11 +177,21 @@ define([
             console.log(textStatus);
             console.dir(jqXHR);
 
+            if (data.errors) {
+              //we have errors
+              console.log('ERROR: could not find user id');
+              self.render();
+              return;
+            } else {
 
-            if (!self.user){
-              self.user = new User({_id: data});
+              if (!self.user){
+                self.user = new User({_id: data});
+              }
+
             }
 
+
+            //GET /api/users/:id
             self.user.fetch({
               success: function (model_data, response, options) {
                 console.log('SUCCESS: got user info');
@@ -162,8 +199,26 @@ define([
                 console.log(response);
                 console.dir(options);
 
-                var account_settings_view = new AccountSettingsView({model: model_data});
-                self.show_view('#account_main', account_settings_view);
+                if (response.errors) {
+                  //we have errors
+                  if (!_.isEmpty(response.errors.validation_errors)) {
+                    //there are validation errors, the id param is empty
+                    console.log('VALIDATION_ERRORS: there were validation errors');
+                    self.render();
+                    return;
+                  } else if (!_.isEmpty(response.errors.internal_errors)) {
+                    //there are internal errors
+                    console.log('INTERNAL_ERRORS: there were internal errors');
+                    self.render();
+                    return;
+                  }
+                } else {
+                  //success
+                  var account_settings_view = new AccountSettingsView({model: 
+                                                                       model_data});
+                  self.show_view('#account_main', account_settings_view);
+                }
+
 
               },
               error: function (model, response, options) {
@@ -171,13 +226,10 @@ define([
                 console.dir(model);
                 console.log(response);
                 console.dir(options);
-
-    
+                
+                self.render();
               },
-
             });
-
-
            
            },
            error: function (jqXHR, textStatus, errorThrown) {

@@ -202,13 +202,35 @@ define([
               console.dir(jqXHR);
 
 
-              //TODO: implement error handling from backend, if else stuff 
-              console.log('successful release of reserved tix. go onto to next view');
+              if (data.success === false) {
+                //we have errors
 
+                if (!_.isEmpty(data.errors.validation_errors)) {
+                  //we have validation errors
+                  console.log('VALIDATION_ERRORS: we have validation errors');
+                  alert('Please try again');
+                  self.render();
 
-             var numberOfTicketsView = new NumberOfTicketsView({model: self.model});
-              self.show_view('#featureContent', numberOfTicketsView); 
-              window.scrollTo(0,350);
+                  return;
+                } else if (!_.isEmpty(data.errors.internal_errors)) {
+                  //we have internal errors
+                  console.log('INTERNAL_ERRORS: we have internal errors');
+                  alert('Please try again');
+                  self.render();
+             
+                  return;
+                }
+   
+
+              } else {
+                console.log('SUCCESSFUL release of reserved tix. go onto to next view');
+
+                var numberOfTicketsView = new NumberOfTicketsView({model: self.model});
+                self.show_view('#featureContent', numberOfTicketsView); 
+                window.scrollTo(0,350);
+
+              }
+
             },
             error: function (jqXHR, textStatus, errorThrown) {
               console.log('ERROR: in releasing tickets dut to navigating away');
@@ -216,7 +238,7 @@ define([
               console.log('textStatus: ' + textStatus);
               console.dir(errorThrown);
 
-              alert('internal error: try again later');
+              alert('Internal error: please try again');
             },
          });          
 

@@ -298,7 +298,32 @@ define([
               console.log('SUCCESS in saving/updating the model => order has been made');
               console.dir(model);
               console.dir(response);
-   
+
+
+              if (response.errors) {
+                //we have errors
+                console.log('ERRORS: we have errors in processing the order');
+
+                if (!_.isEmpty(response.errors.validation_errors)) {
+                  //we have validation errors
+                  console.log('VALIDATION_ERROR: data posted created validation errors');
+                  self.render();
+                  return;
+
+                } else if (!_.isEmpty(response.errors.internal_errors)) {
+                  //we have internal errors
+                  console.log('INTERNAL_ERROR: data posted created internal errors');
+                  alert('ERROR: there was a problem submitting your order: ' +
+                         response.errors.internal_errors.error);
+                  self.render();
+                  return;
+
+                }
+
+                return;
+              }
+
+ 
               //handle all the possible cc status responses
               self.handle_cc_statuses(response, model);
   
@@ -307,6 +332,7 @@ define([
               console.log('ERROR in saving/updating the model');
               console.dir(model);
               console.dir(xhr);
+              self.render();
             }
           }
         );

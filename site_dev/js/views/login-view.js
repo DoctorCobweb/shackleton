@@ -69,6 +69,8 @@ define([
 
       email_address_update: function (e) {
         console.log('email_address_update');
+        console.log(this.el);
+        console.log(this.$el);
       },
 
       password_update: function (e) {

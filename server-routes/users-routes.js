@@ -138,10 +138,14 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
   app.get('/api/users/account/billing_info', logged_in_required, function (req, res) {
     console.log('in /api/users/account/billing_info');
 
+
     start_the_get_billing_info(req, res, function (err) {
       if (err) {
-        console.log('ERROR: ' + err);
-        throw err;
+        return res.send({'errors': {validation_errors: [],
+                                    internal_errors: err 
+                                   }, 
+                         success: false
+                        });
       }
     });
 
@@ -156,10 +160,9 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
       UserModel.findById(req.session.user_id, function (err, user) {
         if (err) return callback(err);
-        if (!user) return res.send({'error': 'the_user_is_null'});
-
+        if (!user) return callback({'error': 'the_user_is_null'});
         if (user.braintree_customer_id === 'default_braintree_customer_id') {
-          return res.send({'error': 'default_customer_braintree_id'});
+          return callback({'error': 'default_braintree_customer_id'});
         } else {
           get_the_cc_details_for_user(user.braintree_customer_id);
         }
@@ -175,13 +178,18 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
         //console.log('customer: ');
         //console.log(customer);
 
-        var details = {};
+        if (err) {
+          return callback(err);
+        } else {
+          var details = {};
 
-        details.expiration_date = customer.creditCards[0].expirationDate;
-        details.last_4 =          customer.creditCards[0].last4;
-        details.masked_number =   customer.creditCards[0].maskedNumber;
+          details.expiration_date = customer.creditCards[0].expirationDate;
+          details.last_4 =          customer.creditCards[0].last4;
+          details.masked_number =   customer.creditCards[0].maskedNumber;
 
-        return res.send(details);
+          return res.send(details);
+        }
+
       });
     }
 
@@ -199,15 +207,42 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
   //passing in the _id to find the user
   app.get('/api/users/:id', logged_in_required, function (req, res) {
     console.log('in GET /api/users/:id handler. id param: ' + req.params.id);
-    //BUG??
+
+    req.assert('id', 'Empty id parameter').notEmpty();
+    req.sanitize('id').xss();
+
+
+    var _validation_errors = req.validationErrors();
+
+    if (_validation_errors) {
+      return res.send({'errors': {validation_errors: _validation_errors,
+                                  internal_errors: {}
+                                 }, 
+                        success: false
+                      });
+    }
+
+
     return UserModel.findOne({_id: req.params.id}, function (err, user) {
-      if (!err) {
+      if (err) {
+        console.log('ERROR: could not find user, err: ' + err);
+        return res.send({'errors': {validation_errors: [],
+                                    internal_errors: err 
+                                   }, 
+                         success: false
+                        });
+      } else if (!user) {
+        console.log('ERROR: user is null ');
+        return res.send({'errors': {validation_errors: [],
+                                    internal_errors: {'error': 'user_is_null'} 
+                                   }, 
+                         success: false
+                        });
+      } else {
         console.log('SUCCESS: in /api/users/:id , found a single user.');
         return res.send(user);
-      } else {
-        console.log('ERROR: in /api/users/:id , findOne error.');
-        return res.redirect('#/login');
       }
+
     }); 
   }); //end GET /api/users/:id
 
@@ -220,8 +255,16 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
   app.get('/api/users/settings/user', logged_in_required, function (req, res) {
     console.log('in GET /api/users/settings/user handler.');
 
-    return res.send(req.session.user_id);
-
+    if (req.session.user_id) {
+      return res.send(req.session.user_id);
+    } else {
+      console.log('ERROR: req.session.user_id is null');
+      return res.send({'errors': {validation_errors: [],
+                                  internal_errors: {'error': 'user_is_null'} 
+                                 }, 
+                       success: false
+                      });
+    }
   }); //end GET /api/users/settings/user
 
 

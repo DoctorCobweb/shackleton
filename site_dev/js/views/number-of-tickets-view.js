@@ -73,7 +73,7 @@ define([
         //make sure this always refers the the view
         _.bindAll(this);
 
-        //BUG: when navigating back to another gig after selecting some ticke
+        //BUG?: when navigating back to another gig after selecting some ticke
         //a gig, this throws a Converting circular structure to JSON TypeError
         //console.log('this.model: ' + JSON.stringify(this.model));
   
@@ -94,8 +94,6 @@ define([
         console.log('in number-of-tickets-view.js and render()');
 
         this.$el.html(this.template(this.model.toJSON()));
-
-        //this.$().on('hover',);
 
         return this;
       },

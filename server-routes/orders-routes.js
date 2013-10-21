@@ -249,8 +249,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
                       + ' delta_tickets: ' + delta_tickets);
 
         return callback({'error': 'not_enough_tickets_left'});
-        //return res.send({'error': 'not_enough_tickets_left', 
-        //                 amount_left:delta_tickets});
 
       } else {
         //there ARE enough tickets available, go on
@@ -329,18 +327,18 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
           }, 
           //{maxAge: 1 * 60 * 1000, signed: true, secure: true} //reserve tix for 1mins
           //{maxAge: 15 * 60 * 1000, signed: true, secure: true} //reserve tix for 15mins
-          {maxAge: 30 * 1000, signed: true, secure: true} //reserve tix for 30s
-          //{maxAge: 20 * 1000, signed: true, secure: true} //reserve tix for 20s
+          //{maxAge: 30 * 1000, signed: true, secure: true} //reserve tix for 30s
+          {maxAge: 20 * 1000, signed: true, secure: true} //reserve tix for 20s
         );
 
         //before returning the order you must make sure the gig capacity is successfully
         //updated.
-        deduct_the_tickets_reserved_from_capacity(the_order);
+        deduct_the_tickets_reserved_from_capacity();
       });
     }
 
 
-    function deduct_the_tickets_reserved_from_capacity(order) {
+    function deduct_the_tickets_reserved_from_capacity() {
 
       the_gig.capacity = the_gig.capacity - req.body.number_of_tickets;
 
@@ -364,7 +362,8 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
         //Backbone does not like api returning a custom object because it expects an _id
         //parameter 1-level deep (i think). out custom object has the _id 2 levels deep
-        return res.send(order);
+        //return res.send(order);
+        return res.send(the_order);
       });
     }
 
@@ -382,14 +381,89 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
   //UPDATE THE ORDER
   app.put('/api/orders/:id', logged_in_required, function (req, res) {
     console.log('in PUT /api/orders/:id handler');
+    console.log(req.body);
     console.log('id param in url: ' + req.params.id);
 
+
+    //sanitized the input
+    req.checkBody('cc_number', 'Empty cc_number').notEmpty();
+    req.checkBody('cc_cvv', 'Empty cc_cvv').notEmpty();
+    req.checkBody('cc_month','Empty cc_month').notEmpty();
+    req.checkBody('cc_year','Empty cc_year').notEmpty();
+    req.checkBody('gig_id','Empty gig_id').notEmpty();
+    req.checkBody('user_id','Empty user_id').notEmpty();
+    req.checkBody('braintree_customer_id','Empty braintree_customer_id').notEmpty();
+    req.checkBody('user_authenticated','Empty user_authenticated').notEmpty();
+    req.checkBody('number_of_tickets','number_of_tickets').notEmpty();
+    req.checkBody('number_of_tickets','number_of_tickets must be numeric').isNumeric();
+    req.checkBody('number_of_tickets','number_of_tickets min is 1').min(1);
+    req.checkBody('number_of_tickets','number_of_tickets max is 8').max(8);
+    req.checkBody('ticket_price', 'Empty ticket_price').notEmpty();
+    req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
+    req.checkBody('transaction_amount','Empty transaction_amount').notEmpty();
+    req.checkBody('transaction_amount','transaction_amount must be numeric').isNumeric();
+    req.checkBody('transaction_id','Empty transaction_id').notEmpty();
+    req.checkBody('transaction_status','Empty transaction_status').notEmpty();
+    req.checkBody('main_event','Empty main_event').notEmpty();
+
+    req.checkBody('event_date','Empty event_date').notEmpty();
+    //add in date checking??
+
+    req.checkBody('venue','Empty venue').notEmpty();
+    req.checkBody('opening_time','Empty opening_time').notEmpty();
+    req.checkBody('age_group','Empty age_group').notEmpty();
+    req.checkBody('first_name','Empty first_name').notEmpty();
+    req.checkBody('last_name','Empty last_name').notEmpty();
+    req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
+
+
+    req.sanitize('cc_number').xss();
+    req.sanitize('cc_cvv').xss();
+    req.sanitize('cc_month').xss();
+    req.sanitize('cc_year').xss();
+    req.sanitize('gig_id').xss();
+    req.sanitize('user_id').xss();
+    req.sanitize('braintree_customer_id').xss();
+    req.sanitize('user_authenticated').xss();
+    req.sanitize('number_of_tickets').xss();
+    req.sanitize('ticket_price').xss();
+    req.sanitize('transaction_amount').xss();
+    req.sanitize('transaction_id').xss();
+    req.sanitize('transaction_status').xss();
+    req.sanitize('main_event').xss();
+    req.sanitize('event_date').xss();
+    req.sanitize('venue').xss();
+    req.sanitize('opening_time').xss();
+    req.sanitize('age_group').xss();
+    req.sanitize('first_name').xss();
+    req.sanitize('last_name').xss();
+
+
+    //errors is an Array of Objects. One obj for each validation check
+    var _validation_errors = req.validationErrors();
+
+    if (_validation_errors) {
+      console.log('VALIDATION_ERROR: in PUT /api/orders/ :');
+      console.log(_validation_errors);
+      return res.send({'errors': {validation_errors: _validation_errors,
+                                  internal_errors: {}
+                                 },
+                        success: false
+                      });
+    }
+
+
+    //start the order creation process
     update_the_order(req, res, function (err) {
       if (err) {
-        console.log(JSON.stringify(err));
-        throw err;
-      } 
+        console.log('INTERNAL_ERROR: in PUT /api/orders/ : ' + err);
+        return res.send({'errors': {validation_errors: [],
+                                    internal_errors: err
+                                   }, 
+                         success: false});
+      }
     });
+
 
   }); //end PUT /api/orders/:id
 
@@ -412,12 +486,11 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
           return callback(err);
         }
         if (!order) {
-          return res.send({'error': 'order_is_null'});
+          return callback({'error': 'order_is_null'});
         }
         the_order = order;
         console.log('the_order: ' + the_order);
 
-        find_the_user();
 
         //also find the gig document pertaining to this order.
         //need it for later when we make the pdf tiket
@@ -426,6 +499,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
             return callback(err);
           }
           the_gig = gig;
+          find_the_user();
         });
 
       });
@@ -440,24 +514,18 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
           return callback(err);
         }
         if (!user) {
-          return res.send({'error': 'user_is_null'});
+          return callback({'error': 'user_is_null'});
         }
-        the_user = user;
         console.log('the_user:' + the_user);
-        start_braintree_procedure();
+
+        the_user = user;
+        start_transaction();
       });
     }
 
 
-    function start_braintree_procedure() {
-      console.log('=> update_the_order => start_braintree_procedure');
-
-      user_is_returning_purchaser(); 
-    }
-    
-
-    function user_is_returning_purchaser() {
-      console.log('=> update_the_order => user_is_returning_purchaser');
+    function start_transaction() {
+      console.log('=> update_the_order => start_transaction');
 
       //AUTHORIZE the card
       gateway.transaction.sale({
@@ -469,7 +537,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
             return callback(err);
           }
           if (!result) {
-            return res.send({'error': 'result_is_null'});
+            return callback({'error': 'result_is_null'});
           }
 
           //IMPORTANT: only proceed with sale if transaction status is 'authorized'
@@ -483,7 +551,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
             } else {
 
               //the braintree_customer_id is NOT authorized for use
-              return res.send({'error': 'braintree_customer_id_is_not_authorized'});
+              return callback({'error': 'braintree_customer_id_is_not_authorized'});
             }
           } else {
             handle_transaction_error(result);
@@ -502,10 +570,11 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
               return callback(err);
             }
             if (!result) {
-              return res.send({'error':'result_is_null'});
+              return callback({'error':'result_is_null'});
             }
             if (result.success) {
               //successful transaction
+
               console.log('SUCCESS: gateway.transaction.sale successful.'
                             + 'result.transaction.status: ' + result.transaction.status);
               console.log(result);
@@ -515,9 +584,9 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
               the_order.transaction_id = result.transaction.id;
 
               save_the_user_changes();
-              save_the_order_changes();
 
             } else {
+              //check for validation errors etc
               handle_transaction_error(result);
 
             }
@@ -526,19 +595,25 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     }
 
 
-    function handle_transaction_error(result) {
-      console.log('=> update_the_order => handle_transaction_error');
-      console.log(result);
-      console.log('ERROR: braintree: result.message' + result.message);
 
-      //TODO: scroll through the different types of transaction failures
+    function save_the_user_changes() {
+      console.log('=> update_the_order => save_the_user_changes');
 
-      return res.send(result.message);
+      the_user.save(function(err) {
+        if (err) {
+          return callback(err);
+        }
+        console.log('... user updates saved');
 
+        save_the_order_changes()
+      });
     }
 
 
+
     function save_the_order_changes() {
+      console.log('=> update_the_order => save_the_order_changes');
+
       the_order.save(function (err, saved_order) {
         if (err) {
           return callback(err);
@@ -546,7 +621,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         if (!saved_order) {
           return callback({'error':'saved_order_is_null'});
         } 
-        console.log('order updates saved');
+        console.log('...order updates saved');
 
         //make browser delete the cookie
         //NB. if you dont delete the cookie after a succssful purchase & user tries
@@ -559,129 +634,131 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         // *** IMPORTANT *** : this is the response to say order is SUCCESSFUL
         res.send(saved_order);
 
-        //refactor this stuff into another fuction, and the just call it from here.
-        //now go onto creating the pdf ticket and send email
-       
-        //send the the user an email containing the ticket in pdf format
-
-
-        console.log('typeof(the_order._id): ' + typeof(the_order._id));
-        //try to change _id to a string
-        _id_string = the_order._id.toString();
-        console.log('typeof(_id_string): ' + typeof(_id_string));
-        console.log('_id_string: ' + _id_string); 
-        console.log('typeof(number_of_tickets): ' + typeof(the_order.number_of_tickets));
-       
-
-
-        // the '/////' used in the string is for parsing the fields when the qrcode is
-        //scanned 
-        var info_in_qrcode = the_order._id.toString() +
-                             '/////' +
-                             the_order.first_name +
-                             '/////' +
-                             the_order.last_name +
-                             '/////' +
-                             the_order.main_event +
-                             '/////' +
-                             the_order.number_of_tickets.toString(10) +
-                             '/////' +
-                             the_order.transaction_status;
-
-        console.log('info_in_qrcode: ' + info_in_qrcode);
-
-     
-        QRCode.toDataURL(info_in_qrcode, function(err,url){
-            console.log('in QRCODE.toURL call, url: ');
-            console.log(typeof(url));
-       
-            //strip away the 'data:image/png;base64,' part from url
-            var comma_index = url.indexOf(',');
-            console.log(comma_index); //21
-       
-            url = url.substring(22);
-       
-            //console.log('the base64 encoded value in QRCODE: ' + url);
-       
-            var b = new Buffer(url, 'base64');
-            fs.writeFileSync('first_qr_code.png', b);
-
-
-
-            //DEMO: create a pdf document using pdfkit module
-            var doc = new PDFKit();
-    
-            doc.info['Author'] = 'Tiklet.me';
-            doc.info['Title'] = 'your Tikle.me tiket';
-            doc.fontSize(12)
-               .font('Courier-Bold')
-               .lineWidth(25)
-     
-               .strokeColor('black')
-               .moveTo(150, 100)
-               .lineTo(100,150)
-               .lineTo(150, 200)
-               .stroke()
-     
-               .strokeColor('orange')
-               .moveTo(200, 100)
-               .lineTo(200, 200)
-               .moveTo(250, 100)
-               .lineTo(250, 200)
-               .stroke()
-     
-               .strokeColor('black')
-               .moveTo(300, 100)
-               .lineTo(350, 150)
-               .lineTo(300, 200)
-               .stroke()
-    
-    
-               .moveDown(15)
-               .text('hello ' + the_user.first_name + ',')
-               .text('this is your tiket to the show.')
-               .text('please keep it safe.')
-               .moveDown()
-               .moveDown()
-               .text('__DETAILS__')
-               .text('EVENT: ' + the_order.main_event)
-               .text('DATE: ' + the_order.event_date)
-               .text('OPENING_TIME: ' + the_order.opening_time)
-               .text('VENUE: ' + the_order.venue)
-               .text('AGE_GROUP: ' + the_order.age_group)
-               .text('FIRST_NAME: ' + the_order.first_name)
-               .text('LAST_NAME: ' + the_order.last_name)
-               .text('NUMBER_OF_TIKETS: ' + the_order.number_of_tickets)
-               .moveDown()
-               .moveDown()
-               .text('__DEBUGGING__')
-               .text('ORDER_ID: ' + the_order._id.toString())
-               .text('TRANSACTION_STATUS: ' + the_order.transaction_status)
-  
-
-               .image('./first_qr_code.png', 50, 500 ) //relative to server.js location!
-
-               .output(function (result) {
-                 console.log('typeof(result): ' + typeof(result));
-                 //console.log(result);
-     
-                 email_services.send_ticket_purchase_email(
-                   the_user.first_name,
-                   the_user.email_address,
-                   result);
-               });
-       });
-      });
+        create_the_eticket();       
+      }); //end order.save()
     }
 
 
-    function save_the_user_changes() {
-      the_user.save(function(err) {
-        if (err) {
-          return callback(err);
-        }
-        console.log('user updates saved');
-      });
+    function create_the_eticket() {
+
+      //send the the user an email containing the ticket in pdf format
+      console.log('creating the eTix...');
+      console.log('typeof(the_order._id): ' + typeof(the_order._id));
+      //try to change _id to a string
+      _id_string = the_order._id.toString();
+      console.log('typeof(_id_string): ' + typeof(_id_string));
+      console.log('_id_string: ' + _id_string); 
+      console.log('typeof(number_of_tickets): ' + typeof(the_order.number_of_tickets));
+     
+
+
+      // the '/////' used in the string is for parsing the fields when the qrcode is
+      //scanned 
+      var info_in_qrcode = the_order._id.toString() +
+                           '/////' +
+                           the_order.first_name +
+                           '/////' +
+                           the_order.last_name +
+                           '/////' +
+                           the_order.main_event +
+                           '/////' +
+                           the_order.number_of_tickets.toString(10) +
+                           '/////' +
+                           the_order.transaction_status;
+
+      console.log('info_in_qrcode: ' + info_in_qrcode);
+
+   
+      QRCode.toDataURL(info_in_qrcode, function(err,url){
+          console.log('in QRCODE.toURL call, url: ');
+          console.log(typeof(url));
+     
+          //strip away the 'data:image/png;base64,' part from url
+          var comma_index = url.indexOf(',');
+          console.log(comma_index); //21
+     
+          url = url.substring(22);
+     
+          //console.log('the base64 encoded value in QRCODE: ' + url);
+     
+          var b = new Buffer(url, 'base64');
+          fs.writeFileSync('first_qr_code.png', b);
+
+
+
+          //DEMO: create a pdf document using pdfkit module
+          var doc = new PDFKit();
+  
+          doc.info['Author'] = 'Tiklet.me';
+          doc.info['Title'] = 'your Tikle.me tiket';
+          doc.fontSize(12)
+             .font('Courier-Bold')
+             .lineWidth(25)
+   
+             .strokeColor('black')
+             .moveTo(150, 100)
+             .lineTo(100,150)
+             .lineTo(150, 200)
+             .stroke()
+   
+             .strokeColor('orange')
+             .moveTo(200, 100)
+             .lineTo(200, 200)
+             .moveTo(250, 100)
+             .lineTo(250, 200)
+             .stroke()
+   
+             .strokeColor('black')
+             .moveTo(300, 100)
+             .lineTo(350, 150)
+             .lineTo(300, 200)
+             .stroke()
+  
+  
+             .moveDown(15)
+             .text('hello ' + the_user.first_name + ',')
+             .text('this is your tiket to the show.')
+             .text('please keep it safe.')
+             .moveDown()
+             .moveDown()
+             .text('__DETAILS__')
+             .text('EVENT: ' + the_order.main_event)
+             .text('DATE: ' + the_order.event_date)
+             .text('OPENING_TIME: ' + the_order.opening_time)
+             .text('VENUE: ' + the_order.venue)
+             .text('AGE_GROUP: ' + the_order.age_group)
+             .text('FIRST_NAME: ' + the_order.first_name)
+             .text('LAST_NAME: ' + the_order.last_name)
+             .text('NUMBER_OF_TIKETS: ' + the_order.number_of_tickets)
+             .moveDown()
+             .moveDown()
+             .text('__DEBUGGING__')
+             .text('ORDER_ID: ' + the_order._id.toString())
+             .text('TRANSACTION_STATUS: ' + the_order.transaction_status)
+
+
+             .image('./first_qr_code.png', 50, 500 ) //relative to server.js location!
+
+             .output(function (result) {
+               console.log('typeof(result): ' + typeof(result));
+               //console.log(result);
+   
+               email_services.send_ticket_purchase_email(
+                 the_user.first_name,
+                 the_user.email_address,
+                 result);
+             });
+     }); //end QRCode.toDataURL
+    }
+
+
+
+    function handle_transaction_error(result) {
+      console.log('=> update_the_order => handle_transaction_error');
+      console.log(result);
+      console.log('ERROR: braintree: result.message' + result.message);
+
+      return callback({'error': result.message});
     }
 
 
@@ -703,23 +780,36 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     console.log('**************  POST /api/orders/beforeunload_event called');
     console.log(req.body);
 
+    req.checkBody('reserved_order_id','Empty reserved_order_id').notEmpty();
+    req.sanitize('reserved_order_id').xss();
 
-    if (!req.body.reserved_order_id) {
-      //no reserved order
-      console.log('no reserved order seen, POST /api/orders/beforeunload_event_called');
+    //errors is an Array of Objects. One obj for each validation check
+    var _validation_errors = req.validationErrors();
 
-      return res.send({'beforeunload': 'no_order_to_release'});
-
-    } else {
-      //there is a reserved order, release it
-      console.log('there IS a reserved order,POST /api/orders/beforeunload_event_called');
-
-      give_up_reserved_tickets(req, res, function (err) {
-        if (err) {
-          throw err;
-        }
-      }); 
+    if (_validation_errors) {
+      console.log('VALIDATION_ERROR: in POST /api/orders/beforeunload_event_called:');
+      console.log(_validation_errors);
+      return res.send({'errors': {validation_errors: _validation_errors,
+                                  internal_errors: {}
+                                 },
+                        success: false
+                      });
     }
+
+
+    //there is a reserved order, release it
+    console.log('there IS a reserved order,POST /api/orders/beforeunload_event_called');
+
+    give_up_reserved_tickets(req, res, function (err) {
+      if (err) {
+        console.log('INTERNAL_ERROR: in POST /api/orders/beforeunload_event_called : ' 
+                    + err);
+        return res.send({'errors': {validation_errors: [],
+                                    internal_errors: err
+                                   }, 
+                         success: false});
+      }
+    }); 
 
   }); //end POST /api/orders/beforeunload_event_called
 
@@ -739,8 +829,36 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     console.log(req.signedCookies.reserve_tickets);
 
 
+
+    req.checkBody('the_cookie','Empty cookie').notEmpty();
+    req.checkBody('reserved_order_id','Empty reserved_order_id').notEmpty();
+    req.sanitize('the_cookie').xss();
+    req.sanitize('reserved_order_id').xss();
+
+    //errors is an Array of Objects. One obj for each validation check
+    var _validation_errors = req.validationErrors();
+
+    if (_validation_errors) {
+      console.log('VALIDATION_ERROR: in POST /api/orders/beforeunload_event_called:');
+      console.log(_validation_errors);
+      return res.send({'errors': {validation_errors: _validation_errors,
+                                  internal_errors: {}
+                                 },
+                        success: false
+                      });
+    }
+
+
     give_up_reserved_tickets(req, res, function (err) {
-      if (err) throw err;
+      if (err) {
+        console.log('INTERNAL_ERROR: in POST /api/orders/give_up_reserved_tickets : ' 
+                    + err);
+        return res.send({'errors': {validation_errors: [],
+                                    internal_errors: err
+                                   }, 
+                         success: false});
+      }
+
     });
 
   }); //end POST /api/orders/give_up_reserved_tickets
@@ -767,7 +885,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         return callback(err);
       } 
       if (!order) {
-        return res.send({'error':'order_is_null'});
+        return callback({'error':'order_is_null'});
       }
       the_order = order;
       find_the_gig();
@@ -787,7 +905,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         return callback(err);
       }
       if (!gig) {
-        return res.send({'error': 'gig_is_null'});
+        return callback({'error': 'gig_is_null'});
       }
       the_gig = gig;
       do_the_updating();
@@ -824,7 +942,11 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       res.clearCookie('reserve_tickets', { signed: true, secure: true});
 
       //finally return the outcome
-      return res.send({'SUCCESS': 'gave up reserved tickets'});
+      //return res.send({'SUCCESS': 'gave up reserved tickets'});
+      return res.send({'errors': {validation_errors: [],
+                                  internal_errors: {} 
+                                 }, 
+                       success: true});
     }
 
 
@@ -847,7 +969,11 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
         user_id: req.session.user_id}, 
         function (err, orders) {
           if (err) {
-            return res.send(err);
+            //return res.send(err);
+            return res.send({'errors': {validation_errors: [],
+                                        internal_errors: err 
+                                       }, 
+                             success: false});
           }
           console.log('FOUND ORDERS FOR USER: ' + req.session.user_id);
           console.log(orders);

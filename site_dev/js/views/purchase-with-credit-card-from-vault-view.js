@@ -251,11 +251,39 @@ define([
               console.log('ERROR in ajax call to save/update the model/order');
               console.dir(model);
               console.dir(xhr);
+
+              self.render();
+
+
             },
             success: function (model,response) {
               console.log('SUCCESS in ajax call to save/update the model/order');
               console.dir(model);
               console.dir(response);
+
+
+              if (response.errors) {
+                //we have errors
+                console.log('ERRORS: we have errors in processing the order');
+               
+                if (!_.isEmpty(response.errors.validation_errors)) {
+                  //we have validation errors
+                  console.log('VALIDATION_ERROR: data posted created validation errors');
+                  self.render();
+                  return;
+
+                } else if (!_.isEmpty(response.errors.internal_errors)) {
+                  //we have internal errors
+                  console.log('INTERNAL_ERROR: data posted created internal errors');
+                  alert('ERROR: there was a problem submitting your order: ' + 
+                         response.errors.internal_errors.error);
+                  self.render();
+                  return;
+
+                }     
+                
+                return;
+              }
   
               //handles all the possible cc status responses
               self.handle_cc_statuses(response, model);
@@ -288,9 +316,11 @@ define([
 
       } else if (status === 'authorized') {
         console.log('transaction_status: ' + status);
+        this.render();
 
       } else {
         console.log('transaction_status: ' + status);
+        this.render();
       }   
 
     },
