@@ -45,7 +45,8 @@ define([
       'mouseover #during_checkout_edit_cc_details':  'select_proceed',
       'mouseout #during_checkout_edit_cc_details':   'deselect_proceed',
       'mouseover #submit_updated_cc':                'select_proceed',
-      'mouseout #submit_updated_cc':                 'deselect_proceed'
+      'mouseout #submit_updated_cc':                 'deselect_proceed',
+      'click #cancel_update_cc':                     'cancel_update_cc'
     },
 
 
@@ -113,6 +114,14 @@ define([
       this.$cc_year =    this.$('#cc_year');
 
 
+      this.get_billing_info();
+
+      return this;
+    },
+
+
+    get_billing_info: function () {
+
       $.ajax({
         'url': '/api/users/account/billing_info/',
         'type': 'GET',
@@ -136,8 +145,6 @@ define([
       });
 
 
-
-      return this;
     },
 
 
@@ -338,7 +345,23 @@ define([
         //temporarily hide the vault cc UI
         this.$('#vault_cc').css('display', 'none');
     },
-  
+
+
+    cancel_update_cc: function () {
+        //show the old submit button
+        this.$('#submit').css('display', 'block');
+
+        //hide the update cc details UI
+        this.$('#during_checkout_update_cc_details').css('display', 'none'); 
+        
+        //show the vault cc UI again
+        this.$('#vault_cc').css('display', 'block');
+
+
+
+    },  
+
+
 
     submit_updated_cc: function () {
       console.log('you just clicked submit_updated_cc div');

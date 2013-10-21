@@ -280,6 +280,8 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     var user_first_name = req.session.user_first_name;
     req.session.destroy();
 
+    
+
     return res.send(user_first_name);
   }); //end DELETE /api/users/logout
 

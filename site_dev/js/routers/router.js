@@ -287,6 +287,7 @@ define([
                 console.log('VALIDATION_ERRORS: we have validation errors when ' +
                             'releasing tickets');
                 
+                //BUG????? recalling immediately??
                 //try releasing the tickets again
                 return self.give_up_reserved_tickets();
 
@@ -295,6 +296,7 @@ define([
                 console.log('INTERNAL_ERRORS: we have internal errors when ' +
                             'releasing tickets');
                 
+                //BUG????? recalling immediately??
                 //try releasing the tickets again
                 return self.give_up_reserved_tickets();
 
@@ -814,18 +816,24 @@ define([
         //  return;
         //}
 
+        var self = this; 
 
         console.log('in logout() route.');
         //HACL:this toggles the dropdown nav-collapse menu visibility for mobile devices
         this.is_bootstrap_btn_navbar_visible();
-
+ 
+        /*
         if (this.order) {
           console.log('reset this.order to null, since you logged out.');
 
           //RESET THE ORDER: hard code the order reset after user logs out
           this.order = null; 
         }
-        var self = this; 
+        */
+
+
+         
+
 
         //logout user by destroying session.
         //=> make a DEL /api/users/logout http request
@@ -838,7 +846,18 @@ define([
              console.log( textStatus );
              console.dir( jqXHR );
 
+             console.log('self.reserved_order_id: ' + self.reserved_order_id);
+
+             //clean up the reserve_tickets cookie when the user logs out.
+             if (CookieUtil.get('reserve_tickets') && self.reserved_order_id) {
+               console.log('there is a reserve_tickets cookie present, delete it');
+               self.give_up_reserved_tickets('reserved_tickets', self.reserved_order_id);
+             } 
+
              self.goodbye(data); 
+             //toggle logout -> to -> login in header view 
+             self.switch_log_button('#login_header', '#logout_header');
+             self.display_account_tab(false);
 
              //this is used ONLY for beta testing. comment out when out of beta.
              //self.private_beta = true;
@@ -846,9 +865,6 @@ define([
              //self.navigate('#/', {trigger:true});
            }
         });
-        //toggle logout -> to -> login in header view 
-        this.switch_log_button('#login_header', '#logout_header');
-        this.display_account_tab(false);
       },
 
 
