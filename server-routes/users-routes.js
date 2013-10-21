@@ -52,7 +52,7 @@ var MONGODB_DUPLICATE_KEY_ERROR = 11000;
 //___METHOD____ROUTE_____________________________________MIDDLEWARE_________________
 //
 //   GET       '/api/users'                              logged_in_required
-//   GET       '/api/users/session'
+//   GET       '/api/users/session'                      logged_in_required
 //   GET       '/api/users/account/billing_info'         logged_in_required
 //   GET       '/api/users/:id'                          logged_in_required
 //   GET       '/api/users/settings/user'                logged_in_required
@@ -117,13 +117,12 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
   //respond with the req.session obj.
   //needed when app wants to check if there is a session already authenticated
   //on start up i.e. when routing to '': index in router.js routes hash.
-  app.get('/api/users/session', function (req, res) {
+  app.get('/api/users/session', logged_in_required, function (req, res) {
+
     console.log('in GET /api/users/session handler. req.session: ' + 
       JSON.stringify(req.session, null, 4));
-
     console.log('in GET /api/users/session handler. req.cookie: ' + 
       JSON.stringify(req.cookies, null, 4));
-
     console.log('in GET /api/users/session handler. req.signedCookies: ' + 
       JSON.stringify(req.signedCookies, null, 4));
 

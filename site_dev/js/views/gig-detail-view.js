@@ -76,6 +76,8 @@ define([
           var order_value_start = the_order_start + the_order.length;
           console.log('order_value_start: ' + order_value_start);
 
+          //important: this is the older order the user has which we delete if they 
+          //choose to go onto another gig and reserve those tickets
           this.the_old_order_id = this.old_reserve_tickets_cookie.substring( order_value_start, right_brace - 1);
 
           console.log('this.the_old_order_id: ' + this.the_old_order_id);

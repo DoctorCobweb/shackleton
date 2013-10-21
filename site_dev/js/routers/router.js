@@ -1007,6 +1007,8 @@ define([
               console.log(textStatus);
               console.dir(jqXHR);
 
+              
+
               //toggle login -> to -> logout in header view 
               self.switch_log_button('#logout_header', '#login_header');
               self.display_account_tab(true);
