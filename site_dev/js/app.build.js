@@ -1,9 +1,14 @@
 ({
   appDir: '../',
+
   baseUrl: 'js',
+
   dir: '../../site_prod',
+
   //mainConfigFile: './app.js',
+
   mainConfigFile: './require_config.js', //moved require config into its own file
+
   paths: {
     'underscore': 'lib/underscore',
     'jquery-1.10.2.min': 'lib/jquery-1.10.2.min',
@@ -14,9 +19,11 @@
     'bootstrap-collapse' : 'lib/bootstrap-collapse',
     'cookie_util': 'lib/cookie_util'
   },
+
   modules: [
     {
       name: 'app' //optimize the 'app' module, path is /site-build/js/app.js
     }
   ]
+
 })

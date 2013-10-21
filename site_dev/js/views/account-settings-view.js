@@ -207,7 +207,8 @@ define([
         //console.log(this.user);
         var self = this;
 
-        this.user.save({}, {
+        //PUT /api/users/
+        this.user.save({}, { 
           success: function (data, response, options) {
             console.log('SUCCESS: updated user settings!!!');
             console.dir(data);
@@ -248,6 +249,14 @@ define([
                 return;
               }
 
+              if (!_.isEmpty(response.errors.braintree_errors)) {
+                //we have braintree errors
+                console.log('BRAINTREE ERRORS: ' 
+                            + response.errors.braintree_errors.error);
+                self.render();
+                self.$('#change_user_details input').addClass('has-error');
+                return;
+              }
             }
 
             if (!_.isEmpty(data)) {

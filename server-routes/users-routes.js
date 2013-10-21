@@ -51,7 +51,7 @@ var MONGODB_DUPLICATE_KEY_ERROR = 11000;
 //
 //___METHOD____ROUTE_____________________________________MIDDLEWARE_________________
 //
-//   GET       '/api/users'                              logged_in_required
+// x  GET       '/api/users'                              logged_in_required
 //   GET       '/api/users/session'                      logged_in_required
 //   GET       '/api/users/account/billing_info'         logged_in_required
 //   GET       '/api/users/:id'                          logged_in_required
@@ -62,12 +62,12 @@ var MONGODB_DUPLICATE_KEY_ERROR = 11000;
 // x   POST      '/api/users/change_user_details'
 //   POST      '/api/users/change_password/'             logged_in_required
 //   POST      '/api/users/change_cc_details/'
-//   PUT       '/api/users/reset_the_customer_id/:id'    restrict_user_to_user
+// x  PUT       '/api/users/reset_the_customer_id/:id'    restrict_user_to_user
 // x  POST      '/api/users/login_with_pending_order/'    not_logged_in_required 
 // x  POST      '/api/users/register_with_pending_order'  not_logged_in_required 
 //   DELETE    '/api/users/:id' 
 //   PUT       '/api/users/:id'                          logged_in_required 
-//   POST         '/api/users/beta_login'
+// x  POST         '/api/users/beta_login'
 
 
 
@@ -92,6 +92,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
   //*************** ROUTE HANDLERS ******************************
 
+  /*
   //TODO:
   //MUST ADD ADMIN SECURITY CONSTRAINTS.
   //->only admins must be able to get a databse dump of all users.
@@ -108,6 +109,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
       }
     });
   }); //end /api/users
+  */
 
 
 
@@ -786,6 +788,9 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
   //used in account 1. => billing => change cc 
   //                2. => billing default => submit cc
+  //and in credit-card-details-view.js
+  //and in purchase-with-credit-card-from-vault-view.js
+  //
   //returns obj with cc details:
   //1. expiration date
   //2. last4 digits of card number
@@ -1028,8 +1033,6 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
                                      },
                             'success': false
                           });
-
-
         }
       });
     }
@@ -1053,7 +1056,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
   }
 
 
-
+  /*
   //*************** ROUTE HANDLERS ******************************
 
   //sets the braintree_customer_id back to the default 'default_braintree_customer_id'
@@ -1101,6 +1104,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
       });
     }); 
   }
+  */
 
 
 
@@ -1141,6 +1145,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
   //*************** ROUTE HANDLERS ******************************
 
+  //TODO: must update braintree account details also when they change user details...
   //called when user updates their attributes in the account settings view
   app.put('/api/users/:id', logged_in_required, function (req, res) {
     console.log('in PUT /api/users/:id handler');
@@ -1160,70 +1165,110 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     req.sanitize('phone_number').xss();
     req.sanitize('email_address').xss();
 
-
     var _validation_errors = req.validationErrors();
 
     if (_validation_errors) {
       return res.send({'errors': {validation_errors: _validation_errors,
-                                  internal_errors: {}
+                                  internal_errors: {},
+                                  braintree_errors: {}
                                  },
                        'success': false
                       });
     }
 
-
-    //n.b. this is req.params i.e. plural, and is an object
-    //console.log('req.params');
-    //console.log(req.params);
-
-
-    //n.b this is req.param i.e. singular and is a function
-    //req.param is a function which you can call, supply the variable name & then get
-    //the value out. even variables sent in in the body. i.e.:
-    //console.log('req.param(\'first_name\')');
-    //console.log(req.param('first_name'));
-
-    UserModel.findById(req.session.user_id, function (err, user) {
+    update_the_user_account_settings(req, res, function (err) {
       if (err) {
         console.log('INTERNAL_ERROR: ' + err);
-        return res.send({'errors': { validation_errors: [],
-                                     internal_errors: err
-                                   }, 
-                         'success': false
+        return res.send({'errors': {validation_errors: [],
+                                    internal_errors: err,
+                                    braintree_errors: {}
+                                   },
+                          'success': false
                         });
       }
-      if (!user) {
-        return res.send({'errors': { validation_errors: [],
-                                     internal_errors: {'error':'user_is_null'} 
-                                   }, 
-                         'success': false
-                        });
-      }
- 
-      user.first_name = req.param('first_name'); 
-      user.last_name = req.param('last_name'); 
-      user.phone_number= req.param('phone_number'); 
-      user.email_address = req.param('email_address'); 
-
-      return user.save(function(err, saved_user) {
-        if (err) {
-          return res.send({'errors': { validation_errors: [],
-                                       internal_errors: err
-                                     }, 
-                           'success': false
-                          });
-        }
-        //if (!saved_user) return res.send({'error':'user_is_null'});
-
-        //we CANT return a custom obj to backbone with errors and success keys etc
-        //must be a user model.
-        return res.send(saved_user);
-      });
-    }); 
+    });
   }); //end PUT /api/users/:id
 
+  function update_the_user_account_settings(req, res, callback) {
+    var the_user;
+
+    function find_the_user() {
+      UserModel.findById(req.session.user_id, the_found_user);
+
+    }
+
+    function the_found_user(err, user) {
+      if (err) {
+        return callback(err);
+      }
+      if (!user) {
+        return callback({'error': 'the_user_is_null'});
+      }
+
+      the_user = user;
+      the_user.first_name = req.body.first_name; 
+      the_user.last_name = req.body.last_name; 
+      the_user.phone_number = req.body.phone_number;
+      the_user.email_address = req.body.email_address;
+
+      update_the_user();
+    }
+
+    function update_the_user() {
+      gateway.customer.update(the_user.braintree_customer_id, 
+        {firstName: req.body.first_name,
+         lastName: req.body.last_name,
+         phone: req.body.phone_number,
+         email: req.body.email_address
+        },
+        function (err, result) {
+          if (err) {
+            return res.send({'errors': {validation_errors: [],
+                                        internal_errors: {},
+                                        braintree_errors: err 
+                                       },
+                              'success': false
+                            });
+          }
+          if (!result) {
+            return res.send({'errors': {validation_errors: [],
+                                        internal_errors: {},
+                                        braintree_errors: {'errors': 'result_is_null'} 
+                                       },
+                              'success': false
+                            });
+          }
+          console.log(result);
+          if (result.success) {
+            console.log('SUCCESS: braintree customer fields have been updated');
+            save_the_user_details_in_database();
+          }
+        }
+      );
+    }
+
+ 
+    function save_the_user_details_in_database() {
+      the_user.save(function(err, saved_user) {
+        if (err) {
+          return callback(err);
+        } 
+        if (!saved_user) {
+          return callback({'error': 'the_saved_user_is_null'});
+        }
+        console.log('SUCCESS: saved the updated user details');
+
+        return res.send(saved_user);
+      });
+    }
 
 
+    find_the_user();
+  }
+
+
+
+  /*
   //*************** ROUTE HANDLERS ******************************
 
   //demoing a private beta functionality!
@@ -1325,6 +1370,7 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
     //START: start the function calls 
     find_the_beta_user();
   }
+  */
 
 
 }; //end module.exports
