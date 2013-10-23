@@ -4,14 +4,16 @@
  *
  */
 
-var braintree = require('braintree');
-var logged_in_required = require('./middleware/logged_in_required');
-var restrict_user_to_self = require('./middleware/restrict_user_to_self');
-var email_services = require('../services/email_services');
-var PDFKit = require('pdfkit');
-var fs = require('fs');
-var QRCode = require('qrcode');
-var gateway;
+var braintree = require('braintree'),
+    logged_in_required = require('./middleware/logged_in_required'),
+    restrict_user_to_self = require('./middleware/restrict_user_to_self'),
+    email_services = require('../services/email_services'),
+//  PDFKit = require('pdfkit'),
+//  fs = require('fs'),
+//  QRCode = require('qrcode'),
+    gateway,
+    _ = require('underscore'),
+    eticket = require('../services/eticket');
 
 
 // OLD way of accessing the private key. 
@@ -642,7 +644,22 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
       console.log('typeof(number_of_tickets): ' + typeof(the_order.number_of_tickets));
      
 
+      console.log('clone of the_order: ');
+      console.log(_.clone(the_order));
 
+
+      
+      //testing some refactoring stuff
+      //IS IT NECESSARY TO CLONE THE SAVED ORDER? i think not, as it works without
+      //cloning and perhaps cloning harms performance as youre making an uneccesaary 
+      //object.
+      //eticket.create(_.clone(the_order), the_user.first_name, the_user.email_address);
+      eticket.create(the_order, the_user.first_name, the_user.email_address);
+
+
+
+      /* 
+      //REFACTORED INTO eticket.create(....) call above!
       // the '/////' used in the string is for parsing the fields when the qrcode is
       //scanned 
       var info_in_qrcode = the_order._id.toString() +
@@ -705,7 +722,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
              .lineTo(300, 200)
              .stroke()
   
-  
              .moveDown(15)
              .text('hello ' + the_user.first_name + ',')
              .text('this is your tiket to the show.')
@@ -727,7 +743,6 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
              .text('ORDER_ID: ' + the_order._id.toString())
              .text('TRANSACTION_STATUS: ' + the_order.transaction_status)
 
-
              .image('./first_qr_code.png', 50, 500 ) //relative to server.js location!
 
              .output(function (result) {
@@ -740,7 +755,11 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
                  result);
              });
      }); //end QRCode.toDataURL
-    }
+     */
+
+
+
+    } //end create_the_eticket()
 
 
 

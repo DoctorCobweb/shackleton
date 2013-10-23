@@ -197,6 +197,9 @@ define([
       this.$('#submit_order').css('display', 'none');
       this.$('#during_checkout_new_credit_card_details').css('display', 'block');
 
+      //also reset the field_to_set obj as it still holds onto old cc details
+      this.field_to_set = {};
+
     },
 
 
