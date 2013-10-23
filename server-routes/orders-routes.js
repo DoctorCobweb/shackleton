@@ -649,115 +649,13 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
 
       
+      //****** IMPORTANT *************
       //testing some refactoring stuff
       //IS IT NECESSARY TO CLONE THE SAVED ORDER? i think not, as it works without
       //cloning and perhaps cloning harms performance as youre making an uneccesaary 
       //object.
       //eticket.create(_.clone(the_order), the_user.first_name, the_user.email_address);
       eticket.create(the_order, the_user.first_name, the_user.email_address);
-
-
-
-      /* 
-      //REFACTORED INTO eticket.create(....) call above!
-      // the '/////' used in the string is for parsing the fields when the qrcode is
-      //scanned 
-      var info_in_qrcode = the_order._id.toString() +
-                           '/////' +
-                           the_order.first_name +
-                           '/////' +
-                           the_order.last_name +
-                           '/////' +
-                           the_order.main_event +
-                           '/////' +
-                           the_order.number_of_tickets.toString(10) +
-                           '/////' +
-                           the_order.transaction_status;
-
-      console.log('info_in_qrcode: ' + info_in_qrcode);
-
-   
-      QRCode.toDataURL(info_in_qrcode, function(err,url){
-          console.log('in QRCODE.toURL call, url: ');
-          console.log(typeof(url));
-     
-          //strip away the 'data:image/png;base64,' part from url
-          var comma_index = url.indexOf(',');
-          console.log(comma_index); //21
-     
-          url = url.substring(22);
-     
-          //console.log('the base64 encoded value in QRCODE: ' + url);
-     
-          var b = new Buffer(url, 'base64');
-          fs.writeFileSync('first_qr_code.png', b);
-
-
-
-          //DEMO: create a pdf document using pdfkit module
-          var doc = new PDFKit();
-  
-          doc.info['Author'] = 'Tiklet.me';
-          doc.info['Title'] = 'your Tikle.me tiket';
-          doc.fontSize(12)
-             .font('Courier-Bold')
-             .lineWidth(25)
-   
-             .strokeColor('black')
-             .moveTo(150, 100)
-             .lineTo(100,150)
-             .lineTo(150, 200)
-             .stroke()
-   
-             .strokeColor('orange')
-             .moveTo(200, 100)
-             .lineTo(200, 200)
-             .moveTo(250, 100)
-             .lineTo(250, 200)
-             .stroke()
-   
-             .strokeColor('black')
-             .moveTo(300, 100)
-             .lineTo(350, 150)
-             .lineTo(300, 200)
-             .stroke()
-  
-             .moveDown(15)
-             .text('hello ' + the_user.first_name + ',')
-             .text('this is your tiket to the show.')
-             .text('please keep it safe.')
-             .moveDown()
-             .moveDown()
-             .text('__DETAILS__')
-             .text('EVENT: ' + the_order.main_event)
-             .text('DATE: ' + the_order.event_date)
-             .text('OPENING_TIME: ' + the_order.opening_time)
-             .text('VENUE: ' + the_order.venue)
-             .text('AGE_GROUP: ' + the_order.age_group)
-             .text('FIRST_NAME: ' + the_order.first_name)
-             .text('LAST_NAME: ' + the_order.last_name)
-             .text('NUMBER_OF_TIKETS: ' + the_order.number_of_tickets)
-             .moveDown()
-             .moveDown()
-             .text('__DEBUGGING__')
-             .text('ORDER_ID: ' + the_order._id.toString())
-             .text('TRANSACTION_STATUS: ' + the_order.transaction_status)
-
-             .image('./first_qr_code.png', 50, 500 ) //relative to server.js location!
-
-             .output(function (result) {
-               console.log('typeof(result): ' + typeof(result));
-               //console.log(result);
-   
-               email_services.send_ticket_purchase_email(
-                 the_user.first_name,
-                 the_user.email_address,
-                 result);
-             });
-     }); //end QRCode.toDataURL
-     */
-
-
 
     } //end create_the_eticket()
 

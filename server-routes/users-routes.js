@@ -51,22 +51,18 @@ var MONGODB_DUPLICATE_KEY_ERROR = 11000;
 //
 //___METHOD____ROUTE_____________________________________MIDDLEWARE_________________
 //
-// x  GET       '/api/users'                              logged_in_required
 //   GET       '/api/users/session'                      logged_in_required
 //   GET       '/api/users/account/billing_info'         logged_in_required
 //   GET       '/api/users/:id'                          logged_in_required
 //   GET       '/api/users/settings/user'                logged_in_required
-//   DELETE    '/api/users/logout'                       logged_in_required
 //   POST      '/api/users/register'                     not_logged_in_required
 //   POST      '/api/users/login'                        not_logged_in_required
-// x   POST      '/api/users/change_user_details'
 //   POST      '/api/users/change_password/'             logged_in_required
 //   POST      '/api/users/change_cc_details/'
-// x  PUT       '/api/users/reset_the_customer_id/:id'    restrict_user_to_user
-// x  POST      '/api/users/login_with_pending_order/'    not_logged_in_required 
-// x  POST      '/api/users/register_with_pending_order'  not_logged_in_required 
 //   DELETE    '/api/users/:id' 
+//   DELETE    '/api/users/logout'                       logged_in_required
 //   PUT       '/api/users/:id'                          logged_in_required 
+// x  GET       '/api/users'                              logged_in_required
 // x  POST         '/api/users/beta_login'
 
 
@@ -91,27 +87,6 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
 
   //*************** ROUTE HANDLERS ******************************
-
-  /*
-  //TODO:
-  //MUST ADD ADMIN SECURITY CONSTRAINTS.
-  //->only admins must be able to get a databse dump of all users.
-  //get all the users registered in database
-  app.get('/api/users', logged_in_required, function (req, res) {
-    console.log('in GET /api/users handler.');
-    return UserModel.find(function (err, users) {
-      if (!err) {
-        console.log('GET api/users handler called successfully.');
-        return res.send(users);
-      } else {
-        console.log('ERROR: GET /api/users handler. Error msg: ' + err);
-        return console.log(err);
-      }
-    });
-  }); //end /api/users
-  */
-
-
 
 
   //*************** ROUTE HANDLERS ******************************
@@ -269,19 +244,6 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
   }); //end GET /api/users/settings/user
 
 
-
-  //*************** ROUTE HANDLERS ******************************
-
-  //destroy the session i.e. log the user out of their account. 
-  //THIS MUST BE BEFORE app.delete('/api/users/:id', ... ) handler. 
-  //if not, deleting a session gets matched to the delete user handler.
-  app.delete('/api/users/logout', logged_in_required, function (req, res) {
-    console.log('DESTROYING SESSION in DEL /api/users/logout handler.');
-    var user_first_name = req.session.user_first_name;
-    req.session.destroy();
-
-    return res.send(user_first_name);
-  }); //end DELETE /api/users/logout
 
 
 
@@ -1056,91 +1018,6 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
   }
 
 
-  /*
-  //*************** ROUTE HANDLERS ******************************
-
-  //sets the braintree_customer_id back to the default 'default_braintree_customer_id'
-  //which is used in PUT /api/orders during checkout process for asking braintree
-  //to issue a new customer_id. this happend when the cc details in the users vault
-  //changes.
-  app.put('/api/users/reset_the_customer_id/:id', 
-    restrict_user_to_self, 
-    function (req, res) {
-
-      console.log('in PUT /api/users/reset_the_customer_id/:id');
-      update_user_braintree_customer_id(req, res, function (err) {
-        if (err) {
-          console.log('INTERNAL_ERROR: ' + err);
-          throw err;
-        }
-      });
-  }); //end PUT /api/users/reset_the_customer_id/:id
-
-
-
-  function update_user_braintree_customer_id(req, res, callback) {
-    var new_values = {};
-    var the_user;
-
-    for (var key in req.body) {
-      new_values[key] = req.body[key];
-    }
-
-    UserModel.findById(req.session.user_id, function (err, user) {
-      if (err) {
-        return callback(err);
-      }
-      if (!user) {
-        return res.send({'error': 'user_is_null'});
-      }
-      the_user = user;
-      the_user.braintree_customer_id = "default_braintree_customer_id";
-
-      the_user.save(function (err) {
-        if (err) {
-          return callback(err);
-        }
-        return res.send({'successful_reset': true});
-      });
-    }); 
-  }
-  */
-
-
-
-  //*************** ROUTE HANDLERS ******************************
-
-  //delete a user with id
-  app.delete('/api/users/:id', 
-    logged_in_required, restrict_user_to_self, 
-    function (req, res) {
-
-    console.log('in DEL /api/users/:id handler');
-
-    return UserModel.findById(req.params.id, function (err, user) {
-      if (!err) {
-        return user.remove(function (err) {
-          if (!err) {
-            console.log('SUCCESS: deleted user with id = ' + req.params.id);
-
-            //*** IMPORTANT - backbone expects a JSON response to sync ***
-            //Backbone expects a JSON response from the server. If not, then an error
-            //event is generated => server and backbone cant sync.
-            //when responding from a model.destroy() call, you can simply return a 
-            //serialization of an empty JSON hash.
-            return res.send(JSON.stringify({}));
-          } else {
-            console.log('ERROR: in DEL /api/gigs/:id handler. Error msg: ' + err);
-
-            return res.send(JSON.stringify({}));
-          }
-        });
-      } else {
-        return res.send('ERROR: in DEL /api/users/:id handler. Error msg: ' + err);
-      }
-    });
-  }); //end DELETE /api/users/:id
-
 
 
   //*************** ROUTE HANDLERS ******************************
@@ -1265,6 +1142,83 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
     find_the_user();
   }
+
+
+
+
+
+  //*************** ROUTE HANDLERS ******************************
+
+  //delete a user with id
+  app.delete('/api/users/:id', 
+    logged_in_required, restrict_user_to_self, 
+    function (req, res) {
+
+    console.log('in DEL /api/users/:id handler');
+
+    return UserModel.findById(req.params.id, function (err, user) {
+      if (!err) {
+        return user.remove(function (err) {
+          if (!err) {
+            console.log('SUCCESS: deleted user with id = ' + req.params.id);
+
+            //*** IMPORTANT - backbone expects a JSON response to sync ***
+            //Backbone expects a JSON response from the server. If not, then an error
+            //event is generated => server and backbone cant sync.
+            //when responding from a model.destroy() call, you can simply return a 
+            //serialization of an empty JSON hash.
+            return res.send(JSON.stringify({}));
+          } else {
+            console.log('ERROR: in DEL /api/gigs/:id handler. Error msg: ' + err);
+
+            return res.send(JSON.stringify({}));
+          }
+        });
+      } else {
+        return res.send('ERROR: in DEL /api/users/:id handler. Error msg: ' + err);
+      }
+    });
+  }); //end DELETE /api/users/:id
+
+
+  //*************** ROUTE HANDLERS ******************************
+
+  //destroy the session i.e. log the user out of their account. 
+  //THIS MUST BE BEFORE app.delete('/api/users/:id', ... ) handler. 
+  //if not, deleting a session gets matched to the delete user handler.
+  app.delete('/api/users/logout', logged_in_required, function (req, res) {
+    console.log('DESTROYING SESSION in DEL /api/users/logout handler.');
+    var user_first_name = req.session.user_first_name;
+    req.session.destroy();
+
+    return res.send(user_first_name);
+  }); //end DELETE /api/users/logout
+
+
+
+
+
+
+
+  /*
+  //TODO:
+  //MUST ADD ADMIN SECURITY CONSTRAINTS.
+  //->only admins must be able to get a databse dump of all users.
+  //get all the users registered in database
+  app.get('/api/users', logged_in_required, function (req, res) {
+    console.log('in GET /api/users handler.');
+    return UserModel.find(function (err, users) {
+      if (!err) {
+        console.log('GET api/users handler called successfully.');
+        return res.send(users);
+      } else {
+        console.log('ERROR: GET /api/users handler. Error msg: ' + err);
+        return console.log(err);
+      }
+    });
+  }); //end /api/users
+  */
+
 
 
 

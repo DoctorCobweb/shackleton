@@ -207,7 +207,7 @@ define([
         //console.log(this.user);
         var self = this;
 
-        //PUT /api/users/
+        //PUT /api/users/:id
         this.user.save({}, { 
           success: function (data, response, options) {
             console.log('SUCCESS: updated user settings!!!');

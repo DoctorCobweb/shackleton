@@ -3,6 +3,12 @@
 /* @import url(css/bootstrap-responsive.css); */
 
 
+
+.view_account_billing_default_details {
+  overflow: auto;
+}
+
+
 h4 {
   color: #DADADA;
 }
@@ -552,8 +558,8 @@ h3 {
 
 
 .elliott_smith a {
-  background-color: #42414B;
-  color: #474545;
+  background-color: #53514D; /* blue grey */
+  color: #5A5854;
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: 11px;
@@ -563,18 +569,18 @@ h3 {
 
 
 .elliott_smith a:link {
-  background-color: #42414B;
+  background-color: #53514D; /* blue grey */
 }
 
 
 .elliott_smith a:visited {
-  background-color: #42414B;
+  background-color: #53514D; /* blue grey */
 }
 
 
 .elliott_smith a:hover {
-  background-color: #42414B;
-  color: #C2BEBE;
+  background-color: #53514D; /* blue grey */
+  color: #CFCFCF;
 }
 
 
@@ -591,7 +597,7 @@ h3 {
   padding-bottom: 15px;
   padding-left: 10px;
   font-weight: bold;
-  background-color: #000;
+  background-color: #3A3A3A;
   margin-top: 13px;
   padding-right: 10px;
   float: right;
@@ -606,8 +612,8 @@ h3 {
 
 
 .footer_sections .section ul li a {
-  background-color: #42414B;
-  color: #888888;
+  background-color: #53514D; /* blue grey */
+  color: #9B9B9B;
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: 13px;
@@ -623,7 +629,7 @@ h3 {
 
 
 .footer_sections .section ul li a:hover {
-  color: #C2BEBE;
+  color: #CFCFCF;
 }
 
 
@@ -631,10 +637,19 @@ h3 {
 }
 
 
+div.footer {
+  background-color: #53514D; /* blue grey */
+  clear: both;
+  min-height: 200px;
+  /* background-color: #42414B; */
+}
+
+
 body {
-  color: #979797
-  /* background-color: #3A3939; */
+  color: #9B9B9B; /* light grey */
   background-color: #EE680B;
+  /* color: #979797; */
+  /* background-color: #3A3939; */
 }
 
 
@@ -645,15 +660,6 @@ body {
 
 #import_passbook_pass {
    display: none; 
-}
-
-
-div.footer {
-  /* green-brown */
-  /* background-color: #272916; */
-  background-color: #42414B; /* blue grey */
-  clear: both;
-  min-height: 200px;
 }
 
 
@@ -710,10 +716,11 @@ li > b {
 
 
 #featureContent {
-  background-color: #161516;
+  background-color: #3A3A3A; /* dark grey */
   padding-top: 10px;
   padding-bottom: 10px;
   margin-bottom: 20px;
+  /* background-color: #161516; */
 }
 
 

@@ -13,7 +13,7 @@ define([
     var AccountBillingDefaultView = Backbone.View.extend({
       tagName: 'div',
  
-      className: 'account_billing_default_details',
+      className: 'view_account_billing_default_details',
 
       template: _.template(AccountBillingDefaultHTML),
 

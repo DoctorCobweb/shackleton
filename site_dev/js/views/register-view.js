@@ -134,6 +134,8 @@ define([
         return;
       },
 
+
+
       register: function () {
         console.log('in register function');
         var self = this;
@@ -211,18 +213,6 @@ define([
         });
       },
 
-      /*
-      isEmpty: function (obj) {
-        console.log('in isEmpty() function');
-        for (var prop in obj) {
-          if (obj.hasOwnProperty(prop)) {
-            return false; //obj is NOT empty
-          }
-        }
-        return true; //obj IS empty
-
-      },
-      */
 
       switch_log_button: function (element_to_show, element_to_hide) {
         $(element_to_hide).css('display', 'none');
