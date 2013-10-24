@@ -43,7 +43,8 @@ define([
     'views/real-front-page-view',
     'views/header-view',
     'views/banner-view',
-    'cookie_util'
+    'cookie_util',
+    'spin'
 
   ], 
   function (Backbone, GigsView, AboutView, ContactView, LoginView,
@@ -55,7 +56,8 @@ define([
     PrivacyPolicyView, ReturnsPolicyView,
     TicketTypesView, NewsletterView,
     FaqView, SearchView, FooterView, BetaLoginView,
-    RealFrontPageView, HeaderView, BannerView, CookieUtil) {
+    RealFrontPageView, HeaderView, BannerView, 
+    CookieUtil, Spinner) {
 
     var AppRouter = Backbone.Router.extend({
     
@@ -680,6 +682,42 @@ define([
         this.check_authentication_set_links();
 
 
+        //show busy spinner until fetching gigs completes
+        var opts = {
+          lines: 13, // The number of lines to draw
+          length: 40, // The length of each line
+          width: 10, // The line thickness
+          radius: 43, // The radius of the inner circle
+          corners: 1, // Corner roundness (0..1)
+          rotate: 0, // The rotation offset
+          direction: 1, // 1: clockwise, -1: counterclockwise
+          color: '#fff', // #rgb or #rrggbb or array of colors
+          speed: 1, // Rounds per second
+          trail: 33, // Afterglow percentage
+          shadow: false, // Whether to render a shadow
+          hwaccel: false, // Whether to use hardware acceleration
+          className: 'spinner', // The CSS class to assign to the spinner
+          zIndex: 2e9, // The z-index (defaults to 2000000000)
+          top: 'auto', // Top position relative to parent in px
+          left: 'auto' // Left position relative to parent in px
+        };
+
+
+        //this.currentView.close();
+        var target = document.getElementById('featureContent');
+        var spinner = new Spinner(opts).spin(target);          
+
+        console.log(new Spinner(opts));
+        console.log(spinner);
+
+
+
+        //$(selector).html(view.render().el);
+        //this.currentView = view;
+
+
+
+
         //make sure we dont keep instantiating a collection everytime user
         //clicks on gigs tab in headerview
         if (!this.theGigList) {
@@ -687,10 +725,14 @@ define([
         } 
 
         var self = this;
+
         this.theGigList.fetch({
           //reset: true, //replace all the models in the collection wite new ones
           success: function (collection, response) {
             console.log('self.theGigList.length = ' + self.theGigList.length);
+
+            spinner.stop();
+
             self.theGigsView = new GigsView({model: self.theGigList}); 
             self.show_view('#featureContent', self.theGigsView); 
             //self.showView('#featureList', self.theGigsView); 

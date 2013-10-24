@@ -515,7 +515,11 @@ h3 {
 .banner_view {
   text-align: center;
   margin-bottom: 20px;
-  /* background-color: #2BBB53; */
+}
+
+#main_banner {
+  height: 400px;
+  width: 1280px;
 }
 
 

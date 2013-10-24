@@ -10,7 +10,7 @@ define([
   ], 
   function (Backbone, OrderListItemView, Orders) {
 
-    OrdersView = Backbone.View.extend({
+    var OrdersView = Backbone.View.extend({
       tagName: 'ul',
 
       //el: '#featureList',
