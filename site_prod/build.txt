@@ -107,6 +107,7 @@ text!tpl/BetaLoginView.html
 text!tpl/RealFrontPageView.html
 js/views/real-front-page-view.js
 js/views/beta-login-view.js
+js/lib/spin.js
 js/routers/router.js
 js/lib/jquery-dateFormat-1.0.js
 js/lib/bootstrap-collapse.js

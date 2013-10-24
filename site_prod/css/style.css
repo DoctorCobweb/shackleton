@@ -372,7 +372,10 @@ h3 {
 .banner_view {
   text-align: center;
   margin-bottom: 20px;
-  
+}
+#main_banner {
+  height: 400px;
+  width: 1280px;
 }
 .footer_heading {
   font-size: 13px;
