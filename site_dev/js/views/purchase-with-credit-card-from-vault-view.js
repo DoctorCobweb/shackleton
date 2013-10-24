@@ -9,7 +9,8 @@ define([
     'views/credit-card-details-view',
     'text!tpl/SuccessfulUserFeedback.html',
     'cookie_util',
-    'text!tpl/NegativeUserFeedback.html'
+    'text!tpl/NegativeUserFeedback.html',
+    'spin'
   ],
   function (Backbone, 
             Braintree, 
@@ -18,7 +19,8 @@ define([
             CreditCardDetailsView,
             SuccessfulUserFeedbackHTML,
             CookieUtil,
-            NegativeUserFeedbackHTML) 
+            NegativeUserFeedbackHTML,
+            Spinner) 
   {
 
   var PurchaseWithCreditCardFromVaultView = Backbone.View.extend({
@@ -80,6 +82,30 @@ define([
       //router cleans up this view if user so happens to stop the purchase process and
       //clicks somewhere else (say a link in navbar)
       //Backbone.trigger('router:set_current_view', this);
+
+
+      //show busy spinner until fetching gigs completes
+      this.spinner_opts = {
+        lines:11, // The number of lines to draw
+        length: 13, // The length of each line
+        width: 4, // The line thickness
+        radius: 11, // The radius of the inner circle
+        corners: 1, // Corner roundness (0..1)
+        rotate: 0, // The rotation offset
+        direction: -1, // 1: clockwise, -1: counterclockwise
+        color: ['rgb(255, 255, 0)', //yellow
+                'rgb(255, 165, 0)', //orange
+                'rgb(255, 69,  0)'  //dark orange
+               ], // #rgb or #rrggbb or array of colors
+        speed: 1, // Rounds per second
+        trail: 24, // Afterglow percentage
+        shadow: false, // Whether to render a shadow
+        hwaccel: false, // Whether to use hardware acceleration
+        className: 'spinner', // The CSS class to assign to the spinner
+        zIndex: 2e9, // The z-index (defaults to 2000000000)
+        top: 'auto', // Top position relative to parent in px
+        left: 'auto' // Left position relative to parent in px
+      };
       
     },
 
@@ -121,30 +147,35 @@ define([
 
 
     get_billing_info: function () {
+ 
+      //TODO:
+      //this is not displaying on initial page render!
+      var target = document.getElementById('vault_cc');
+      var spinner = new Spinner(this.spinner_opts).spin(target);
 
       $.ajax({
         'url': '/api/users/account/billing_info/',
         'type': 'GET',
         success: function (data, textStatus, jqXHR) {
-            console.log('SUCCESS: user cc details: ');
-            console.dir(data);
-            console.log(textStatus);
-            console.dir(jqXHR);
-   
-            self.$('#cc_masked_number').html(data.masked_number);     
-            self.$('#cc_expiration_date').html(data.expiration_date);     
+          console.log('SUCCESS: user cc details: ');
+          console.dir(data);
+          console.log(textStatus);
+          console.dir(jqXHR);
+ 
+          spinner.stop();
 
+          self.$('#cc_masked_number').html(data.masked_number);     
+          self.$('#cc_expiration_date').html(data.expiration_date);     
         },
         error: function (jqXHR, textStatus, errorThrown) {
           console.log('ERROR: user cc details: ');
           console.dir(jqXHR);
           console.log(textStatus);
           console.dir(errorThrown);
- 
+
+          spinner.stop();
         }
       });
-
-
     },
 
 
@@ -231,10 +262,13 @@ define([
       console.log('this.model: ');
       console.dir(this.model);
 
+
+      var target = document.getElementById('featureContent');
+      var spinner = new Spinner(this.spinner_opts).spin(target);
+
       //TODO: stop click event from registering this function handler.
       //so user doesnt resend an order whilst the previous ajax call is pending
       //$(this.el).find('#submit').off('click');
-
       //unbind the listener to stop resending order
       //this.$('#submit').off('click');
 
@@ -259,15 +293,15 @@ define([
               console.dir(model);
               console.dir(xhr);
 
+              spinner.stop();
               self.render();
-
-
             },
             success: function (model,response) {
               console.log('SUCCESS in ajax call to save/update the model/order');
               console.dir(model);
               console.dir(response);
 
+              spinner.stop();
 
               if (response.errors) {
                 //we have errors
@@ -294,7 +328,6 @@ define([
   
               //handles all the possible cc status responses
               self.handle_cc_statuses(response, model);
-  
             }
           }
         );
@@ -365,6 +398,20 @@ define([
 
     submit_updated_cc: function () {
       console.log('you just clicked submit_updated_cc div');
+
+      var target = document.getElementById('during_checkout_update_cc_details');
+      var spinner = new Spinner(this.spinner_opts).spin(target);
+
+      //get rid of any user feedback UI elements before submitting. clean up first.
+      var $successful_user_feedback = this.$('#vault_cc > .successful_user_feedback');
+      var $negative_user_feedback = this.$('#vault_cc > .negative_user_feedback');
+
+      if ($successful_user_feedback.css('display') === 'block') {
+        $successful_user_feedback.css('display', 'none');
+      }
+      if ($negative_user_feedback.css('display') === 'block') {
+        $negative_user_feedback.css('display', 'none');
+      }
  
       var self = this;
 
@@ -381,6 +428,8 @@ define([
               //WHY did i do this again??? is it really essential for the order?
               //you already have the user _id 
               //self.model.set({'braintree_customer_id': data.result.customer.id});
+
+              spinner.stop();
 
               if (!data.success) {
                 //there were errors
@@ -415,6 +464,8 @@ define([
             console.dir(jqXHR);
             console.log(textStatus);
             console.dir(errorThrown);
+
+            spinner.stop();
    
           },
         });

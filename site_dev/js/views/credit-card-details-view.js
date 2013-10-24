@@ -8,7 +8,8 @@ define([
     'views/checkout-view',
     'text!tpl/SuccessfulUserFeedback.html',
     'text!tpl/NegativeUserFeedback.html',
-    'cookie_util'
+    'cookie_util',
+    'spin'
   ],
   function (Backbone, 
             Braintree, 
@@ -16,7 +17,8 @@ define([
             CheckoutView,
             SuccessfulUserFeedbackHTML,
             NegativeUserFeedbackHTML,
-            CookieUtil) 
+            CookieUtil,
+            Spinner) 
   {
 
   var CreditCardDetailsView = Backbone.View.extend({
@@ -78,6 +80,31 @@ define([
       //router cleans up this view if user so happens to stop the purchase process and
       //clicks somewhere else (say a link in navbar)
       //Backbone.on('router:set_current_view', this);
+
+
+
+      //show busy spinner until fetching gigs completes
+      this.spinner_opts = {
+        lines:11, // The number of lines to draw
+        length: 13, // The length of each line
+        width: 4, // The line thickness
+        radius: 11, // The radius of the inner circle
+        corners: 1, // Corner roundness (0..1)
+        rotate: 0, // The rotation offset
+        direction: -1, // 1: clockwise, -1: counterclockwise
+        color: ['rgb(255, 255, 0)', //yellow
+                'rgb(255, 165, 0)', //orange
+                'rgb(255, 69,  0)'  //dark orange
+               ], // #rgb or #rrggbb or array of colors
+        speed: 1, // Rounds per second
+        trail: 24, // Afterglow percentage
+        shadow: false, // Whether to render a shadow
+        hwaccel: false, // Whether to use hardware acceleration
+        className: 'spinner', // The CSS class to assign to the spinner
+        zIndex: 2e9, // The z-index (defaults to 2000000000)
+        top: 'auto', // Top position relative to parent in px
+        left: 'auto' // Left position relative to parent in px
+      };
 
     },
 
@@ -210,6 +237,10 @@ define([
 
       var self = this;
 
+      var target = document.getElementById('during_checkout_new_credit_card_details');
+      var spinner = new Spinner(this.spinner_opts).spin(target);
+
+
 
       if (!CookieUtil.get('reserve_tickets')) {
         console.log('cannot submit order because cookie timedout'); 
@@ -236,6 +267,7 @@ define([
           console.log(textStatus);
           console.dir(jqXHR);
 
+          spinner.stop();
 
           if (!data.success) {
             //there were errors          
@@ -285,6 +317,12 @@ define([
       console.log('in submit_order function');
       var self = this;    
 
+
+      var target = document.getElementById('during_checkout_credit_card_details');
+      var spinner = new Spinner(this.spinner_opts).spin(target);
+
+
+
       if (!CookieUtil.get('reserve_tickets')) {
         //reservation TIMEDOUT
 
@@ -302,6 +340,7 @@ define([
               console.dir(model);
               console.dir(response);
 
+              spinner.stop();
 
               if (response.errors) {
                 //we have errors
@@ -335,7 +374,9 @@ define([
               console.log('ERROR in saving/updating the model');
               console.dir(model);
               console.dir(xhr);
+
               self.render();
+              spinner.stop();
             }
           }
         );

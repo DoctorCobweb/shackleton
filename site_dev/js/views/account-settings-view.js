@@ -218,7 +218,7 @@ define([
             var $successful_user_feedback = self.$('#change_user_details > .successful_user_feedback');
 
             //also close the successful update div if it is showing
-            if ($successful_user_feedback.css('display') == 'block') {
+            if ($successful_user_feedback.css('display') === 'block') {
               $successful_user_feedback.css('display', 'none');
             }
 

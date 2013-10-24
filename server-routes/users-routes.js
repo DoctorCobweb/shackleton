@@ -59,8 +59,10 @@ var MONGODB_DUPLICATE_KEY_ERROR = 11000;
 //   POST      '/api/users/login'                        not_logged_in_required
 //   POST      '/api/users/change_password/'             logged_in_required
 //   POST      '/api/users/change_cc_details/'
-//   DELETE    '/api/users/:id' 
 //   DELETE    '/api/users/logout'                       logged_in_required
+//                                                       restrict_user_to_self
+//
+//   DELETE    '/api/users/:id' 
 //   PUT       '/api/users/:id'                          logged_in_required 
 // x  GET       '/api/users'                              logged_in_required
 // x  POST         '/api/users/beta_login'
@@ -1145,6 +1147,19 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
 
 
 
+  //*************** ROUTE HANDLERS ******************************
+
+  //destroy the session i.e. log the user out of their account. 
+  //THIS MUST BE BEFORE app.delete('/api/users/:id', ... ) handler. 
+  //if not, deleting a session gets matched to the delete user handler.
+  app.delete('/api/users/logout', logged_in_required, function (req, res) {
+    console.log('DESTROYING SESSION in DEL /api/users/logout handler.');
+    var user_first_name = req.session.user_first_name;
+    req.session.destroy();
+
+    return res.send(user_first_name);
+  }); //end DELETE /api/users/logout
+
 
 
   //*************** ROUTE HANDLERS ******************************
@@ -1179,24 +1194,6 @@ module.exports = function (mongoose, shackleton_conn, app, User, Password, BetaU
       }
     });
   }); //end DELETE /api/users/:id
-
-
-  //*************** ROUTE HANDLERS ******************************
-
-  //destroy the session i.e. log the user out of their account. 
-  //THIS MUST BE BEFORE app.delete('/api/users/:id', ... ) handler. 
-  //if not, deleting a session gets matched to the delete user handler.
-  app.delete('/api/users/logout', logged_in_required, function (req, res) {
-    console.log('DESTROYING SESSION in DEL /api/users/logout handler.');
-    var user_first_name = req.session.user_first_name;
-    req.session.destroy();
-
-    return res.send(user_first_name);
-  }); //end DELETE /api/users/logout
-
-
-
-
 
 
 

@@ -5,9 +5,12 @@ define([
     'backbone',
     'text!tpl/AccountBilling.html',
     'braintree',
-    'text!tpl/SuccessfulUserFeedback.html'
+    'text!tpl/SuccessfulUserFeedback.html',
+    'spin'
   ], 
-  function (Backbone, AccountBillingHTML, Braintree, SuccessfulUserFeedbackHTML) {
+  function (Backbone, AccountBillingHTML, Braintree, 
+            SuccessfulUserFeedbackHTML, Spinner) {
+
     var AccountBillingView = Backbone.View.extend({
       tagName: 'div',
  
@@ -60,6 +63,30 @@ define([
         this.field_to_set = {};
         this.ENTER_KEY = 13;
 
+
+
+        //show busy spinner until fetching gigs completes
+        this.spinner_opts = {
+          lines:11, // The number of lines to draw
+          length: 13, // The length of each line
+          width: 4, // The line thickness
+          radius: 11, // The radius of the inner circle
+          corners: 1, // Corner roundness (0..1)
+          rotate: 0, // The rotation offset
+          direction: -1, // 1: clockwise, -1: counterclockwise
+          color: ['rgb(255, 255, 0)', //yellow
+                  'rgb(255, 165, 0)', //orange
+                  'rgb(255, 69,  0)'  //dark orange
+                 ], // #rgb or #rrggbb or array of colors
+          speed: 1, // Rounds per second
+          trail: 24, // Afterglow percentage
+          shadow: false, // Whether to render a shadow
+          hwaccel: false, // Whether to use hardware acceleration
+          className: 'spinner', // The CSS class to assign to the spinner
+          zIndex: 2e9, // The z-index (defaults to 2000000000)
+          top: 'auto', // Top position relative to parent in px
+          left: 'auto' // Left position relative to parent in px
+        };
 
 
       },
@@ -201,6 +228,9 @@ define([
       submit: function () {
         var self = this;
 
+        var target = document.getElementById('account_billing_update_cc_details');
+        var spinner = new Spinner(this.spinner_opts).spin(target);
+
 
         $.ajax({
           url: '/api/users/change_cc_details/',
@@ -211,6 +241,8 @@ define([
             console.dir(data);
             console.log(textStatus);
             console.dir(jqXHR);
+
+            spinner.stop();
             
             //if any elements have an 'has-error' class, remove the class
             //before submitting for registration. if not, then if they resubmit

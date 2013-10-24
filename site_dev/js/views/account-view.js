@@ -9,12 +9,14 @@ define([
     'views/account-settings-view',
     'collections/ordersCollection',
     'views/account-billing-default-view',
-    'models/user-model'
+    'models/user-model',
+    'spin'
   ],
   function (Backbone, AccountViewHTML, 
             AccountOrdersView, AccountBillingView,
             AccountSettingsView, OrdersCollection,
-            AccountBillingDefaultView, User) 
+            AccountBillingDefaultView, User,
+            Spinner) 
   {
     var AccountView  = Backbone.View.extend({
       tagName: 'div',
@@ -51,6 +53,28 @@ define([
         
         this.BT_DEFAULT_CUS = 'default_braintree_customer_id';
 
+        //show busy spinner until fetching gigs completes
+        this.spinner_opts = {
+          lines:11, // The number of lines to draw
+          length: 13, // The length of each line
+          width: 4, // The line thickness
+          radius: 11, // The radius of the inner circle
+          corners: 1, // Corner roundness (0..1)
+          rotate: 0, // The rotation offset
+          direction: -1, // 1: clockwise, -1: counterclockwise
+          color: ['rgb(255, 255, 0)', //yellow
+                  'rgb(255, 165, 0)', //orange
+                  'rgb(255, 69,  0)'  //dark orange
+                 ], // #rgb or #rrggbb or array of colors
+          speed: 1, // Rounds per second
+          trail: 24, // Afterglow percentage
+          shadow: false, // Whether to render a shadow
+          hwaccel: false, // Whether to use hardware acceleration
+          className: 'spinner', // The CSS class to assign to the spinner
+          zIndex: 2e9, // The z-index (defaults to 2000000000)
+          top: '0px', // Top position relative to parent in px
+          left: 'auto' // Left position relative to parent in px
+        };
       },
 
 
@@ -113,6 +137,10 @@ define([
 
         var self = this;
 
+        var target = document.getElementById('account_main');
+        var spinner = new Spinner(this.spinner_opts).spin(target);
+
+
         $.ajax({
           'url': '/api/users/account/billing_info/',
           'type': 'GET',
@@ -121,6 +149,8 @@ define([
             console.dir(data);
             console.log(textStatus);
             console.dir(jqXHR);
+ 
+            spinner.stop();
 
             if (data.errors) {
               //either have validation/internal errors or user has no cc details yet.
@@ -151,6 +181,8 @@ define([
             console.dir(jqXHR);
             console.log(textStatus);
             console.dir(errorThrown);
+
+            spinner.close();
           }
         });
       },

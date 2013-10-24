@@ -1,7 +1,7 @@
 /*
  * Route Middleware: restrict user to self */
 
-function restrictUserToSelf (req, res, next) {
+function restrict_user_to_self (req, res, next) {
   if (req.session.user_id === req.params.id) {
 
     //user is self.
@@ -11,4 +11,5 @@ function restrictUserToSelf (req, res, next) {
   }
 }
 
-module.exports = restrictUserToSelf;
+module.exports = restrict_user_to_self;
+

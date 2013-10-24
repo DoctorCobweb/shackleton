@@ -684,16 +684,19 @@ define([
 
         //show busy spinner until fetching gigs completes
         var opts = {
-          lines: 13, // The number of lines to draw
-          length: 40, // The length of each line
-          width: 10, // The line thickness
-          radius: 43, // The radius of the inner circle
+          lines:11, // The number of lines to draw
+          length: 13, // The length of each line
+          width: 4, // The line thickness
+          radius: 11, // The radius of the inner circle
           corners: 1, // Corner roundness (0..1)
           rotate: 0, // The rotation offset
-          direction: 1, // 1: clockwise, -1: counterclockwise
-          color: '#fff', // #rgb or #rrggbb or array of colors
+          direction: -1, // 1: clockwise, -1: counterclockwise
+          color: ['rgb(255, 255, 0)', //yellow
+                  'rgb(255, 165, 0)', //orange
+                  'rgb(255, 69,  0)'  //dark orange
+                 ], // #rgb or #rrggbb or array of colors
           speed: 1, // Rounds per second
-          trail: 33, // Afterglow percentage
+          trail: 24, // Afterglow percentage
           shadow: false, // Whether to render a shadow
           hwaccel: false, // Whether to use hardware acceleration
           className: 'spinner', // The CSS class to assign to the spinner
@@ -706,16 +709,8 @@ define([
         //this.currentView.close();
         var target = document.getElementById('featureContent');
         var spinner = new Spinner(opts).spin(target);          
-
         console.log(new Spinner(opts));
         console.log(spinner);
-
-
-
-        //$(selector).html(view.render().el);
-        //this.currentView = view;
-
-
 
 
         //make sure we dont keep instantiating a collection everytime user
@@ -725,6 +720,7 @@ define([
         } 
 
         var self = this;
+
 
         this.theGigList.fetch({
           //reset: true, //replace all the models in the collection wite new ones
@@ -744,6 +740,8 @@ define([
           },
           error: function (collection, response) {
             console.log('ERROR: in router.js and gigGuide handler');
+
+            spinner.stop();
           }
         });
       },
@@ -996,20 +994,20 @@ define([
       //user clicks a link.
       is_bootstrap_btn_navbar_visible: function () {
 
-        console.log('in is_bootstrap_btn_navbar_visible handler');
+        //console.log('in is_bootstrap_btn_navbar_visible handler');
 
         //var display_attr = $('a.btn-navbar').css('display');
         var display_attr = $('button.navbar-toggle').css('display');
-        console.log('button.navbar-toggle has css attribute display: ' + display_attr);
+        //console.log('button.navbar-toggle has css attribute display: ' + display_attr);
        
         if (display_attr === 'block'){
-          console.log('btn-navbar is displayed on page');
+          //console.log('btn-navbar is displayed on page');
           
           this.is_bootstrap_nav_collapse_visible();
         } 
 
         if (display_attr === 'none') {
-          console.log('btn-navbar is NOT displayed on page');
+          //console.log('btn-navbar is NOT displayed on page');
         }
 
 
@@ -1017,12 +1015,12 @@ define([
 
       is_bootstrap_nav_collapse_visible: function () {
 
-        console.log('in is_bootstrap_nav_collapse_visible handler');
+        //console.log('in is_bootstrap_nav_collapse_visible handler');
 
         var display_attr = $('div.navbar-collapse.in').css('display');
 
-        console.log('div.navbar-collapse.in has css attribute display: ' 
-          + display_attr);
+        //console.log('div.navbar-collapse.in has css attribute display: ' 
+        //  + display_attr);
        
         //link div thing is NOT showing
         if (display_attr === 'none') {
@@ -1065,15 +1063,12 @@ define([
               console.log(textStatus);
               console.dir(jqXHR);
 
-              
-
               //toggle login -> to -> logout in header view 
               self.switch_log_button('#logout_header', '#login_header');
               self.display_account_tab(true);
             }
           }
         });
-
       },
 
 

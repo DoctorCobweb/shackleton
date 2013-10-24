@@ -3,7 +3,7 @@
  * 401 HTTP 'Not authorised' response.
  */
 
-function loggedInRequired (req, res, next) {
+function logged_in_required (req, res, next) {
   if (!req.session.user_authenticated) {
     //user is NOT authenticated to access route handler.
     //res.send('UNAUTHORISED ACCESS: You are permitted to be in this area. Get out.', 401);
@@ -14,4 +14,4 @@ function loggedInRequired (req, res, next) {
   }
 }
 
-module.exports = loggedInRequired;
+module.exports = logged_in_required;
