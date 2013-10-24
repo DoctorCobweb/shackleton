@@ -1,25 +1,20 @@
 <div id="during_checkout_credit_card_details">
   <h2>Credit Card Details View</h2>
+  <h5>Your tickets will be delivered to your email address used in this account.</h5>
 
- <h3>Order Model details</h3>
+ <h3>Order details:</h3>
    <ul>
      <li><b>_id: </b><%= _id %></li>
-     <li><b>gig_id: </b><%= gig_id %></li>
-     <li><b>main_event: </b><%= main_event %></li>
-     <li><b>event_date: </b><%= $.format.date(new Date(event_date), 'dd MMMM yyyy') %></li>
-     <li><b>venue: </b><%= venue %></li>
-     <li><b>opening_time: </b><%= opening_time %></li>
-     <li><b>age_group: </b><%= age_group %></li>
-     <li><b>user_id: </b><%= user_id %></li>
-     <li><b>user_authenticated: </b><%= user_authenticated %></li>
-     <li><b>first_name: </b><%= first_name %></li>
-     <li><b>last_name: </b><%= last_name %></li>
-     <li><b>braintree_customer_id: </b><%= braintree_customer_id %></li>
-     <li><b>number_of_tickets: </b><%= number_of_tickets %>
-     <li><b>ticket_price: </b><%= ticket_price %></li>
-     <li><b>transaction_amount: </b><%= transaction_amount %></li>
-     <li><b>transaction_id: </b><%= transaction_id %></li>
-     <li><b>transaction_status: </b><%= transaction_status %></li>
+     <li><b>Main event: </b><%= main_event %></li>
+     <li><b>Event date: </b><%= $.format.date(new Date(event_date), 'dd MMMM yyyy') %></li>
+     <li><b>Venue: </b><%= venue %></li>
+     <li><b>Opening time: </b><%= opening_time %></li>
+     <li><b>Age group: </b><%= age_group %></li>
+     <li><b>First name: </b><%= first_name %></li>
+     <li><b>Last name: </b><%= last_name %></li>
+     <li><b>Number of tickets: </b><%= number_of_tickets %>
+     <li><b>Ticket price: </b><%= ticket_price %></li>
+     <li><b>Transaction amount: </b><%= transaction_amount %></li>
    </ul>
 
 

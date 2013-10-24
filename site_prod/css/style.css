@@ -105,6 +105,10 @@ h4 {
 .view_number_of_tickets {
   overflow: auto;
 }
+#number_of_tickets #submit {
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
 #during_checkout_credit_card_details {
   width: 100%;
 }
@@ -300,6 +304,9 @@ h4 {
   margin-left: 10px;
   margin-right: 10px;
   float: left;
+}
+#account_billing_credit_card h5 {
+  display: inline;
 }
 #account_billing_credit_card  #account_change_cc {
   margin-top: 10px;
