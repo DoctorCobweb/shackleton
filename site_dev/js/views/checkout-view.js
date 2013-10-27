@@ -9,13 +9,18 @@ define([
     var CheckoutView = Backbone.View.extend({
       tagName: 'div',
 
+
       className: 'view_checkout_details',
+
 
       template: _.template(CheckoutHTML),
 
+
       events: {
-        'click #import_passbook_pass': 'importPassbookPass'
+        'click #import_pkpass': 'import_pkpass'
       },
+
+
 
       initialize: function () {
         console.log('in initialize() of checkout-view.js');
@@ -25,185 +30,147 @@ define([
         //device/browser the user is ...using...
         console.log('window.navigator.userAgent: ' + window.navigator.userAgent);
 
-        this.theUserAgent = this.findTheUserAgent();
-        console.log('theUserAgent is: ' + this.theUserAgent);
+        this.the_user_agent = this.find_the_user_agent();
+        console.log('the_user_agent is: ' + this.the_user_agent);
           
-        //add listener to this.model so the ui updates when server has 
-        //finished with transaction and hence filling out the model's fields
-        //n.b. when you use listenTo, the 'this' context in the callback refers
-        //to the 'this' of the listening object.
-        //in the case below, our callback is the view's render function and the
-        //context of the listening object is the view itself. tricky but vital to know
-        this.listenTo(this.model, 'change', this.updateHandler);
-
-
         this.current_view = this;
- 
       },
+
+
 
       render: function () {
         console.log('in checkout-view.js and render()');
- 
 
         this.$el.html(this.template(this.model.toJSON()));
 
+        this.$('#import_passbook_pass').css('display', 'block');
 
+        //uncomment after finished playng around with pkpass stuff.
+        /*
         //display pkpass link if user is on iphone/safari/mobile
-        if (this.theUserAgent === 'iPhone/Safari/Mobile') {
+        if (this.the_user_agent === 'iPhone/Safari/Mobile') {
           console.log('the user-agent is iPhone/Safari/Mobile. display pkpass link');
           console.log(this.$el);
           console.log(this.$('#import_passbook_pass'));
           this.$('#import_passbook_pass').css('display', 'block');
         }
+        */
 
 
         return this;
       },
 
-      updateHandler: function () {
-        console.log('in updateHandler() since this.model emitted a \'change\' event');
-
-        
-        if (this.model.get('transaction_status') === "submitted_for_settlement" 
-            && this.model.get('user_authenticated') === true) {
-
-          console.log('submitted_for_settlement and user __IS__ authorized.');
-          this.render();
-
-          // 
-
-          //create successful purchase view
-          //var theSuccessfulPurchaseView = new SuccessfulPurchaseView({
-          //  model:this.model};
 
 
-          //trigger a process to create an electronic ticket
+      //supported user agent types:
+      //browser: chrome, firefox, safari
+      //device: macintosh, iphone, ipad
+      find_the_user_agent: function () {
 
-          return;
-        }
-
-
-        //otherwise, handle the different status types returned from transaction
-        switch (this.model.get('transaction_status')) {
-          case "authorized":
-            console.log('switch block and transaction_status: authorized');
-            this.render();
-            break;
-          case "authorization_expired":
-            console.log('switch block and transaction_status: authorization_expired');
-            this.render();
-            break;
-          case "processor_declined":
-            console.log('switch block and transaction_status: processor_declined');
-            this.render();
-            break;
-          case "gateway_rejected":
-            console.log('switch block and transaction_status: gateway_rejected');
-            this.render();
-            break;
-          case "failed":
-            console.log('switch block and transaction_status: failed');
-            this.render();
-            break;
-          case "void":
-            console.log('switch block and transaction_status: void');
-            this.render();
-            break;
-          case "submitted_for_settlement":
-            console.log('switch block and transaction_status: submitted_for_settlement');
-            this.render();
-            break;
-          case "settling":
-            console.log('switch block and transaction_status: settling');
-            this.render();
-            break;
-          case "settled":
-            console.log('switch block and transaction_status: settled');
-            this.render();
-            break;
-          default:
-            console.log('switch block and in default handler'); 
-            this.render();
-            break;
-        }
-
-        return;
-      },
-
-      findTheUserAgent: function () {
-
-       //supported types:
-       //browser: chrome, firefox, safari
-       //device: macintosh, iphone, ipad
-
-       //check also for Mobile keyword in user-agent???
-
-
-       var ua_elaborate = window.navigator.userAgent;
-       var ua_extracted = '';
-
-       if (ua_elaborate.search(/macintosh/i) !== -1 
-                && ua_elaborate.search(/chrome/i) !== -1 ) 
-       {
-         ua_extracted = 'Macintosh/Chrome';
-       }
-       else if (ua_elaborate.search(/macintosh/i) !== -1 
-                && ua_elaborate.search(/firefox/i) !== -1 ) 
-       {
-         ua_extracted = 'Macintosh/Firefox';
-       }
-       else if (ua_elaborate.search(/macintosh/i) !== -1 
-                && ua_elaborate.search(/safari/i) !== -1 ) 
-       {
-         ua_extracted = 'Macintosh/Safari';
-       }
-       else if (ua_elaborate.search(/iphone/i) !== -1 
-                && ua_elaborate.search(/chrome/i) !== -1 
-                && ua_elaborate.search(/mobile/i) !== -1 ) 
-       {
-         ua_extracted = 'iPhone/Chrome/Mobile';
-       }
-       else if (ua_elaborate.search(/iphone/i) !== -1 
-                && ua_elaborate.search(/firefox/i) !== -1
-                && ua_elaborate.search(/mobile/i) !== -1 ) 
-       {
-         ua_extracted = 'iPhone/Firefox/Mobile';
-       }
-       else if (ua_elaborate.search(/iphone/i) !== -1 
-                && ua_elaborate.search(/safari/i) !== -1
-                && ua_elaborate.search(/mobile/i) !== -1 ) 
-       {
-         ua_extracted = 'iPhone/Safari/Mobile';
-       }
-       else if (ua_elaborate.search(/ipad/i) !== -1 
-                && ua_elaborate.search(/chrome/i) !== -1
-                && ua_elaborate.search(/mobile/i) !== -1)
-       {
-         ua_extracted = 'iPad/Chrome/Mobile';
-       }
-       else if (ua_elaborate.search(/ipad/i) !== -1 
-                && ua_elaborate.search(/firefox/i) !== -1
-                && ua_elaborate.search(/mobile/i) !== -1)
-       {
-         ua_extracted = 'iPad/Firefox/Mobile';
-       }
-       else if (ua_elaborate.search(/ipad/i) !== -1 
-                && ua_elaborate.search(/safari/i) !== -1
-                && ua_elaborate.search(/mobile/i) !== -1)
-       {
-         ua_extracted = 'iPad/Safari/Mobile';
-       }
-       else {
-         ua_extracted = 'unable_to_determine_user_agent_extracted';
-       } 
+        //TODO:
+        //check also for Mobile keyword in user-agent???
  
-       return ua_extracted;
+        var ua_elaborate = window.navigator.userAgent;
+        var ua_extracted = '';
+ 
+        if (ua_elaborate.search(/macintosh/i) !== -1 
+                 && ua_elaborate.search(/chrome/i) !== -1 ) 
+        {
+          ua_extracted = 'Macintosh/Chrome';
+        }
+        else if (ua_elaborate.search(/macintosh/i) !== -1 
+                 && ua_elaborate.search(/firefox/i) !== -1 ) 
+        {
+          ua_extracted = 'Macintosh/Firefox';
+        }
+        else if (ua_elaborate.search(/macintosh/i) !== -1 
+                 && ua_elaborate.search(/safari/i) !== -1 ) 
+        {
+          ua_extracted = 'Macintosh/Safari';
+        }
+        else if (ua_elaborate.search(/iphone/i) !== -1 
+                 && ua_elaborate.search(/chrome/i) !== -1 
+                 && ua_elaborate.search(/mobile/i) !== -1 ) 
+        {
+          ua_extracted = 'iPhone/Chrome/Mobile';
+        }
+        else if (ua_elaborate.search(/iphone/i) !== -1 
+                 && ua_elaborate.search(/firefox/i) !== -1
+                 && ua_elaborate.search(/mobile/i) !== -1 ) 
+        {
+          ua_extracted = 'iPhone/Firefox/Mobile';
+        }
+        else if (ua_elaborate.search(/iphone/i) !== -1 
+                 && ua_elaborate.search(/safari/i) !== -1
+                 && ua_elaborate.search(/mobile/i) !== -1 ) 
+        {
+          ua_extracted = 'iPhone/Safari/Mobile';
+        }
+        else if (ua_elaborate.search(/ipad/i) !== -1 
+                 && ua_elaborate.search(/chrome/i) !== -1
+                 && ua_elaborate.search(/mobile/i) !== -1)
+        {
+          ua_extracted = 'iPad/Chrome/Mobile';
+        }
+        else if (ua_elaborate.search(/ipad/i) !== -1 
+                 && ua_elaborate.search(/firefox/i) !== -1
+                 && ua_elaborate.search(/mobile/i) !== -1)
+        {
+          ua_extracted = 'iPad/Firefox/Mobile';
+        }
+        else if (ua_elaborate.search(/ipad/i) !== -1 
+                 && ua_elaborate.search(/safari/i) !== -1
+                 && ua_elaborate.search(/mobile/i) !== -1)
+        {
+          ua_extracted = 'iPad/Safari/Mobile';
+        }
+        else {
+          ua_extracted = 'unable_to_determine_user_agent_extracted';
+        } 
+  
+        return ua_extracted;
       },
 
-      importPassbookPass: function () {
-        console.log('in importPassbookPass handler');
 
+      import_pkpass: function () {
+        console.log('in import_pkpass handler');
+
+        var self = this;
+        var gig = self.model.get('gig_id');
+        var order = self.model.get('_id');
+
+        var the_url  = 'api/mobile_tickets/pkpass?' 
+                    + 'gig_id=' + this.model.get('gig_id') + '&'
+                    + 'order_id=' + this.model.get('_id') + '&'
+                    + 'order_first_name=' + this.model.get('first_name') + '&'
+                    + 'order_last_name=' + this.model.get('last_name') + '&'
+                    + 'order_main_event=' + this.model.get('main_event') + '&'
+                    + 'order_number_of_tickets=' + this.model.get('number_of_tickets')+'&'                    + 'order_transaction_status=' + this.model.get('transaction_status');
+
+        $.ajax({
+          //url: '/api/mobile_tickets/pkpass?' + 'gig=' + gig + '&order=' + order,
+          url: the_url,
+          type: 'GET',
+          success: function (data, textStatus, jqXHR) {
+            console.log('SUCCESS: got pkpass mobile ticket response');
+            console.dir(data);
+            console.log(textStatus);
+            console.dir(jqXHR);
+
+
+
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            console.log('ERROR: could not get pkpass mobile ticket response');
+            console.dir(jqXHR);
+            console.log(textStatus);
+            console.dir(errorThrown);
+   
+            self.render();
+          }
+        });
       },
+
 
 
       show_view: function (selector, view) {

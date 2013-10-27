@@ -1,6 +1,7 @@
 /*
  *
- * Generates the Apple iOS pkpass for Passbook app on users device
+ * Generates mobile tickets...
+ * at the moment it is only Apple iOS pkpass for Passbook
  *
  */
 
@@ -11,13 +12,17 @@ var request = require('request');
 
 var manifest_content = {};
 
-
 module.exports = function (mongoose, shackleton_conn, app){
 
 
+
+  //******************** ROUTE HANDLER **************************************
+
   //querystring is gig=.....&order=......
-  app.get('/api/etix/pkpass', function (req, res) {
-    console.log('in GET /api/etix/pkpass');
+  app.get('/api/mobile_tickets/pkpass', function (req, res) {
+    console.log('in GET /api/mobile_tickets/pkpass');
+    console.log('querystring params are: ');
+    console.log(req.query);
 
     //use gig_id and order_id to find the correct bucket and directory (in bucket) on
     //AWS S3.
@@ -38,20 +43,55 @@ module.exports = function (mongoose, shackleton_conn, app){
     //pkpass_server->EBS->S3 storage?
     //
 
+
+
     //make a GET request to another application on heroku which is dedicated to making the
     //digital tickets.
-    request('https://powerful-dawn-9566.herokuapp.com/api/apple/',
+
+    //the_james_caird app on heroku endpoint:
+    var base_url = 'https://powerful-dawn-9566.herokuapp.com';
+    //var base_url = 'http://localhost:5001';
+    var path     = '/api/apple?';
+    var _querystring =   'gig_id=' + req.query.gig_id 
+                       + '&' 
+                       + 'order_id=' + req.query.order_id 
+                       + '&'
+                       + 'order_first_name=' + req.query.order_first_name 
+                       + '&'
+                       + 'order_last_name=' + req.query.order_last_name 
+                       + '&'
+                       + 'order_main_event=' + req.query.order_main_event 
+                       + '&'
+                       + 'order_number_of_tickets=' + req.query.order_number_of_tickets 
+                       + '&'
+                       + 'order_transaction_status=' + req.query.order_transaction_status;
+
+    var the_url = base_url + path  + _querystring;
+
+    console.log('calling THE_JAMES_BAIRD app, url: ' + the_url);
+
+    request(the_url,
       function (error, response, body) {
         if (!error && response.statusCode == 200) {
-          console.log(body) // Print the tiklet.me web page.
+
+          //TODO: how to handle this res type for an ajax call...
+          //is the pkpass. content-type: application/vnd.apple.pkpass
+          console.log('got a response from THE_JAMES_CAIRD app:');
+          //console.log(body);
+
+          //send the body of the response from the_james_caird back to ajax call in
+          //checkout-view.js
           return res.send(body);
         }
     })
 
-
   });
 
-  
+
+
+  //******************** ROUTE HANDLER **************************************
+
+  //TODO: refactor this to get rid of waterfall code.
   app.get('/api/etix/pkpass/:gig_id', function (req, res) {
 
     var pass_name = req.params['gig_id'] + '.pkpass';
@@ -114,7 +154,8 @@ module.exports = function (mongoose, shackleton_conn, app){
               console.log('Pkpass:[' + req.params['gig_id'] + ']' 
                 + 'manifest_content.' + file_name + '=' + manifest_content[file_name]);  
 
-              fs.writeFile( wrk_dir + 'manifest.json', JSON.stringify(manifest_content), function(err){
+              fs.writeFile( wrk_dir + 'manifest.json', JSON.stringify(manifest_content), 
+                function(err){
         	      if (err) {
         	        throw err;
         	      } else {
@@ -203,7 +244,9 @@ module.exports = function (mongoose, shackleton_conn, app){
           + 'OPENSSL_ERROR: Could not make passcertificate.pem'+ stderr);
       }
     });
-  
-
   }); // end app.get
+
+
+
+
 }; // end module.exports

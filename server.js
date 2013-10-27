@@ -9,18 +9,25 @@
 //
 //MODULE DEPENDENCIES:
 var application_root = __dirname,
-    express = require('express'), //web framework
-    path = require('path'), //utility for dealing with file paths
+    express = require('express'),
+    path = require('path'),
     format = require('util').format,
     fs = require('fs'),
     https = require('https'),
     mongoose = require('mongoose'),
     RedisStore = require('connect-redis')(express),
     //redis = require('redis'),
-    //pass = require('./server-routes/pass'),
     email_services = require('./services/email_services'),
-    express_validator = require('express-validator');
+    express_validator = require('express-validator'),
+    AWS = require('aws-sdk');
+    //request = require('request');
 
+
+
+//setup AWS stuff
+AWS.config.update({"accessKeyId": process.env.AWS_ACCESS_KEY_ID,
+                   "secretAccessKey": process.env.AWS_SECRET_ACCESS_KEY,
+                   "region": process.env.AWS_REGION});
 
 
 
@@ -28,7 +35,6 @@ var application_root = __dirname,
 //port 5000.
 var port = process.env.PORT || 5000;
 console.log('process.env.PORT: ' + process.env.PORT);
-
 
 
 
@@ -186,10 +192,10 @@ app.configure(function () {
   //app.use call is uncommented it will use that & ignore site_dev static folder even 
   //when it is uncommented also (!)
   //uncomment this to use production, optimized, code from r.js process
-  app.use(express.static(path.join(application_root, 'site_prod')));
+  //app.use(express.static(path.join(application_root, 'site_prod')));
 
   //this sets the app to serve development code which is _not_ optimized 
-  //app.use(express.static(path.join(application_root, 'site_dev')));
+  app.use(express.static(path.join(application_root, 'site_dev')));
 
   app.use(express.errorHandler({dumpExceptions: true, showStack: true}));
 });
@@ -244,17 +250,16 @@ require('./server-routes/orders-routes')(mongoose, shackleton_conn, app, Order, 
 
 //a crude way of implementing the mobile pass route for iphone users
 //app.get('/api/electronic_tickets/pkpass/:gig_id', pass.generate_pass(gig_id));
-require('./server-routes/pkpass')(mongoose, shackleton_conn, app);
+//require('./server-routes/pkpass')(mongoose, shackleton_conn, app);
+require('./server-routes/mobile_tickets')(mongoose, shackleton_conn, app);
 
+/*
 //a crude way of implementing the mobile pass route for android users
 app.get('/api/electronic_tickets/google_wallet', function (req, res) {
  return res.end('in GET /api/electronic_tickets/google_wallet. not implemented yet!!!');
 });
+*/
 
-
-//--------start EXPERIMENTAL SECTION --------------------
-
-//--------end EXPERIMENTAL SECTION --------------------
 
 
 if (process.env.NODE_ENV === 'production') {

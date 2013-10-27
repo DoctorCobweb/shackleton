@@ -67,19 +67,20 @@ define([
 
         //show busy spinner until fetching gigs completes
         this.spinner_opts = {
-          lines:11, // The number of lines to draw
-          length: 13, // The length of each line
-          width: 4, // The line thickness
-          radius: 11, // The radius of the inner circle
+          lines:15, // The number of lines to draw
+          length: 20, // The length of each line
+          width: 6, // The line thickness
+          radius: 25, // The radius of the inner circle
           corners: 1, // Corner roundness (0..1)
-          rotate: 0, // The rotation offset
+          rotate: 56, // The rotation offset
           direction: -1, // 1: clockwise, -1: counterclockwise
-          color: ['rgb(255, 255, 0)', //yellow
-                  'rgb(255, 165, 0)', //orange
-                  'rgb(255, 69,  0)'  //dark orange
-                 ], // #rgb or #rrggbb or array of colors
+          color: 'rgb(255, 255, 255)', //white #rgb or #rrggbb or array of colors
+          //color: ['rgb(255, 255, 0)', //yellow
+          //        'rgb(255, 165, 0)', //orange
+          //        'rgb(255, 69,  0)'  //dark orange
+          //       ], // #rgb or #rrggbb or array of colors
           speed: 1, // Rounds per second
-          trail: 24, // Afterglow percentage
+          trail: 10, // Afterglow percentage
           shadow: false, // Whether to render a shadow
           hwaccel: false, // Whether to use hardware acceleration
           className: 'spinner', // The CSS class to assign to the spinner
@@ -228,8 +229,10 @@ define([
       submit: function () {
         var self = this;
 
+        //this.$('#account_billing_update_cc_details').html('');
         var target = document.getElementById('account_billing_update_cc_details');
         var spinner = new Spinner(this.spinner_opts).spin(target);
+       
 
 
         $.ajax({

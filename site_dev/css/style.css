@@ -652,7 +652,8 @@ h3 {
 
 
 div.footer {
-  background-color: #53514D; /* blue grey */
+  /* background-color: #53514D; blue grey */
+  background-color: #111110; 
   clear: both;
   min-height: 200px;
   /* background-color: #42414B; */
