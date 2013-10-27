@@ -1,9 +1,8 @@
 <div id="checkout_details">
   <h2>Successful ticket purchase</h2>
 
-  <!-- SHOULD ONLY SHOW THIS LINK TO PASS TO IPHONE/SAFARI/MOBILE USERS-->
-  <a href="/api/etix/pkpass/<%= gig_id %>" id="import_passbook_pass"><div>iPhone/Safari/Mobile: Import ticket to Passbook App</div></a>
 
+  <div class="proceed" id="import_pkpass">IPHONE/SAFARI/MOBILE: IMPORT TICKET TO MOBILE PASSBOOK APP</div>
 
 <!--
     <p>SHOULD ONLY SHOW THIS LINK TO PASS TO ANDROID/CHROME/MOBILE USERS</p>
@@ -14,6 +13,7 @@
 
   <ul>
     <li><b>_id: </b><%= _id %></li>
+    <li><b>Gig id: </b><%= gig_id %></li>
     <li><b>Main event: </b><%= main_event %></li>
     <li><b>Event date: </b><%= $.format.date(new Date(event_date), 'dd MMMM yyyy') %></li>
     <li><b>Venue: </b><%= venue %></li>

@@ -463,7 +463,8 @@ h3 {
 .footer_sections .section ul li a:active {
 }
 div.footer {
-  background-color: #53514D; 
+  
+  background-color: #111110; 
   clear: both;
   min-height: 200px;
   
