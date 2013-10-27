@@ -148,11 +148,10 @@ define([
                     + 'order_number_of_tickets=' + this.model.get('number_of_tickets')+'&'                    + 'order_transaction_status=' + this.model.get('transaction_status');
 
         $.ajax({
-          //url: '/api/mobile_tickets/pkpass?' + 'gig=' + gig + '&order=' + order,
           url: the_url,
           type: 'GET',
           success: function (data, textStatus, jqXHR) {
-            console.log('SUCCESS: got pkpass mobile ticket response');
+            console.log('SUCCESS: pkpass mobile ticket response from THE_JAMES_CAIRD');
             console.dir(data);
             console.log(textStatus);
             console.dir(jqXHR);
@@ -161,7 +160,7 @@ define([
 
           },
           error: function (jqXHR, textStatus, errorThrown) {
-            console.log('ERROR: could not get pkpass mobile ticket response');
+            console.log('ERROR: not get pkpass mobile tix response THE_JAMES_CAIRD');
             console.dir(jqXHR);
             console.log(textStatus);
             console.dir(errorThrown);
