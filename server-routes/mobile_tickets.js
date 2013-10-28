@@ -43,6 +43,8 @@ module.exports = function (mongoose, shackleton_conn, app){
     //pkpass_server->EBS->S3 storage?
     //
 
+    console.log('the req object is: ');
+    console.log(req);
 
 
     //make a GET request to another application on heroku which is dedicated to making the
@@ -84,8 +86,9 @@ module.exports = function (mongoose, shackleton_conn, app){
 
           //try to set the response header to have Access-Control-Allow-Origin: '*'
           //var blah = 'Access-Control-Allow-Origin';
-          //response.headers[blah] = '*';
-          console.log(response);
+          //response.headers[blah] = 'https://localhost:5000';
+          console.log('response.headers');
+          console.log(response.headers);
 
           //return res.send(response);
           return res.redirect(response.body);
@@ -97,6 +100,7 @@ module.exports = function (mongoose, shackleton_conn, app){
 
 
 
+  /*
   //******************** ROUTE HANDLER **************************************
 
   //TODO: refactor this to get rid of waterfall code.
@@ -253,6 +257,7 @@ module.exports = function (mongoose, shackleton_conn, app){
       }
     });
   }); // end app.get
+  */
 
 
 

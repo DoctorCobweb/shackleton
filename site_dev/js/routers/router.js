@@ -159,6 +159,7 @@ define([
          */
 
 
+        /*
         Backbone.on('order:pkpass_available', function (pkpass_url) {
           console.log('CUSTOM_EVENT(order:pkpass_available), heard)');
           console.log('CUSTOM_EVENT(order:pkpass_available), heard): ' + 
@@ -168,6 +169,7 @@ define([
 
 
         }, this);
+        */
 
 
         //views which are generated after ajax call in another view. ie. the new view

@@ -148,16 +148,23 @@ define([
                     + 'order_main_event=' + this.model.get('main_event') + '&'
                     + 'order_number_of_tickets=' + this.model.get('number_of_tickets')+'&'                    + 'order_transaction_status=' + this.model.get('transaction_status');
 
+
+        //how to set a header in the ajax request?
+
         $.ajax({
           url: the_url,
           type: 'GET',
           crossDomain: true,
-          //dataType: 'jsonp',
           success: function (data, textStatus, jqXHR) {
             console.log('SUCCESS: pkpass mobile ticket response from THE_JAMES_CAIRD');
+
+            //data will be the raw buffer contents of the downloaded pkpass from aws
+            //because weve said return res.redirect(response.body) in mobile_tickets.js
             console.dir(data);
             console.log(textStatus);
             console.dir(jqXHR);
+
+
 
             //data.body is the pre-signed aws url of the pkpass available for download!
             //emit event saying the pkpass is avail for download so router hears it and
