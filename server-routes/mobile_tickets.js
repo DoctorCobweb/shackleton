@@ -70,6 +70,7 @@ module.exports = function (mongoose, shackleton_conn, app){
 
     console.log('calling THE_JAMES_BAIRD app, url: ' + the_url);
 
+    //make the call to THE_JAMES_BAIRD app
     request(the_url,
       function (error, response, body) {
         if (!error && response.statusCode == 200) {
@@ -77,11 +78,18 @@ module.exports = function (mongoose, shackleton_conn, app){
           //TODO: how to handle this res type for an ajax call...
           //is the pkpass. content-type: application/vnd.apple.pkpass
           console.log('got a response from THE_JAMES_CAIRD app:');
-          //console.log(body);
+          console.log('response.headers:');
+          console.log(response.headers);
+          //console.log(body); //buffer
 
-          //send the body of the response from the_james_caird back to ajax call in
-          //checkout-view.js
-          return res.send(body);
+          //try to set the response header to have Access-Control-Allow-Origin: '*'
+          //var blah = 'Access-Control-Allow-Origin';
+          //response.headers[blah] = '*';
+          console.log(response);
+
+          //return res.send(response);
+          return res.redirect(response.body);
+          //return res.send(response);
         }
     })
 

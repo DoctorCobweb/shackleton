@@ -132,6 +132,7 @@ define([
       },
 
 
+      //called when user clicks the import_pkpass <div>
       import_pkpass: function () {
         console.log('in import_pkpass handler');
 
@@ -150,12 +151,20 @@ define([
         $.ajax({
           url: the_url,
           type: 'GET',
+          crossDomain: true,
+          //dataType: 'jsonp',
           success: function (data, textStatus, jqXHR) {
             console.log('SUCCESS: pkpass mobile ticket response from THE_JAMES_CAIRD');
             console.dir(data);
             console.log(textStatus);
             console.dir(jqXHR);
 
+            //data.body is the pre-signed aws url of the pkpass available for download!
+            //emit event saying the pkpass is avail for download so router hears it and
+            //triggers the route handler
+            //Backbone.trigger('order:pkpass_available', data.body);
+
+            //window.location.href = data.body;
 
 
           },

@@ -158,6 +158,18 @@ define([
          *
          */
 
+
+        Backbone.on('order:pkpass_available', function (pkpass_url) {
+          console.log('CUSTOM_EVENT(order:pkpass_available), heard)');
+          console.log('CUSTOM_EVENT(order:pkpass_available), heard): ' + 
+                       'parameter(pkpass_url): ' + pkpass_url);
+          
+          this.navigate(pkpass_url, {trigger:true});
+
+
+        }, this);
+
+
         //views which are generated after ajax call in another view. ie. the new view
         //does not have an associated route handler in router.js
         Backbone.on('router:set_current_view', function (the_current_view) {
