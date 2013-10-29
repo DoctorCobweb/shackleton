@@ -141,12 +141,11 @@ define([
         var order = self.model.get('_id');
 
         var the_url  = 'api/mobile_tickets/pkpass?' 
-                    + 'gig_id=' + this.model.get('gig_id') + '&'
-                    + 'order_id=' + this.model.get('_id') + '&'
-                    + 'order_first_name=' + this.model.get('first_name') + '&'
-                    + 'order_last_name=' + this.model.get('last_name') + '&'
-                    + 'order_main_event=' + this.model.get('main_event') + '&'
-                    + 'order_number_of_tickets=' + this.model.get('number_of_tickets')+'&'                    + 'order_transaction_status=' + this.model.get('transaction_status');
+                    + 'gig_id=' + this.model.get('gig_id')
+                    + '&order_id=' + this.model.get('_id')
+                    + '&order_first_name=' + this.model.get('first_name')                                     + '&order_last_name=' + this.model.get('last_name')
+                    + '&order_main_event=' + this.model.get('main_event')
+                    + '&order_number_of_tickets=' + this.model.get('number_of_tickets')                       + '&order_transaction_status=' + this.model.get('transaction_status');
 
         //TODO
         //this version of getting the pkass via ajax and triggering a download (like the
