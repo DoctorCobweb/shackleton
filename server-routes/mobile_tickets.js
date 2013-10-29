@@ -51,8 +51,8 @@ module.exports = function (mongoose, shackleton_conn, app){
     //digital tickets.
 
     //the_james_caird app on heroku endpoint:
-    //var base_url = 'https://powerful-dawn-9566.herokuapp.com';
-    var base_url = 'http://localhost:5001';
+    var base_url = 'https://powerful-dawn-9566.herokuapp.com';
+    //var base_url = 'http://localhost:5001';
     var path     = '/api/apple?';
     var _querystring =   'gig_id=' + req.query.gig_id 
                        + '&' 
