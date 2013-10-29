@@ -148,9 +148,9 @@ define([
                     + 'order_main_event=' + this.model.get('main_event') + '&'
                     + 'order_number_of_tickets=' + this.model.get('number_of_tickets')+'&'                    + 'order_transaction_status=' + this.model.get('transaction_status');
 
-
-        //how to set a header in the ajax request?
-
+        //TODO
+        //this version of getting the pkass via ajax and triggering a download (like the
+        //(<a> link version of getting the pkpass) is NOT WORKING yet. 
         $.ajax({
           url: the_url,
           type: 'GET',
