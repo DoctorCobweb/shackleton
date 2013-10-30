@@ -28,8 +28,11 @@ module.exports = function (mongoose, shackleton_conn, app){
     //make a GET request to another application on heroku which is dedicated to making the
     //digital tickets.
     //the_james_caird app on heroku endpoint:
-    var base_url = 'https://powerful-dawn-9566.herokuapp.com';
-    //var base_url = 'http://localhost:5001';
+    //var base_url = 'https://powerful-dawn-9566.herokuapp.com';
+    //console.log('THE_JAMES_CAIRD: the base_url: '
+    //            + 'https://powerful-dawn-9566.herokuapp.com');
+    var base_url = 'http://localhost:5001';
+    console.log('THE_JAMES_CAIRD: base_url: http://localhost:5001');
     var path     = '/api/apple?';
     var _querystring =   'gig_id=' + req.query.gig_id 
                        + '&' 
@@ -47,9 +50,12 @@ module.exports = function (mongoose, shackleton_conn, app){
 
     console.log('calling THE_JAMES_BAIRD app, url: ' + the_url);
     var the_url = base_url + path  + _querystring;
-    var WRK_DIR;
+    var WRK_DIR; //this will be something like tmp3476 (tmp with random int suffix)
 
     //make a tmp dir for the streamed in pkpass
+    //you dont want to make the pkpasses all in the same dir because if a request comes
+    //in for a new pkpass whilst one is already being made it will overwrite the contents
+    //better to make a tmp dir, do your stuff, after success then remove tmp dir
     create_tmp_dir();
 
     //Returns a random integer between min and max
@@ -88,19 +94,19 @@ module.exports = function (mongoose, shackleton_conn, app){
         } else {
           console.log('making ' + WRK_DIR + '  dir');
   
-          //now get the list of all the files from S3 for the gig in question
-          //get_the_list_of_files_from_s3();
-
           var the_pass = fs.createWriteStream(WRK_DIR + 'shackleton_pass.pkpass');
       
           //THE IMPORTANT: USING STREAMS: get the pkpass and give it back to client side
           //method chaining the Streams and event handlers
+          //nb. using the callback in request(url, callback) doesnt seem to 
+          //work for me, it resulted in a much larger file being transferrer. 
+          //because of headers being included also?
           request(the_url)
             .on('data', function (chunk) {
-              console.log('DATA EVENT');
+              console.log('request(the_url) Read stream: DATA EVENT');
             })
             .on('end', function () {
-              console.log('END EVENT');
+              console.log('request(the_url) Read stream: END EVENT');
               res.contentType('application/vnd.apple.pkpass');
               res.download(WRK_DIR + 'shackleton_pass.pkpass');
             })
@@ -109,89 +115,6 @@ module.exports = function (mongoose, shackleton_conn, app){
         }
       });
     }
-
-
-
-
-    /*
-    //var the_pass = fs.createWriteStream('./' + 'tmp' + get_random_int(1000, 9999) +  
-    //                                    + '/shackleton_pass.pkpass');
-    var the_pass = fs.createWriteStream('./shackleton_pass.pkpass');
-
-    //THE IMPORTANT: USING STREAMS: get the pkpass and give it back to client side
-    //method chaining the Streams and event handlers
-    request(the_url)
-      .on('data', function (chunk) {
-        console.log('DATA EVENT');
-      })
-      .on('end', function () {
-        console.log('END EVENT');
-        res.contentType('application/vnd.apple.pkpass');
-        res.download('./shackleton_pass.pkpass');
-      })
-      .pipe(the_pass);
-    */
-
-
-
-
-    /*
-    var request_read_stream = request(the_url); //output is a read Stream
-    //now, get the pass and stream it to the_pass
-    request_read_stream.pipe(the_pass);
-
-    request_read_stream.on('data', function (chunk) {
-      console.log('got data event');
-    });
-
-    request_read_stream.on('end', function (chunk) {
-      console.log('got end event');
-
-      //now that the file has been completely streamed to fs, send it back to the 
-      //tikelt.me/shackleton app.
-      //make sure to set the content-type header to be that for pkpass
-      res.contentType('application/vnd.apple.pkpass');
-      res.download('./shackleton_pass.pkpass');
-    });
-    */
-
-
-
-    /*
-    //THIS DOES NOT WORK. makes a pkpass much larger in size than expected resulting in
-    //an unopenable file.
-    //make the call to THE_JAMES_BAIRD app
-    request(the_url,
-      function (error, response, body) {
-        if (!error && response.statusCode == 200) {
-
-          //TODO: how to handle this res type for an ajax call...
-          //is the pkpass. content-type: application/vnd.apple.pkpass
-          console.log('got a response from THE_JAMES_CAIRD app:');
-          console.log('response.headers:');
-          console.log(response.headers);
-          console.log('body:::::');
-          //console.log(body);
-
-          //try to set the response header to have Access-Control-Allow-Origin: '*'
-          //var blah = 'Access-Control-Allow-Origin';
-          //response.headers[blah] = 'https://localhost:5000';
-
-          fs.writeFile('./shackleton_pass.pkpass', body, function (err) {
-            if (err) {
-              throw err;
-            }
-            console.log('successfully created ./shackleton_pass.pkpass file');
- 
-          }); 
-          
-          //fs.createReadStream(body).pipe(the_pkpass);
-          //return res.send(response);
-          //return res.redirect(response.body);
-
-        }
-    });
-    */
 
   });
 
