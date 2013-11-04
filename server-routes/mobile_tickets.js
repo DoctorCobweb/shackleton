@@ -29,10 +29,10 @@ module.exports = function (mongoose, shackleton_conn, app){
     //digital tickets.
     //the_james_caird app on heroku endpoint:
     //var base_url = 'https://powerful-dawn-9566.herokuapp.com';
-    console.log('THE_JAMES_CAIRD: the base_url: '
-                + 'https://powerful-dawn-9566.herokuapp.com');
-    //var base_url = 'http://localhost:5001';
-    //console.log('THE_JAMES_CAIRD: base_url: http://localhost:5001');
+    //console.log('THE_JAMES_CAIRD: the base_url: '
+    //            + 'https://powerful-dawn-9566.herokuapp.com');
+    var base_url = 'http://localhost:5001';
+    console.log('THE_JAMES_CAIRD: base_url: http://localhost:5001');
     var path     = '/api/apple?';
     var _querystring =   'gig_id=' + req.query.gig_id 
                        + '&' 
@@ -48,8 +48,8 @@ module.exports = function (mongoose, shackleton_conn, app){
                        + '&'
                        + 'order_transaction_status=' + req.query.order_transaction_status;
 
-    console.log('calling THE_JAMES_BAIRD app, url: ' + the_url);
     var the_url = base_url + path  + _querystring;
+    console.log('calling THE_JAMES_BAIRD app, url: ' + the_url);
     var WRK_DIR; //this will be something like tmp3476 (tmp with random int suffix)
 
     //make a tmp dir for the streamed in pkpass
@@ -108,13 +108,37 @@ module.exports = function (mongoose, shackleton_conn, app){
             .on('end', function () {
               console.log('request(the_url) Read stream: END EVENT');
               res.contentType('application/vnd.apple.pkpass');
-              res.download(WRK_DIR + 'shackleton_pass.pkpass');
+              res.download(WRK_DIR + 'shackleton_pass.pkpass', function (err) {
+                if(err) {
+                  return callback(err); 
+                }
+                rm_the_tmp_dir();
+              });
             })
             .pipe(the_pass);
       
         }
       });
     }
+
+    //not currently called
+    function rm_the_tmp_dir() {
+      console.log('attempting to remove the tmp dir and its contents: ' + WRK_DIR);
+
+      //SYNC HACK. does it intro bug?
+      var files_in_tmp = [];
+      console.log('reading dir..');
+      files_in_tmp = fs.readdirSync(WRK_DIR);
+
+      for (var l in files_in_tmp) {
+        console.log(files_in_tmp[l]);
+        fs.unlinkSync(WRK_DIR + files_in_tmp[l]);
+      }
+      fs.rmdirSync(WRK_DIR);
+
+    }
+ 
+
 
   });
 
