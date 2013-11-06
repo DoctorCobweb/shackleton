@@ -77,6 +77,7 @@ define([
         //2. user has tried to buy diff gig and already has a set resere_tickets cookie
         this.reserved_order_id = null;
 
+        
 
         //release tickets on window close, tab close or navigate away to another domain
         $(window).on('beforeunload', function () {
