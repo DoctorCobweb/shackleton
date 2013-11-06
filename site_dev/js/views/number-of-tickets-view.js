@@ -289,6 +289,7 @@ define([
             console.dir(xhr);
 
             alert('ERROR: ajax callback: could not save the new_order model.');
+            alert(xhr);
             //self.render();
           }
         }); 
