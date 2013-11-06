@@ -42,8 +42,8 @@ js/collections/ordersCollection.js
 js/lib/braintree.js
 text!tpl/CreditCardDetailsView.html
 text!tpl/CheckoutView.html
-js/views/checkout-view.js
 text!tpl/SuccessfulUserFeedback.html
+js/views/checkout-view.js
 text!tpl/NegativeUserFeedback.html
 js/lib/cookie_util.js
 js/lib/spin.js

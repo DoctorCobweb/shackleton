@@ -99,6 +99,9 @@ h4 {
   margin-top: 20px;
   width: 100%;
 }
+#checkout_details #import_pkpass_link {
+  display: none;
+}
 .view_checkout_details {
   overflow: auto;
 }
@@ -377,6 +380,9 @@ h3 {
   height: 400px;
   width: 1280px;
 }
+#legal_footer {
+  font-size: 10px;
+}
 .footer_heading {
   font-size: 13px;
   color: #A36A3D;
@@ -477,9 +483,6 @@ body {
 }
 #account {
   display: none;
-}
-#import_passbook_pass {
-   display: none; 
 }
 .creditCardDetails {
   margin: 10px

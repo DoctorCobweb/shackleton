@@ -129,6 +129,11 @@ h4 {
 }
 
 
+#checkout_details #import_pkpass_link {
+  display: none;
+}
+
+
 .view_checkout_details {
   overflow: auto;
 }
@@ -523,6 +528,11 @@ h3 {
 }
 
 
+#legal_footer {
+  font-size: 10px;
+}
+
+
 .footer_heading {
   font-size: 13px;
   color: #A36A3D;
@@ -673,9 +683,6 @@ body {
 }
 
 
-#import_passbook_pass {
-   display: none; 
-}
 
 
 .creditCardDetails {

@@ -3,9 +3,10 @@
 
 define([
     'backbone',
-    'text!tpl/CheckoutView.html'
+    'text!tpl/CheckoutView.html',
+    'text!tpl/SuccessfulUserFeedback.html'
   ],
-  function (Backbone, CheckoutHTML) {
+  function (Backbone, CheckoutHTML, SuccessfulUserFeedbackHTML) {
     var CheckoutView = Backbone.View.extend({
       tagName: 'div',
 
@@ -17,7 +18,8 @@ define([
 
 
       events: {
-        'click #import_pkpass': 'import_pkpass'
+        //'click #import_pkpass': 'import_pkpass',
+        'click #import_pkpass_link': 'import_pkpass_link'
       },
 
 
@@ -43,19 +45,22 @@ define([
 
         this.$el.html(this.template(this.model.toJSON()));
 
-        this.$('#import_passbook_pass').css('display', 'block');
+        //this.$('#import_passbook_pass').css('display', 'block');
+    
+        //for dev purposes
+        this.$('#import_pkpass_link').css('display', 'block');
 
         //uncomment after finished playng around with pkpass stuff.
-        /*
         //display pkpass link if user is on iphone/safari/mobile
+        //alert(this.the_user_agent);
+        /*
         if (this.the_user_agent === 'iPhone/Safari/Mobile') {
           console.log('the user-agent is iPhone/Safari/Mobile. display pkpass link');
           console.log(this.$el);
-          console.log(this.$('#import_passbook_pass'));
-          this.$('#import_passbook_pass').css('display', 'block');
+          //console.log(this.$('#import_passbook_pass'));
+          this.$('#import_pkpass_link').css('display', 'block');
         }
         */
-
 
         return this;
       },
@@ -132,6 +137,18 @@ define([
       },
 
 
+      import_pkpass_link: function () {
+        //hide the <a> after clicking it to avoid multiple submittions
+        this.$('#import_pkpass_link').css('display', 'none');
+        this.$('#checkout_details').prepend(_.template(SuccessfulUserFeedbackHTML)({
+          'success': 'Importing your pass now...'}));
+ 
+
+      },
+
+
+
+      //NOT USED CURRENTLY
       //called when user clicks the import_pkpass <div>
       import_pkpass: function () {
         console.log('in import_pkpass handler');

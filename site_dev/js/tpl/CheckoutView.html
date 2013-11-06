@@ -1,13 +1,16 @@
 <div id="checkout_details">
   <h2>Successful ticket purchase</h2>
-
+  <p></p>
+  <h3>Important information</h3>
+  <p>A pdf copy of this order has been sent to your email address associated with your user account. Please check your email account soon, and if you want, download the order for safe keeping.</p>
+  <p>Please note that these tickets have automatically been put on the door list for the event. Bring your ID (drivers licence or similar) to the event so that we can verify your purchase and you will gain entry for however many tickets purchased.</p>
 
   <!--
   <div class="proceed" id="import_pkpass">IPHONE/SAFARI/MOBILE: IMPORT TICKET TO MOBILE PASSBOOK APP</div>
   -->
 
 
-  <a href="/api/mobile_tickets/pkpass?gig_id=<%= gig_id %>&order_id=<%= _id %>&order_first_name=<%= first_name %>&order_last_name=<%= last_name %>&order_main_event=<%= main_event %>&order_number_of_tickets=<%= number_of_tickets %>&order_transaction_status=<%= transaction_status%>">LINK: download the pkpass</a>
+  <a id="import_pkpass_link" href="/api/mobile_tickets/pkpass?gig_id=<%= gig_id %>&order_id=<%= _id %>&order_first_name=<%= first_name %>&order_last_name=<%= last_name %>&order_main_event=<%= main_event %>&order_number_of_tickets=<%= number_of_tickets %>&order_transaction_status=<%= transaction_status%>">LINK: download the pkpass</a>
 
 
   <h4>Order details:</h4>

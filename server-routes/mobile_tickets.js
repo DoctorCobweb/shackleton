@@ -28,11 +28,11 @@ module.exports = function (mongoose, shackleton_conn, app){
     //make a GET request to another application on heroku which is dedicated to making the
     //digital tickets.
     //the_james_caird app on heroku endpoint:
-    //var base_url = 'https://powerful-dawn-9566.herokuapp.com';
-    //console.log('THE_JAMES_CAIRD: the base_url: '
-    //            + 'https://powerful-dawn-9566.herokuapp.com');
-    var base_url = 'http://localhost:5001';
-    console.log('THE_JAMES_CAIRD: base_url: http://localhost:5001');
+    var base_url = 'https://powerful-dawn-9566.herokuapp.com';
+    console.log('THE_JAMES_CAIRD: the base_url: '
+                + 'https://powerful-dawn-9566.herokuapp.com');
+    //var base_url = 'http://localhost:5001';
+    //console.log('THE_JAMES_CAIRD: base_url: http://localhost:5001');
     var path     = '/api/apple?';
     var _querystring =   'gig_id=' + req.query.gig_id 
                        + '&' 
@@ -121,7 +121,8 @@ module.exports = function (mongoose, shackleton_conn, app){
       });
     }
 
-    //not currently called
+
+
     function rm_the_tmp_dir() {
       console.log('attempting to remove the tmp dir and its contents: ' + WRK_DIR);
 
@@ -135,9 +136,7 @@ module.exports = function (mongoose, shackleton_conn, app){
         fs.unlinkSync(WRK_DIR + files_in_tmp[l]);
       }
       fs.rmdirSync(WRK_DIR);
-
     }
- 
 
 
   });
