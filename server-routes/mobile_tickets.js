@@ -46,7 +46,14 @@ module.exports = function (mongoose, shackleton_conn, app){
                        + '&'
                        + 'order_number_of_tickets=' + req.query.order_number_of_tickets 
                        + '&'
-                       + 'order_transaction_status=' + req.query.order_transaction_status;
+                       + 'order_transaction_status=' + req.query.order_transaction_status
+                       + '&'
+                       + 'order_venue=' + req.query.order_venue 
+                       + '&'
+                       + 'order_opening_time=' + req.query.order_opening_time 
+                       + '&'
+                       + 'order_event_date=' + req.query.order_event_date; 
+
 
     var the_url = base_url + path  + _querystring;
     console.log('calling THE_JAMES_BAIRD app, url: ' + the_url);
