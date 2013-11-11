@@ -582,8 +582,8 @@ h3 {
 
 
 .elliott_smith a {
-  background-color: #53514D; /* blue grey */
-  color: #5A5854;
+  background-color: #111110; /* blue grey */
+  color: #22211F;
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: 11px;
@@ -593,17 +593,17 @@ h3 {
 
 
 .elliott_smith a:link {
-  background-color: #53514D; /* blue grey */
+  background-color: #111110; /* blue grey */
 }
 
 
 .elliott_smith a:visited {
-  background-color: #53514D; /* blue grey */
+  background-color: #111110; /* blue grey */
 }
 
 
 .elliott_smith a:hover {
-  background-color: #53514D; /* blue grey */
+  background-color: #111110; /* blue grey */
   color: #CFCFCF;
 }
 
@@ -636,7 +636,7 @@ h3 {
 
 
 .footer_sections .section ul li a {
-  background-color: #53514D; /* blue grey */
+  background-color: #111110; /* blue grey */
   color: #9B9B9B;
   padding-top: 5px;
   padding-bottom: 5px;

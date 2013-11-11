@@ -415,20 +415,20 @@ h3 {
   text-align: center;
 }
 .elliott_smith a {
-  background-color: #53514D; 
-  color: #5A5854;
+  background-color: #111110; 
+  color: #22211F;
   padding-top: 5px;
   padding-bottom: 5px;
   font-size: 11px;
 }
 .elliott_smith a:link {
-  background-color: #53514D; 
+  background-color: #111110; 
 }
 .elliott_smith a:visited {
-  background-color: #53514D; 
+  background-color: #111110; 
 }
 .elliott_smith a:hover {
-  background-color: #53514D; 
+  background-color: #111110; 
   color: #CFCFCF;
 }
 #help_footer {
@@ -453,7 +453,7 @@ h3 {
   min-width: 150px;
 }
 .footer_sections .section ul li a {
-  background-color: #53514D; 
+  background-color: #111110; 
   color: #9B9B9B;
   padding-top: 5px;
   padding-bottom: 5px;
