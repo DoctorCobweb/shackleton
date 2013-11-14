@@ -21,7 +21,7 @@ var send_welcome_email = function (first_name, user_email_address) {
         "subject": "Welcome to Tiklet.me, " + first_name + "!",
         //"text": email_body,
         'html': "<img src=\"https://s3-ap-southeast-2.amazonaws.com/biz." + 
-                "spintix.bucket1/img/112by112placeholder.jpg\" alt=\"Tiklet\" />" + 
+                "spintix.bucket1/img/orange0.png\" alt=\"Tiklet\" />" + 
                 "<div>Welcome to Tiklet!</div>" + 
                 "<div>Tiklet makes buying tickets to gigs easy, secure and fast. " + 
                 "Now you\'re all set to instantly search and purchase tikets to " + 
@@ -70,7 +70,7 @@ var send_ticket_purchase_email = function (first_name, user_email_address, attac
       "to":[{"email":user_email_address}],
       "subject": "Your tiket from Tiklet.me",
       'html': "<img src=\"https://s3-ap-southeast-2.amazonaws.com/biz." + 
-              "spintix.bucket1/img/112by112placeholder.jpg\" alt=\"Tiklet\" />" + 
+              "spintix.bucket1/img/orange0.png\" alt=\"Tiklet\" />" + 
               "<div>Thankyou for purchasing your tikets.</div>" + 
               "<div>Please find attached the actual tiket for the event.</div>" + 
 
