@@ -37,6 +37,8 @@ h4 {
 
 .gigs_container {
   overflow: auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 
@@ -123,8 +125,8 @@ h4 {
   float: left;
   background-color: #42414B;
   padding: 25px;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin-bottom: 15px;
+  margin-top: 15px;
   width: 100%;
 }
 
@@ -141,6 +143,7 @@ h4 {
 
 .view_number_of_tickets {
   overflow: auto;
+  padding-bottom: 5px;
 }
 
 #number_of_tickets #submit {
@@ -194,8 +197,8 @@ h4 {
   float: left;
   background-color: #42414B;
   padding: 25px;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin-bottom: 15px;
+  margin-top: 15px;
   width: 100%;
 }
 
@@ -220,8 +223,8 @@ h4 {
   padding: 25px;
   margin-right: 10px;
   margin-left: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 15px;
+  margin-bottom: 15px;
   float: left;
 }
 
@@ -740,8 +743,8 @@ li > b {
 #featureContent {
   background-color: #111110;
   /* background-color: #3A3A3A; */
-  padding-top: 10px;
-  padding-bottom: 10px;
+  /* padding-top: 10px; */
+  /* padding-bottom: 10px; */
   margin-bottom: 20px;
   /* background-color: #161516; */
 }

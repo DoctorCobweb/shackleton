@@ -31,6 +31,8 @@ h4 {
 }
 .gigs_container {
   overflow: auto;
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 .negative_user_feedback {
   background-color: #EC2424;
@@ -95,8 +97,8 @@ h4 {
   float: left;
   background-color: #42414B;
   padding: 25px;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin-bottom: 15px;
+  margin-top: 15px;
   width: 100%;
 }
 #checkout_details #import_pkpass_link {
@@ -107,6 +109,7 @@ h4 {
 }
 .view_number_of_tickets {
   overflow: auto;
+  padding-bottom: 5px;
 }
 #number_of_tickets #submit {
   padding-top: 20px;
@@ -144,8 +147,8 @@ h4 {
   float: left;
   background-color: #42414B;
   padding: 25px;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin-bottom: 15px;
+  margin-top: 15px;
   width: 100%;
 }
 #purchase_with_vault_cc > #vault_cc {
@@ -164,8 +167,8 @@ h4 {
   padding: 25px;
   margin-right: 10px;
   margin-left: 10px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 15px;
+  margin-bottom: 15px;
   float: left;
 }
 .view_credit_card_details {
@@ -519,8 +522,8 @@ li > b {
 #featureContent {
   background-color: #111110;
   
-  padding-top: 10px;
-  padding-bottom: 10px;
+  
+  
   margin-bottom: 20px;
   
 }
