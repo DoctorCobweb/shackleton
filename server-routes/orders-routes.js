@@ -134,9 +134,11 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     req.checkBody('number_of_tickets','number_of_tickets min is 1').min(1);
     req.checkBody('number_of_tickets','number_of_tickets max is 8').max(8);
     req.checkBody('ticket_price', 'Empty ticket_price').notEmpty();
-    req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
+
+    //req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
+    req.checkBody('ticket_price', 'ticket_price must be a float').isFloat();
     req.checkBody('transaction_amount','Empty transaction_amount').notEmpty();
-    req.checkBody('transaction_amount','transaction_amount must be numeric').isNumeric();
+    req.checkBody('transaction_amount','transaction_amount must be float').isFloat();
     req.checkBody('transaction_id','Empty transaction_id').notEmpty();
     req.checkBody('transaction_status','Empty transaction_status').notEmpty();
     req.checkBody('main_event','Empty main_event').notEmpty();
@@ -149,7 +151,8 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     req.checkBody('age_group','Empty age_group').notEmpty();
     req.checkBody('first_name','Empty first_name').notEmpty();
     req.checkBody('last_name','Empty last_name').notEmpty();
-    req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
+    //req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
+    req.checkBody('ticket_price', 'ticket_price must be float').isFloat();
 
 
     req.sanitize('cc_number').xss();
@@ -285,6 +288,7 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
 
       //calculate the total $ to charge
       var the_total_amount = req.body.number_of_tickets * the_gig.price;
+      console.log('****** the_total_amount = ' + the_total_amount);
 
       the_order = new OrderModel({
         user_authenticated: true,
@@ -392,9 +396,12 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     req.checkBody('number_of_tickets','number_of_tickets min is 1').min(1);
     req.checkBody('number_of_tickets','number_of_tickets max is 8').max(8);
     req.checkBody('ticket_price', 'Empty ticket_price').notEmpty();
-    req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
+
+
+    //req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
+    req.checkBody('ticket_price', 'ticket_price must be float').isFloat();
     req.checkBody('transaction_amount','Empty transaction_amount').notEmpty();
-    req.checkBody('transaction_amount','transaction_amount must be numeric').isNumeric();
+    req.checkBody('transaction_amount','transaction_amount must be float').isFloat();
     req.checkBody('transaction_id','Empty transaction_id').notEmpty();
     req.checkBody('transaction_status','Empty transaction_status').notEmpty();
     req.checkBody('main_event','Empty main_event').notEmpty();
@@ -407,7 +414,8 @@ module.exports = function (mongoose, shackleton_conn, app, Order, Gig, User) {
     req.checkBody('age_group','Empty age_group').notEmpty();
     req.checkBody('first_name','Empty first_name').notEmpty();
     req.checkBody('last_name','Empty last_name').notEmpty();
-    req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
+    //req.checkBody('ticket_price', 'ticket_price must be numberic').isNumeric();
+    req.checkBody('ticket_price', 'ticket_price must be floar').isFloat();
 
 
     req.sanitize('cc_number').xss();

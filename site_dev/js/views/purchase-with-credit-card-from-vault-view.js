@@ -86,17 +86,14 @@ define([
 
       //show busy spinner until fetching gigs completes
       this.spinner_opts = {
-        lines:11, // The number of lines to draw
+        lines:17, // The number of lines to draw
         length: 13, // The length of each line
         width: 4, // The line thickness
         radius: 11, // The radius of the inner circle
         corners: 1, // Corner roundness (0..1)
         rotate: 0, // The rotation offset
         direction: -1, // 1: clockwise, -1: counterclockwise
-        color: ['rgb(255, 255, 0)', //yellow
-                'rgb(255, 165, 0)', //orange
-                'rgb(255, 69,  0)'  //dark orange
-               ], // #rgb or #rrggbb or array of colors
+        color: '#fff',
         speed: 1, // Rounds per second
         trail: 24, // Afterglow percentage
         shadow: false, // Whether to render a shadow
@@ -140,6 +137,7 @@ define([
       this.$cc_year =    this.$('#cc_year');
 
 
+
       this.get_billing_info();
 
       return this;
@@ -148,10 +146,15 @@ define([
 
     get_billing_info: function () {
  
-      //TODO:
-      //this is not displaying on initial page render!
-      var target = document.getElementById('vault_cc');
-      var spinner = new Spinner(this.spinner_opts).spin(target);
+      var self = this; 
+          //TODO:
+          //this is not displaying on initial page render!
+          var target = document.getElementById('featureContent');
+          self.initial_spinner = new Spinner(self.spinner_opts).spin(target);
+          console.log('target: '); 
+          console.log(target);
+          console.log('this.initial_spinner: ');
+          console.log(self.initial_spinner);
 
       $.ajax({
         'url': '/api/users/account/billing_info/',
@@ -162,7 +165,7 @@ define([
           console.log(textStatus);
           console.dir(jqXHR);
  
-          spinner.stop();
+          self.initial_spinner.stop();
 
           self.$('#cc_masked_number').html(data.masked_number);     
           self.$('#cc_expiration_date').html(data.expiration_date);     

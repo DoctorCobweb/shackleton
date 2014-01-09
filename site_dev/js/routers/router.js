@@ -706,10 +706,9 @@ define([
           corners: 1, // Corner roundness (0..1)
           rotate: 0, // The rotation offset
           direction: -1, // 1: clockwise, -1: counterclockwise
-          color: ['rgb(255, 255, 0)', //yellow
-                  'rgb(255, 165, 0)', //orange
-                  'rgb(255, 69,  0)'  //dark orange
-                 ], // #rgb or #rrggbb or array of colors
+          //color: ['rgb(238, 104, 11)' //yellow
+          //       ], // #rgb or #rrggbb or array of colors
+          color: '#fff',
           speed: 1, // Rounds per second
           trail: 24, // Afterglow percentage
           shadow: false, // Whether to render a shadow

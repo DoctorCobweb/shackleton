@@ -17,8 +17,8 @@ h4 {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  /* background-color: #000; */
-  background-color: #EE680B;
+  /* background-color: #EE680B; */
+  background-color: #D6D6D6;
 }
 
 
@@ -261,11 +261,13 @@ h4 {
   background-color: #efff33;
   margin-top: 10px;
   margin-bottom: 10px;
-  padding: 20px;
+  margin-left:20px;
+  padding: 40px;
   text-align: center;
   color:#161516;
   font-size: 15px;
   font-weight: bold;
+  float:left;
 }
 
 
@@ -675,9 +677,9 @@ div.footer {
 
 body {
   color: #9B9B9B; /* light grey */
-  background-color: #EE680B;
+  /* background-color: #EE680B; */
+  background-color: #D6D6D6;
   /* color: #979797; */
-  /* background-color: #3A3939; */
 }
 
 

@@ -43,7 +43,8 @@ define([
         if (!this.$the_gig) {
           this.$the_gig = $('.gig_' + this.options.count);
         }
-        this.$the_gig.css('background-color', '#2BBB53');
+        //this.$the_gig.css('background-color', '#2BBB53');
+        this.$the_gig.css('background-color', '#D6D6D6');
 
 
       },
